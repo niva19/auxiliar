@@ -59,6 +59,5 @@ export class ClienteComponent implements OnInit {
         alert("incorrecto")
       }
     });
-    
   }
 }

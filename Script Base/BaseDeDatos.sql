@@ -36,10 +36,10 @@ estado int,
 -- Foraneas 
 financiamiento text,
 profResponsable text,
-latitud double,
-longitud double,
-minutos double,
-segundos double,
+latitud int,
+longitud int,
+minutos int,
+segundos int,
 ubicacion text,
 constraint pkProyecto primary key (codProyecto), 
 constraint fkFinanciamiento foreign key (financiamiento) references Financiamiento, 
@@ -52,7 +52,7 @@ create table Archivo
 ( 
 codArchivo text,
 nombre text,
-ubicacion,
+ubicacion text,
 -- Foraneas
 codProyecto text,
 constraint pkArchivo primary key (codArchivo),

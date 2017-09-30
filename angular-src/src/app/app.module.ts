@@ -15,14 +15,16 @@ import { ClienteComponent } from './Components/cliente/cliente.component';
 import { IngresarComponent } from './Components/ingresar/ingresar.component';
 import { EmpleadosComponent } from './Components/empleados/empleados.component';
 import { ProyectosComponent } from './Components/proyectos/proyectos.component';
+import { NavbarComponent } from './Components/navbar/navbar.component';
+import { FooterComponent } from './Components/footer/footer.component';
 
 const appRoutes: Routes = [
-  {path:'Cliente', component: ClienteComponent},
-  {path:'Inicio', component: MainPageComponent},
-  {path:'Ingresar', component: IngresarComponent},
-  {path:'Register', component: RegisterComponent},
-  {path:'Empleados', component: EmpleadosComponent},
-  {path:'Proyectos', component: ProyectosComponent}
+  {path:'cliente', component: ClienteComponent},
+  {path:'inicio', component: MainPageComponent},
+  {path:'ingresar', component: IngresarComponent},
+  {path:'register', component: RegisterComponent},
+  {path:'empleados', component: EmpleadosComponent},
+  {path:'proyectos', component: ProyectosComponent}
 ]
 
 @NgModule({
@@ -33,7 +35,9 @@ const appRoutes: Routes = [
     ClienteComponent,
     IngresarComponent,
     EmpleadosComponent,
-    ProyectosComponent
+    ProyectosComponent,
+    NavbarComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

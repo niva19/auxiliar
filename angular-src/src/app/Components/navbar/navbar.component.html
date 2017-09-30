@@ -1,0 +1,27 @@
+<!-- ############################################################################################ -->
+<!-- ########################################## HEADER ########################################## -->
+<!-- ############################################################################################ -->
+<div class="container-fluid">
+  <img src="assets/img/oie_transparent.png" height="100" width="300">
+  <div class="derecha">
+    <a class="nav-wrapper #0277bd light-blue darken-3 btn" [routerLink]="['/ingresar']">Ingresar</a>
+    <a class="nav-wrapper #0277bd light-blue darken-3 btn" [routerLink]="['/register']">Registrar</a>
+  </div>
+  <nav>
+    <div class="nav-wrapper #0277bd light-blue darken-3">
+      <a [routerLink]="['/inicio']" class="brand-logo"><i class="material-icons">home</i>Inicio</a>
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a [routerLink]="['/empleados']">Recurso Humano</a></li>
+        <li><a [routerLink]="['/proyectos']">Proyectos</a></li>
+        <li><a [routerLink]="['/cliente']">Clientes</a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        <li><a href="sass.html">Sass</a></li>
+        <li><a href="badges.html">Components</a></li>
+        <li><a href="collapsible.html">Javascript</a></li>
+        <li><a href="mobile.html">Mobile</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
