@@ -15,6 +15,8 @@ create table Empleado
 ( 
 cedula text,
 nombre text,
+usuario text,
+contrasena text,
 apellido text,
 correo text,
 direccion text,

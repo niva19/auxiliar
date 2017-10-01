@@ -29,30 +29,45 @@ function getAllCustomers(req, res, next) {
     });
 }
 
-function SaveCustomer(req,res,next){
+function SaveCustomer(req, res, next) {
   console.log(req.body);
   db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${telefono}, ${correo})',
-  req.body)
-  .then(() =>{
-    res.status(200)
-      .json({
-        success: true
-      });
-  })
-  .catch((err)=>{
-    res.status(200)
-    .json({
-      success: false
-    });
-  })
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
 }
 
-module.exports = {
-  getAllCustomers: getAllCustomers,
-  SaveCustomer: SaveCustomer
-}
 
 //  ******************************** EMPLEADOS ************************************
+
+function login(req, res, next) {
+  console.log(req.body);
+  db.any('select * from empleado where usuario=${user} and contrasena=${password}',
+    req.body)
+    .then(() => {
+      console.log('redy');
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
 
 //  ****************************** FINANCIAMIENTO *********************************
 
@@ -62,4 +77,9 @@ module.exports = {
 
 //  ********************************* ARCHIVOS ************************************
 
+module.exports = {
+  getAllCustomers: getAllCustomers,
+  SaveCustomer: SaveCustomer,
+  login: login
+}
 
