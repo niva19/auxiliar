@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { IngresarService } from '../../services/ingresar.service'
 import { Router } from '@angular/router'
-import 'materialize-css';
-import * as Materialize from 'angular2-materialize';
+import 'materialize-css'
+import * as Materialize from 'angular2-materialize'
 
 @Component({
   selector: 'app-ingresar',
@@ -33,10 +33,10 @@ export class IngresarComponent implements OnInit {
       if (data.success) {
         localStorage.setItem('cedula', data.data.cedula)
         localStorage.setItem('nombre', data.data.nombre)
-        this.router.navigate(['/inicio']);
+        this.router.navigate(['/inicio'])
         Materialize.toast('Validación completada, bienvenido', 4000, 'green rounded')
       } else {
-        Materialize.toast('Usuario o contraseña incorrecto, intente de nuevo', 4000, 'red rounded') // 4000 is the duration of the toast
+        Materialize.toast('Usuario o contraseña incorrecto, intente de nuevo', 4000, 'red rounded')
       }
     });
   }
