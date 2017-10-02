@@ -51,14 +51,14 @@ function SaveCustomer(req, res, next) {
 //  ******************************** EMPLEADOS ************************************
 
 function login(req, res, next) {
-  console.log(req.body);
+  // console.log(req.body);
   db.any('select * from empleado where usuario=${user} and contrasena=${password}',
     req.body)
-    .then(() => {
-      console.log('redy');
+    .then((data) => {
+      console.log(data);
       res.status(200)
         .json({
-          success: true
+          success: true, data:{nombre:data[0].nombre, cedula:data[0].cedula}
         });
     })
     .catch(function (err) {

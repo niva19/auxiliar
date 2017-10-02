@@ -22,11 +22,13 @@ export class IngresarComponent implements OnInit {
       user: this.usuario,
       password: this.contrasena
     }
-    console.log(empleado);
+    // console.log(empleado);
 
     this.ingresarService.logear(empleado).subscribe(data => {
       if (data.success) { //success
-        console.log('Correcto');
+        localStorage.setItem('cedula',data.data.cedula)
+        localStorage.setItem('nombre',data.data.nombre)
+        console.log(data);
       } else {
         console.log('Error');
         //alert("incorrecto");

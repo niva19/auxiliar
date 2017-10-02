@@ -55,7 +55,7 @@
                       </select>
           </div>
 
-          <table>
+          <table class="centered">
             <thead>
               <tr>
                 <td>Nombre</td>
@@ -63,6 +63,8 @@
                 <td>Cedula</td>
                 <td>Telefono</td>
                 <td>Correo</td>
+                <td>Editar</td>
+                <td>Eliminar</td>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +74,17 @@
                 <td>{{v.cedula}}</td>
                 <td>{{v.telefono}}</td>
                 <td>{{v.correo}}</td>
+                <td>
+                  <a class="waves-effect waves-light btn-flat" (click)="Editar(v.cedula)">
+                    <i class="tiny material-icons left">create</i>
+                  </a>
+                </td>
+                <td>
+                    <a class="waves-effect waves-light btn-flat" (click)="Eliminar(v.cedula)">
+                        <i class="tiny material-icons left">delete</i>
+                    </a>  
+                </td>  
+
               </tr>
             </tbody>
           </table>

@@ -40,6 +40,13 @@ export class ClienteComponent implements OnInit {
     $('#modal1').modal('open');
   }
 
+  Editar(id){
+    console.log(id)
+  }
+
+  Eliminar(id){
+    console.log(id)
+  }
   ClienteSubmit() {
     const cliente = {
       nombre: this.nombre,
