@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 declare var jQuery:any;
 declare var $:any;
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -9,14 +10,16 @@ declare var $:any;
 })
 export class NavbarComponent implements OnInit {
   username: String
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit() {
     $('.modal').modal();
     $(".button-collapse").sideNav();
     
     if(localStorage.getItem('cedula')){
-      this.username = localStorage.getItem('nombre')
+      this.username = localStorage.getItem('nombre');
     }
   }
 
@@ -24,5 +27,12 @@ export class NavbarComponent implements OnInit {
     return (localStorage.getItem('cedula')) ? true : false
   }
 
-
+  //PARA CERRAR SESION
+  onLogoutClick(){
+    //ALERTA
+    localStorage.clear();
+    //redirect
+    this.router.navigate(['/ingresar']);
+    return false;
+  }
 }
