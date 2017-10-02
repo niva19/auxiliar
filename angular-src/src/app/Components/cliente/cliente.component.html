@@ -7,23 +7,23 @@
       <div class="row">
         <div class="input-field col s12">
           <input id="name" type="text" [(ngModel)]="nombre" name="nombre" class="validate">
-          <label for="name">Nombre</label>
+          <label for="name" #LabelNombre>Nombre</label>
         </div>
         <div class="input-field col s12">
           <input id="apellidos" type="text" [(ngModel)]="apellidos" name="apellidos" class="validate">
-          <label for="apellidos">Apellidos</label>
+          <label for="apellidos" #LabelApellidos>Apellidos</label>
         </div>
         <div class="input-field col s12">
-          <input id="cedula" type="text" [(ngModel)]="cedula" name="cedula" class="validate">
-          <label for="cedula">Cedula</label>
+          <input id="cedula" type="text" [(ngModel)]="cedula" name="cedula" class="validate" #inputcedula>
+          <label for="cedula" #LabelCedula>Cedula</label>
         </div>
         <div class="input-field col s12">
           <input id="correo" type="email" [(ngModel)]="correo" name="correo" class="validate">
-          <label for="correo" data-error="wrong" data-success="right">Correo</label>
+          <label for="correo" #LabelCorreo data-error="wrong" data-success="right">Correo</label>
         </div>
         <div class="input-field col s12">
           <input id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate">
-          <label for="telefono">Telefono</label>
+          <label for="telefono" #LabelTelefono>Telefono</label>
         </div>
         <div class="input-field col s12">
           <a class="#d32f2f red darken-2 btn">Cancelar</a>

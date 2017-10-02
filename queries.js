@@ -47,6 +47,40 @@ function SaveCustomer(req, res, next) {
     })
 }
 
+function EditCustomer(req, res, next) {
+  console.log(req.body);
+  db.none('UPDATE Cliente SET nombre = ${nombre}, apellidos = ${apellidos}, telefono = ${telefono}, correo = ${correo} where cedula = ${cedula}',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function GetCustomer(req, res, next) {
+  console.log(req.body);
+  db.any('select * from Cliente where cedula=${cedula}',req.body)
+  .then((data) => {
+    console.log(data);
+    res.status(200)
+      .json(data[0]);
+  })
+  .catch(function (err) {
+    res.status(200)
+      .json({
+        success: false
+      });
+  });
+}
+
 
 //  ******************************** EMPLEADOS ************************************
 
@@ -80,6 +114,8 @@ function login(req, res, next) {
 module.exports = {
   getAllCustomers: getAllCustomers,
   SaveCustomer: SaveCustomer,
+  EditCustomer: EditCustomer,
+  GetCustomer: GetCustomer,
   login: login
 }
 
