@@ -59,6 +59,7 @@ ubicacion text,
 codProyecto text,
 constraint pkArchivo primary key (codArchivo),
 constraint fkProyecto foreign key (codProyecto) references Proyecto
+gfdghdf
 );
 
 /* Tabla de Cliente */
