@@ -11,6 +11,8 @@ var db = pgp(connectionString);
 
 var x = 0;
 var y = 1;
+
+var m = 0;
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
 
 /*********************************************************************************
