@@ -31,7 +31,6 @@ export class NavbarComponent implements OnInit {
   onLogoutClick(){
     //ALERTA
     localStorage.clear();
-    //redirect
     this.router.navigate(['/ingresar']);
     return false;
   }

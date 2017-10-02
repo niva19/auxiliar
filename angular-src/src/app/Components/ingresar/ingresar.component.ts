@@ -28,7 +28,7 @@ export class IngresarComponent implements OnInit {
       user: this.usuario,
       password: this.contrasena
     }
-    
+
     this.ingresarService.logear(empleado).subscribe(data => {
       if (data.success) {
         localStorage.setItem('cedula', data.data.cedula)
