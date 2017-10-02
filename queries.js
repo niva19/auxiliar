@@ -10,7 +10,7 @@ var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
 var g = 0;
-var h = 1;
+var h = 1; var l = 2;
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
 
 /*********************************************************************************
