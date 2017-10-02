@@ -9,13 +9,6 @@ var pgp = require('pg-promise')(options);
 var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
-<<<<<<< HEAD
-var z = 3;
-var a = 1;
-=======
-var g = 0;
-var h = 1; var l = 2;
->>>>>>> 55b3828fb83c1ca951d11f17f6cffaa51726e0e6
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
 
 /*********************************************************************************
@@ -65,7 +58,7 @@ function login(req, res, next) {
       console.log(data);
       res.status(200)
         .json({
-          success: true, data:{nombre:data[0].nombre, cedula:data[0].cedula}
+          success: true, data: { nombre: data[0].nombre, cedula: data[0].cedula }
         });
     })
     .catch(function (err) {
