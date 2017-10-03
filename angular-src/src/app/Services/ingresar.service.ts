@@ -13,4 +13,5 @@ export class IngresarService {
     headers.append('Content-Type', 'application/json');
     return this.http.post('http://localhost:3000/api/empleados', empleado, { headers: headers }).map(res => res.json())
   }
+
 }

@@ -15,19 +15,19 @@ export class ClientesService {
     return this.http.post('http://localhost:3000/api/customers', cliente, { headers: headers }).map(res => res.json())
   }
 
-  getAll() { 
+  getAll() {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.get('http://localhost:3000/api/customers', { headers: headers }).map(res => res.json())
   }
 
-  getById(cliente){
+  getById(cliente) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.post('http://localhost:3000/api/getcustomer', cliente, { headers: headers }).map(res => res.json())
   }
 
-  EditarCliente(cliente){
+  EditarCliente(cliente) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.put('http://localhost:3000/api/customers', cliente, { headers: headers }).map(res => res.json())
