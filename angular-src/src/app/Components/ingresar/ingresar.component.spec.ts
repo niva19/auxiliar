@@ -8,9 +8,9 @@ describe('IngresarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IngresarComponent ]
+      declarations: [IngresarComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
