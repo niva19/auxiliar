@@ -27,6 +27,14 @@ export class IngresarComponent implements OnInit {
       user: this.usuario,
       password: this.contrasena
     }
+    //si no esta completo el form
+    // #######################################################################
+    // ################### FALTAN LOS N ESPACIOS EN BLANCO####################
+    // #######################################################################
+    if (empleado.user == null || empleado.password == null){
+      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+      return;
+    }
 
     this.ingresarService.logear(empleado).subscribe(data => {
       if (data.success) {
@@ -39,6 +47,7 @@ export class IngresarComponent implements OnInit {
         //logeado incorrecto
         Materialize.toast('Usuario o contraseña incorrecto, intente de nuevo', 4000, 'red rounded')
       }
+      return;
     });
   }
 }
