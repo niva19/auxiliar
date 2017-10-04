@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { ClientesService } from '../../services/clientes.service'
 import { Router } from '@angular/router'
+import * as Materialize from 'angular2-materialize'
+
 declare var jQuery: any;
 declare var $: any;
 
@@ -18,6 +20,14 @@ export class ClienteComponent implements OnInit {
   switch: Boolean = true
   borrar: String//variable auxiliar utilizada para guardar la cedula cuando se proceda a borrar
   ax: any[];
+  filtro: any
+  parametro: String
+  // @ViewChild('modal2Footer')
+  // private modal2Footer: ElementRef
+
+  
+  @ViewChild('buscador')
+  private buscador: ElementRef
 
   @ViewChild('modal2Footer')
   private modal2Footer: ElementRef
@@ -37,19 +47,37 @@ export class ClienteComponent implements OnInit {
   @ViewChild('LabelTelefono')
   private LabelTelefono: ElementRef
 
+  @ViewChild('inputnombre')
+  private inputnombre: ElementRef
+
+  @ViewChild('inputapellidos')
+  private inputapellidos: ElementRef
+
   @ViewChild('inputcedula')
   private inputcedula: ElementRef
+
+  @ViewChild('inputcorreo')
+  private inputcorreo: ElementRef
+
+  @ViewChild('intputtelefono')
+  private intputtelefono: ElementRef
+
+  
 
   constructor(private CliService: ClientesService, private router: Router, private renderer2: Renderer2) { }
 
   ngOnInit() {
     $('.modal').modal();
+    // $("#buscar").change(function() {
+    //   console.log("asd")
+    // });
     this.getAll();
   }
 
 
   getAll() {
     this.CliService.getAll().subscribe(data => {
+      console.log(data)
       this.ax = data;
     });
   }
@@ -109,6 +137,21 @@ export class ClienteComponent implements OnInit {
   }
 
   Eliminar(id){
+    const cliente = {
+      cedula: id
+    }
+    this.CliService.EliminarCliente(cliente).subscribe(data => {
+      if (data.success) {
+        this.getAll();
+        $('#modal2').modal('close');
+      }
+      else{
+        alert("algo salio mal")
+      }
+    });
+  }
+
+  Confirmar_Eliminar(id){
     let button = this.renderer2.createElement('a');
     this.renderer2.removeChild(this.modal2Footer.nativeElement,this.modal2Footer.nativeElement.children[1]);
     // this.modal2Footer.nativeElement.innerHTML ='';
@@ -121,7 +164,7 @@ export class ClienteComponent implements OnInit {
     let txt = this.renderer2.createText("Confirmar")
     this.renderer2.appendChild(button,txt)
     this.renderer2.listen(button,'click',()=>{
-      alert(id)
+      this.Eliminar(id)
     })
 
     this.renderer2.appendChild(this.modal2Footer.nativeElement,button);
@@ -139,26 +182,78 @@ export class ClienteComponent implements OnInit {
       telefono: this.telefono,
       correo: this.correo
     }
-    console.log(cliente);
-    if (this.switch) {//si el switch esta en true guarda
-      this.CliService.GuardarCliente(cliente).subscribe(data => {
-        if (data.success) {
-          alert("correcto");
+    if(this.ValidateForm()){
+      if (this.switch) {//si el switch esta en true guarda
+        this.CliService.GuardarCliente(cliente).subscribe(data => {
+          if (data.success) {
+            this.getAll();
+            $('#modal1').modal('close');
+          }
+          else {
+            Materialize.toast('Error, cedula repetida', 3000, 'red rounded')
+          }
+        });
+      }
+      else {//si el switch esta en false edita
+        this.CliService.EditarCliente(cliente).subscribe(data => {
+          console.log(data);
           this.getAll();
+          this.switch = true;
           $('#modal1').modal('close');
-        }
-        else {
-          alert("incorrecto");
-        }
-      });
+        });
+      }
     }
-    else {//si el switch esta en false edita
-      this.CliService.EditarCliente(cliente).subscribe(data => {
-        console.log(data);
-        this.getAll();
-        this.switch = true;
-        $('#modal1').modal('close');
-      });
+    else{
+      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+    }
+      
+  }
+
+  Only_Numbers(event: any) {
+    const pattern = /[0-9]/;
+    let inputChar = String.fromCharCode(event.charCode);
+
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
     }
   }
+
+  ValidateForm(){
+    if(this.inputnombre.nativeElement.value == '')
+      return false
+    if(this.inputapellidos.nativeElement.value == '')
+      return false
+    if(this.inputcedula.nativeElement.value == '')
+      return false
+    if(this.inputcorreo.nativeElement.value == '')
+      return false
+    if(this.intputtelefono.nativeElement.value == '')
+      return false
+
+    return true
+  }
+
+  buscar(){
+    this.parametro = ''
+    if(this.buscador.nativeElement.value == "todos")
+      this.getAll();
+    else{
+      this.filtro = this.buscador.nativeElement.value
+      $('#modal3').modal('open');
+    }
+  }
+
+  BuscarPorFiltro(){
+    const FilPar = {
+      parametro: this.parametro,
+      filtro: this.filtro
+    }
+    
+    this.CliService.BuscarCliente(FilPar).subscribe(data => {
+      this.ax = data
+      $('#modal3').modal('close');
+    });
+  }
+
 }

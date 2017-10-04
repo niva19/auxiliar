@@ -18,6 +18,7 @@ import { EmpleadosComponent } from './Components/empleados/empleados.component'
 import { ProyectosComponent } from './Components/proyectos/proyectos.component'
 import { NavbarComponent } from './Components/navbar/navbar.component'
 import { FooterComponent } from './Components/footer/footer.component'
+import { PrivilegiosComponent } from './Components/privilegios/privilegios.component'
 
 const appRoutes: Routes = [
   { path: 'cliente', component: ClienteComponent },
@@ -25,7 +26,8 @@ const appRoutes: Routes = [
   { path: 'ingresar', component: IngresarComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'empleados', component: EmpleadosComponent },
-  { path: 'proyectos', component: ProyectosComponent }
+  { path: 'proyectos', component: ProyectosComponent },
+  { path: 'privilegios', component: PrivilegiosComponent }
 ]
 
 @NgModule({
@@ -38,7 +40,8 @@ const appRoutes: Routes = [
     EmpleadosComponent,
     ProyectosComponent,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    PrivilegiosComponent
   ],
   imports: [
     BrowserModule,

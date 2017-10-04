@@ -28,6 +28,10 @@ export class NavbarComponent implements OnInit {
     return (localStorage.getItem('cedula')) ? true : false
   }
 
+  Is_Privilegie_3(): Boolean{
+    return (localStorage.getItem('privilegio')=='3') ? true : false
+  }
+
   //PARA CERRAR SESION
   onLogoutClick() {
     Materialize.toast('Sesión cerrada correctamente', 4000, 'green rounded')

@@ -32,6 +32,19 @@ export class ClientesService {
     headers.append('Content-Type', 'application/json');
     return this.http.put('http://localhost:3000/api/customers', cliente, { headers: headers }).map(res => res.json())
   }
+
+  EliminarCliente(cliente){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/deletecustomers', cliente, { headers: headers }).map(res => res.json())
+  }
+
+  BuscarCliente(FilPar){//Filtro y parametro
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/searchcustomers', FilPar, { headers: headers }).map(res => res.json())
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

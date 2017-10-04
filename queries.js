@@ -6,7 +6,7 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
+var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -81,6 +81,39 @@ function GetCustomer(req, res, next) {
   });
 }
 
+function DeleteCustomer(req, res, next) {
+  console.log(req.body);
+  db.none('DELETE FROM cliente WHERE cedula = ${cedula}',req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+
+function SearchCustomers(req, res, next) {
+  console.log(req.body)
+  db.any('select * from Cliente where '+ req.body.filtro +' = ${parametro}',req.body)
+  .then((data) => {
+    console.log(data);
+    res.status(200)
+      .json(data);
+  })
+  .catch(function (err) {
+    res.status(200)
+      .json({
+        success: false
+      });
+  });
+}  
 
 //  ******************************** EMPLEADOS ************************************
 
@@ -92,7 +125,7 @@ function login(req, res, next) {
       console.log(data);
       res.status(200)
         .json({
-          success: true, data: { nombre: data[0].nombre, cedula: data[0].cedula }
+          success: true, data: { nombre: data[0].nombre, cedula: data[0].cedula, privilegios: data[0].privilegios }
         });
     })
     .catch(function (err) {
@@ -100,6 +133,18 @@ function login(req, res, next) {
         .json({
           success: false
         });
+    });
+}
+
+
+function getAllEmployers(req, res, next) {
+  db.any('select * from Empleado')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
     });
 }
 
@@ -116,6 +161,8 @@ module.exports = {
   SaveCustomer: SaveCustomer,
   EditCustomer: EditCustomer,
   GetCustomer: GetCustomer,
-  login: login
+  DeleteCustomer: DeleteCustomer,
+  SearchCustomers: SearchCustomers,
+  login: login,
+  getAllEmployers: getAllEmployers
 }
-

@@ -45,4 +45,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// app.listen(4010, () => {
+//   console.log('Server started on port '+4010);
+// });
+
 module.exports = app;

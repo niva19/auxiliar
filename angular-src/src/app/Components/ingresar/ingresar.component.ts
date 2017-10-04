@@ -41,6 +41,7 @@ export class IngresarComponent implements OnInit {
         //logeado correctamente
         localStorage.setItem('cedula', data.data.cedula)
         localStorage.setItem('nombre', data.data.nombre)
+        localStorage.setItem('privilegio', data.data.privilegios)
         this.router.navigate(['/inicio'])
         Materialize.toast('Validación completada, bienvenido', 4000, 'green rounded')
       } else {
