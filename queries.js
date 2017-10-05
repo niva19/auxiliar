@@ -6,7 +6,7 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
+var connectionString = 'postgres://postgres:postgres@localhost:5432/PROARINSADB';
 var db = pgp(connectionString);
 
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -136,8 +136,7 @@ function login(req, res, next) {
     });
 }
 
-
-function getAllEmployers(req, res, next) {
+function getAllEmployees(req, res, next) {
   db.any('select * from Empleado')
     .then(function (data) {
       res.status(200)
@@ -148,6 +147,92 @@ function getAllEmployers(req, res, next) {
     });
 }
 
+function saveEmployee(req, res, next) {
+  console.log(req.body);
+  db.none('insert into Empleado values(${nombre}, ${apellidos}, ${cedula}, ${telefono}, ${correo}, ${usuario}, ${contrasena}, ${privilegios})',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function editEmployee(req, res, next) {
+  console.log(req.body);
+  db.none('UPDATE Empleado SET nombre = ${nombre}, apellidos = ${apellidos}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena}, privilegios= ${privilegios}  where cedula = ${cedula}',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })    
+}
+
+function getEmployee(req, res, next) {
+  console.log(req.body);
+  db.any('select * from Empleado where cedula=${cedula}',req.body)
+  .then((data) => {
+    console.log(data);
+    res.status(200)
+      .json(data[0]);
+  })
+  .catch(function (err) {
+    res.status(200)
+      .json({
+        success: false
+      });
+  });
+}
+
+function deleteEmployee(req, res, next) {
+  console.log(req.body);
+  db.none('DELETE FROM Empleado WHERE cedula = ${cedula}',req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+
+function searchEmployee(req, res, next) {
+  console.log(req.body)
+  db.any('select * from Empleado where '+ req.body.filtro +' = ${parametro}',req.body)
+  .then((data) => {
+    console.log(data);
+    res.status(200)
+      .json(data);
+  })
+  .catch(function (err) {
+    res.status(200)
+      .json({
+        success: false
+      });
+  });
+}  
+
 //  ****************************** FINANCIAMIENTO *********************************
 
 //  ********************************* PROYECTO ************************************
@@ -157,12 +242,19 @@ function getAllEmployers(req, res, next) {
 //  ********************************* ARCHIVOS ************************************
 
 module.exports = {
+  // CLIENTES
   getAllCustomers: getAllCustomers,
   SaveCustomer: SaveCustomer,
   EditCustomer: EditCustomer,
   GetCustomer: GetCustomer,
   DeleteCustomer: DeleteCustomer,
   SearchCustomers: SearchCustomers,
+  // EMPLEADOS
   login: login,
-  getAllEmployers: getAllEmployers
+  getAllEmployees: getAllEmployees,
+  saveEmployee: saveEmployee,
+  editEmployee: editEmployee,
+  getEmployee: getEmployee,
+  deleteEmployee: deleteEmployee,
+  searchEmployee: searchEmployee,
 }

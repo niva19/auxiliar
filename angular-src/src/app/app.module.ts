@@ -7,6 +7,7 @@ import { HttpModule } from '@angular/http'
 //services
 import { ClientesService } from './services/clientes.service'
 import { IngresarService } from './services/ingresar.service'
+import { EmpleadosService } from './services/empleados.service'
 
 import { AppComponent } from './app.component'
 import { RegisterComponent } from './Components/register/register.component'
@@ -50,7 +51,7 @@ const appRoutes: Routes = [
     HttpModule,
     MaterializeModule
   ],
-  providers: [ClientesService, IngresarService],
+  providers: [ClientesService, IngresarService, EmpleadosService],
   bootstrap: [AppComponent]
 })
 
