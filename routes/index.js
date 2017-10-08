@@ -34,11 +34,19 @@ router.post('/api/deleteemployee', db.deleteEmployee);
 // ------------ BUSCAR EMPLEADO
 router.post('/api/searchemployee', db.searchEmployee);
 
+//Proyectos
 
-
-
-
-
-
+// ------------ GET PROYECTOS 
+router.get('/api/getprojects', db.getAllProject);
+// ------------ SALVAR PROYECTOS
+router.post('/api/saveproject', db.saveProject);
+// ------------ EDITAR PROYECTOS
+router.put('/api/editproject', db.editProject);
+// ------------ GET PROYECTOS
+router.post('/api/getproject', db.getProject);
+// ------------ ELIMINAR PROYECTOS
+router.post('/api/deleteproject', db.deleteProject);
+// ------------ BUSCAR PROYECTOS
+router.post('/api/searchproject', db.searchProject);
 
 module.exports = router;

@@ -1,13 +1,9 @@
 /* Tabla de Financiamiento */
 
-create table Financiamiento
-( 
-codFinanciamiento text,
-tipo text,
-banco text,
+/*create table Financiamiento
+tipo text,BANHVI ARTICULO 59 O REGULARES 
 detalle text,
-constraint pkFinanciamiento primary key (codFinanciamiento) 
-);
+*/
 
 /* Tabla de Empleado */
 
@@ -28,24 +24,27 @@ constraint pkEmpleado primary key (cedula)
 
 create table Proyecto
 ( 
-codProyecto text,
+-- codProyecto text,
+nombreProyecto text,
 tipoProyecto text,
+tipoObra text,
 descripcion text,
 fechaInicio text,
 fechaFinaliza text,
-tipoObra text,
-estado int,
+estado text,
+banco text,
 -- Foraneas 
-financiamiento text,
+cliente text,
 profResponsable text,
-latitud int,
-longitud int,
-minutos int,
-segundos int,
-ubicacion text,
+-- Localizacion  -- Cuando se haga lo del API DE GOOGLE osea vacaciones 
+-- latitud int,
+-- longitud int,
+-- minutos int,
+-- segundos int,
+-- ubicacion text,
+-- 
 constraint pkProyecto primary key (codProyecto), 
-constraint fkFinanciamiento foreign key (financiamiento) references Financiamiento, 
-constraint fkEmpleado foreign key (profResponsable) references Empleado
+-- constraint fkEmpleado foreign key (profResponsable) references Empleado --Agregar cuando este listo dropdown
 );
 
 /* Tabla de Archivo */

@@ -98,7 +98,6 @@ function DeleteCustomer(req, res, next) {
     })
 }
 
-
 function SearchCustomers(req, res, next) {
   console.log(req.body)
   db.any('select * from Cliente where '+ req.body.filtro +' = ${parametro}',req.body)
@@ -233,11 +232,103 @@ function searchEmployee(req, res, next) {
   });
 }  
 
-//  ****************************** FINANCIAMIENTO *********************************
-
 //  ********************************* PROYECTO ************************************
+function getAllProject(req, res, next) {
+  db.any('select * from Proyecto')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
 
-//  ********************************** ZONAS **************************************
+function saveProject(req, res, next) {
+  console.log(req.body);
+  db.none('insert into Proyecto values(${nombreProyecto}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente}, ${profesionalResponsable})',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function editProject(req, res, next) {
+  console.log(req.body);
+  db.none('UPDATE Proyecto SET tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}, cliente = ${cliente}, profresponsable = ${profesionalResponsable}  where nombreproyecto = ${nombreProyecto}',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })    
+}
+
+function getProject(req, res, next) {
+  console.log(req.body);
+  db.any('select * from Proyecto where nombreproyecto=${nombreProyecto}',req.body)
+  .then((data) => {
+    console.log(data);
+    res.status(200)
+      .json(data[0]);
+  })
+  .catch(function (err) {
+    res.status(200)
+      .json({
+        success: false
+      });
+  });
+}
+
+function deleteProject(req, res, next) {
+  console.log(req.body);
+  db.none('DELETE FROM Proyecto WHERE nombreproyecto = ${nombreProyecto}',req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function searchProject(req, res, next) {
+  console.log(req.body)
+  db.any('select * from Proyecto where '+ req.body.filtro +' = ${parametro}',req.body)
+  .then((data) => {
+    console.log(data);
+    res.status(200)
+      .json(data);
+  })
+  .catch(function (err) {
+    res.status(200)
+      .json({
+        success: false
+      });
+  });
+}  
+
 
 //  ********************************* ARCHIVOS ************************************
 
@@ -257,4 +348,11 @@ module.exports = {
   getEmployee: getEmployee,
   deleteEmployee: deleteEmployee,
   searchEmployee: searchEmployee,
+  // PROYECTOS
+  getAllProject: getAllProject,
+  saveProject: saveProject,
+  editProject: editProject,
+  getProject: getProject,
+  deleteProject: deleteProject,
+  searchProject: searchProject,
 }

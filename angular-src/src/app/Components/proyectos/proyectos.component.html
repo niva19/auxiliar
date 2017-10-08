@@ -1,11 +1,161 @@
 <!-- ############################################################################################ -->
 <!-- ########################################## BODY ############################################ -->
 <!-- ############################################################################################ -->
-<div>
-  <br><br><br>
-  <br><br><br>
-  <br><br><br>
-  <br><br><br>
-  <br><br><br>
-  <br>
+
+<!-- ########################################## INGRESAR PROYECTO ############################## -->
+
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <form (submit)="ProyectoSubmit()" class="col s12">
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="nombreProyecto" type="text" [(ngModel)]="nombreProyecto" name="nombreProyecto" class="validate" #inputnombreProyecto>
+          <label for="nombreProyecto" #LabelNombreProyecto>Nombre del proyecto</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="tipoProyecto" type="text" [(ngModel)]="tipoProyecto" name="tipoProyecto" class="validate" #inputtipoProyecto>
+          <label for="tipoProyecto" #LabeltipoProyecto>Tipo de Proyectos</label>
+        </div>
+        <div class="input-field col s12">
+          <input  id="tipoObra" type="text" [(ngModel)]="tipoObra" name="tipoObra" class="validate" #inputtipoObra>
+          <label for="tipoObra" #LabeltipoObra>Tipo de Obra</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="descripcion" type="text" [(ngModel)]="descripcion" name="descripcion" class="validate" #inputdescripcion>
+          <label for="descripcion" #Labeldescripcion data-error="wrong" data-success="right">Descripción</label>
+        </div>
+        <div class="input-field col s12">
+          <input  id="fechaInicio" type="text" [(ngModel)]="fechaInicio" name="fechaInicio" class="validate" #inputfechaInicio>
+          <label for="fechaInicio" #LabelfechaInicio>Fecha de Inicio</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="fechaFinaliza" type="text" [(ngModel)]="fechaFinaliza" name="fechaFinaliza" class="validate" #inputfechaFinaliza>
+          <label for="fechaFinaliza" #LabelfechaFinaliza>Fecha de Finalización</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="estado" type='text' [(ngModel)]="estado" name="estado" class="validate" #inputestado>
+          <label for="estado" #Labelestado>Estado del proyecto</label>
+        </div>
+        <div class="input-field col s12">
+          <input  id="banco" type="text" [(ngModel)]="banco" name="banco" class="validate" #inputbanco>
+          <label for="banco" #Labelbanco>Nombre del banco</label>
+        </div>
+        <div class="input-field col s12">
+          <input  id="cliente" type="text" [(ngModel)]="cliente" name="cliente" class="validate" #inputcliente>
+          <label for="cliente" #LabelCliente>Nombre del cliente</label>
+        </div>        
+        <div class="input-field col s12">
+          <input  id="profesionalResponsable" type="text" [(ngModel)]="profesionalResponsable" name="profesionalResponsable" class="validate" #inputprofesionalResponsable>
+          <label for="profesionalResponsable" #LabelprofesionalResponsable>Profesional Responsable</label>
+        </div>
+        <div class="input-field col s12">
+          <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
+          <input type="submit" class="#0277bd light-blue darken-3 btn" value="Guardar">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ########################################## ELIMINAR EMPLEADO ############################### -->
+
+<div id="modal2" class="modal">
+  <div class="modal-content">
+    <h4>Eliminar Empleado</h4>
+    <p>Realmente deseea eliminar el empleado</p>
+  </div>
+  <div class="modal-footer" #modal2Footer>
+    <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
+  </div>
+</div>
+
+<!-- ########################################## BUSCAR EMPLEADO ################################# -->
+
+<div id="modal3" class="modal">
+  <div class="modal-content">
+    <form (submit)="BuscarPorFiltro()" class="col s12">
+        <div class="row">
+            <div class="input-field col s12">
+              <input id="filtro" type="text" [(ngModel)]="parametro" name="parametro" class="validate">
+              <label for="filtro">{{filtro}}</label>
+            </div>
+            <div class="input-field col s12">
+                <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
+                <input type="submit" class="#0277bd light-blue darken-3 btn" value="Buscar">
+              </div>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="container">
+
+  <div class="row">
+    <div class="col s12 m12">
+      <div class="card #f5f5f5 grey lighten-4">
+        <div class="card-content ">
+          <div class="input-field col m6 offset-m5 s8">
+            <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Agregar</button>
+          </div>
+
+          <div class="input-field col m8 offset-m2 s8">
+            <i class="material-icons prefix">search</i>
+            <select materialize="material_select" (change)="buscar()" #buscador>
+              <option value="" disabled selected>Buscar por</option>
+              <option value="nombreProyecto">Nombre Proyecto</option>
+              <option value="tipoProyecto">Tipo de Proyecto</option>
+              <option value="tipoObra">Tipo de Obra</option>    
+              <option value="profResponsable">Profesional Responsable</option>            
+              <option value="fechaInicio">Fecha de inicio</option>       
+              <option value="estado">Estado</option>
+              <option value="todos">Todos</option>
+            </select>
+          </div>
+
+          <table>
+            <thead class="centered">
+              <tr>
+                <td>Nombre del Proyecto</td>
+                <td>Tipo de proyecto</td>
+                <td>Tipo de obra</td>    
+                <td>Fecha Inicio</td>
+                <td>Estado</td>
+                <td>Inspeccionar</td>
+                <td>Editar</td>
+                <td>Eliminar</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let v of ax">
+                <td>{{v.nombreproyecto}}</td>
+                <td>{{v.tipoproyecto}}</td>
+                <td>{{v.tipoobra}}</td>
+                <td>{{v.fechainicio}}</td>
+                <td>{{v.estado}}</td>
+                <!-- OJO CAMBIAR DESPUES nombreProyecto por codProyecto -->
+                <td>
+                  <a class="waves-effect waves-light btn-flat" (click)="Editar(v.nombreproyecto)">
+                        <i class="tiny material-icons left">visibility</i>
+                    </a>
+                </td>
+                <td>
+                  <a class="waves-effect waves-light btn-flat" (click)="Editar(v.nombreproyecto)">
+                    <i class="tiny material-icons left">create</i>
+                  </a>
+                </td>
+                <td>
+                  <a class="waves-effect waves-light btn-flat" (click)="Confirmar_Eliminar(v.nombreproyecto)">
+                        <i class="tiny material-icons left">delete</i>
+                    </a>
+                </td>
+                <!-- //////////////////////////////////////////////////// -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
