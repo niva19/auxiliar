@@ -16,6 +16,8 @@ router.post('/api/getcustomer', db.GetCustomer);
 router.post('/api/deletecustomers', db.DeleteCustomer);
 // ------------ BUSCAR CLIENTES
 router.post('/api/searchcustomers', db.SearchCustomers);
+// ------------ BUSCAR CLIENTES SOLO CON NOMBRE, APELLIDOS Y CEDULA
+router.get('/api/customerscna', db.getCNA);
 
 //Empleados
 
@@ -33,6 +35,8 @@ router.post('/api/getemployee', db.getEmployee);
 router.post('/api/deleteemployee', db.deleteEmployee);
 // ------------ BUSCAR EMPLEADO
 router.post('/api/searchemployee', db.searchEmployee);
+// ------------ BUSCAR CLIENTES SOLO CON NOMBRE, APELLIDOS Y CEDULA
+router.get('/api/employeescna', db.getEmployeesCNA);
 
 //Proyectos
 

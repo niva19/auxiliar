@@ -45,6 +45,12 @@ export class ClientesService {
     return this.http.post('http://localhost:3000/api/searchcustomers', FilPar, { headers: headers }).map(res => res.json())
   }
 
+  getCNA() {//obtener clientes solo con Cedula, Nombre y apellidos (CNA)
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get('http://localhost:3000/api/customerscna', { headers: headers }).map(res => res.json())
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

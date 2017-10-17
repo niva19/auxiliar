@@ -6,7 +6,7 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:postgres@localhost:5432/PROARINSADB';
+var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -114,6 +114,18 @@ function SearchCustomers(req, res, next) {
   });
 }  
 
+function getCNA(req, res, next) {
+  db.any('select cedula, nombre, apellidos from Cliente')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+
 //  ******************************** EMPLEADOS ************************************
 
 function login(req, res, next) {
@@ -137,6 +149,17 @@ function login(req, res, next) {
 
 function getAllEmployees(req, res, next) {
   db.any('select * from Empleado')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getEmployeesCNA(req, res, next) {
+  db.any('select cedula, nombre, apellido from Empleado')
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -340,6 +363,7 @@ module.exports = {
   GetCustomer: GetCustomer,
   DeleteCustomer: DeleteCustomer,
   SearchCustomers: SearchCustomers,
+  getCNA: getCNA,
   // EMPLEADOS
   login: login,
   getAllEmployees: getAllEmployees,
@@ -348,6 +372,7 @@ module.exports = {
   getEmployee: getEmployee,
   deleteEmployee: deleteEmployee,
   searchEmployee: searchEmployee,
+  getEmployeesCNA: getEmployeesCNA,
   // PROYECTOS
   getAllProject: getAllProject,
   saveProject: saveProject,

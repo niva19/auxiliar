@@ -20,6 +20,13 @@ export class EmpleadosService {
       headers.append('Content-Type', 'application/json');
       return this.http.get('http://localhost:3000/api/getemployees', { headers: headers }).map(res => res.json())
     }
+
+    getCNA() {//obtener Empleados solo con Cedula, Nombre y apellidos (CNA)
+      let headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      return this.http.get('http://localhost:3000/api/employeescna', { headers: headers }).map(res => res.json())
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////
     getById(empleado) {
       let headers = new Headers();

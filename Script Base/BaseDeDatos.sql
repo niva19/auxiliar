@@ -43,7 +43,7 @@ profResponsable text,
 -- segundos int,
 -- ubicacion text,
 -- 
-constraint pkProyecto primary key (codProyecto), 
+constraint pkProyecto primary key (nombreProyecto) 
 -- constraint fkEmpleado foreign key (profResponsable) references Empleado --Agregar cuando este listo dropdown
 );
 

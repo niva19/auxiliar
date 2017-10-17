@@ -6,47 +6,57 @@
 
 <div id="modal1" class="modal">
   <div class="modal-content">
-    <form (submit)="ProyectoSubmit()" class="col s12">
+    <form (submit)="ProyectoSubmit()" class="col s12" id="FormAgregar">
       <div class="row">
         <div class="input-field col s12">
           <input id="nombreProyecto" type="text" [(ngModel)]="nombreProyecto" name="nombreProyecto" class="validate" #inputnombreProyecto>
           <label for="nombreProyecto" #LabelNombreProyecto>Nombre del proyecto</label>
         </div>
         <div class="input-field col s12">
-          <input id="tipoProyecto" type="text" [(ngModel)]="tipoProyecto" name="tipoProyecto" class="validate" #inputtipoProyecto>
-          <label for="tipoProyecto" #LabeltipoProyecto>Tipo de Proyectos</label>
+          <select materialize="material_select" [(ngModel)]="tipoProyecto" name="tipoProyecto" id="ddTipoProyecto">
+            <option value="" disabled selected>Tipo de Proyecto</option>
+            <option value="Corto Plazo">Corto Plazo</option>
+            <option value="Subsidios">Subsidios(bonos)</option>
+          </select> 
         </div>
         <div class="input-field col s12">
-          <input  id="tipoObra" type="text" [(ngModel)]="tipoObra" name="tipoObra" class="validate" #inputtipoObra>
-          <label for="tipoObra" #LabeltipoObra>Tipo de Obra</label>
+          <select materialize="material_select" [(ngModel)]="tipoObra" name="tipoObra" id="ddTipoObra">
+            <option value="" disabled selected>Tipo de Obra</option>
+            <option value="Obras Mayores">Obras Mayores</option>
+            <option value="Obras Menores">Obras Menores</option>
+          </select>
         </div>
         <div class="input-field col s12">
           <input id="descripcion" type="text" [(ngModel)]="descripcion" name="descripcion" class="validate" #inputdescripcion>
-          <label for="descripcion" #Labeldescripcion data-error="wrong" data-success="right">Descripción</label>
+          <label for="descripcion" #Labeldescripcion>Descripción</label>
         </div>
         <div class="input-field col s12">
-          <input  id="fechaInicio" type="text" [(ngModel)]="fechaInicio" name="fechaInicio" class="validate" #inputfechaInicio>
-          <label for="fechaInicio" #LabelfechaInicio>Fecha de Inicio</label>
+          <input id="fechaInicio" type="text" [(ngModel)]="fechaInicio" name="fechaInicio" class="datepicker">
+          <label for="fechaInicio" class="active" #LabelFechaInicio>Fecha de Inicio</label>
         </div>
         <div class="input-field col s12">
-          <input id="fechaFinaliza" type="text" [(ngModel)]="fechaFinaliza" name="fechaFinaliza" class="validate" #inputfechaFinaliza>
-          <label for="fechaFinaliza" #LabelfechaFinaliza>Fecha de Finalización</label>
+          <input id="fechaFinaliza" type="text" [(ngModel)]="fechaFinaliza" name="fechaFinaliza" class="datepicker">
+          <label for="fechaFinaliza" class="active" #LabelFechaFinaliza>Fecha de Finalizacion</label>
         </div>
         <div class="input-field col s12">
-          <input id="estado" type='text' [(ngModel)]="estado" name="estado" class="validate" #inputestado>
-          <label for="estado" #Labelestado>Estado del proyecto</label>
+          <select materialize="material_select" [(ngModel)]="estado" name="estado" id="ddEstado">
+            <option value="" disabled selected>Estado del proyecto</option>
+            <option value="En Proceso">En Proceso</option>
+            <option value="Pausado">Pausado</option>
+            <option value="Finalizado">Finalizado</option>
+          </select>
         </div>
         <div class="input-field col s12">
           <input  id="banco" type="text" [(ngModel)]="banco" name="banco" class="validate" #inputbanco>
           <label for="banco" #Labelbanco>Nombre del banco</label>
         </div>
         <div class="input-field col s12">
-          <input  id="cliente" type="text" [(ngModel)]="cliente" name="cliente" class="validate" #inputcliente>
-          <label for="cliente" #LabelCliente>Nombre del cliente</label>
+            <select id="ddClientes" materialize="material_select" class="js-example-basic-single" name="state" style="width: 100%;" #dropdownClientes>
+            </select>
         </div>        
         <div class="input-field col s12">
-          <input  id="profesionalResponsable" type="text" [(ngModel)]="profesionalResponsable" name="profesionalResponsable" class="validate" #inputprofesionalResponsable>
-          <label for="profesionalResponsable" #LabelprofesionalResponsable>Profesional Responsable</label>
+            <select id="ddEmpleados" materialize="material_select" class="js-example-basic-single" name="state2" style="width: 100%;" #dropdownEmpleados>
+            </select>
         </div>
         <div class="input-field col s12">
           <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
@@ -69,6 +79,36 @@
     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
   </div>
 </div>
+
+<div id="modal4" class="modal">
+    <div class="modal-content">
+      <h4>Detalles del Proyecto</h4>
+      <table>
+          <thead class="centered">
+            <tr>
+              <td>Banco</td>
+              <td>Cliente</td>
+              <td>Fecha de Finalizacion</td>    
+              <td>Profesional Responsable</td>
+              <td>Tipo de Obra</td>
+              <td>Descripción</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let v of detalles">
+              <td>{{v.banco}}</td>
+              <td>{{v.cliente}}</td>
+              <td>{{v.fechafinaliza}}</td>
+              <td>{{v.profresponsable}}</td>
+              <td>{{v.tipoobra}}</td>
+              <td>{{v.descripcion}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- <p>{{v.descripcion}}</p> -->
+    </div>
+  </div>
+
 
 <!-- ########################################## BUSCAR EMPLEADO ################################# -->
 
@@ -136,7 +176,7 @@
                 <td>{{v.estado}}</td>
                 <!-- OJO CAMBIAR DESPUES nombreProyecto por codProyecto -->
                 <td>
-                  <a class="waves-effect waves-light btn-flat" (click)="Editar(v.nombreproyecto)">
+                  <a class="waves-effect waves-light btn-flat" (click)="Detalles(v)">
                         <i class="tiny material-icons left">visibility</i>
                     </a>
                 </td>
@@ -159,3 +199,5 @@
     </div>
   </div>
 </div>
+
+
