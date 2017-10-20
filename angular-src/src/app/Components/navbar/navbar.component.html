@@ -12,12 +12,10 @@
       <a [routerLink]="['/inicio']" class="brand-logo"><i class="material-icons">home</i>Inicio</a>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <div *ngIf="anyone_In_Session() && this.updateName(); else other">
-          <li [routerLinkActive]="['active']"><a [routerLink]="['/empleados']">Recurso Humano</a></li>
-          <li [routerLinkActive]="['active']"><a [routerLink]="['/proyectos']">Proyectos</a></li>
-          <li [routerLinkActive]="['active']"><a [routerLink]="['/cliente']">Clientes</a></li>
-          <!-- ########################################################### -->
-          <!-- ############### PRIVILEGIOS PLACEHOLDER ################### -->
+        <div *ngIf="Anyone_In_Session(); else other">
+          <li><a [routerLink]="['/empleados']">Recurso Humano</a></li>
+          <li><a [routerLink]="['/proyectos']">Proyectos</a></li>
+          <li><a [routerLink]="['/cliente']">Clientes</a></li>
           <li *ngIf="Is_Privilegie_3();"><a [routerLink]="['/privilegios']">Privilegios</a></li>
           <!-- ######################################################## -->
           <!-- ################### DROP DOWN TRIGGER ################## -->
@@ -30,10 +28,10 @@
         </ng-template>
       </ul>
       <ul class="side-nav" id="mobile-demo">
-        <div *ngIf="anyone_In_Session() && this.updateName(); else other">
+        <div *ngIf="Anyone_In_Session(); else other">
           <!-- ######################################################## -->
           <!-- ############### PROFILE PLACE HOLDER ################### -->
-          <li ><a class="#0277bd light-blue darken-3" href="#!"><i class="tiny material-icons">account_circle</i>{{username}}</a></li>
+          <li><a class="#0277bd light-blue darken-3" href="#!"><i class="tiny material-icons">account_circle</i>{{username}}</a></li>
           <li [routerLinkActive]="['active']"><a [routerLink]="['/empleados']">Recurso Humano</a></li>
           <li [routerLinkActive]="['active']"><a [routerLink]="['/proyectos']">Proyectos</a></li>
           <li [routerLinkActive]="['active']"><a [routerLink]="['/cliente']">Clientes</a></li>
