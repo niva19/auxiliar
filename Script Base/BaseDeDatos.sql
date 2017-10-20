@@ -9,13 +9,14 @@ detalle text,
 
 create table Empleado
 ( 
-cedula text,
 nombre text,
+apellidos text,
+cedula text,
+telefono text,
+correo text,
 usuario text,
 contrasena text,
-apellido text,
-correo text,
-direccion text,
+-- direccion text,
 privilegios int,
 constraint pkEmpleado primary key (cedula) 
 );
@@ -73,14 +74,3 @@ correo text,
 constraint pkCliente primary key (cedula) 
 );
 
-/* Tabla Relacion Cliente-Proyecto */
-
-create table ProyectoCliente
-( 
--- Foraneas
-cedula text,
-codProyecto text,
-constraint pkProyectoCliente primary key (cedula,codProyecto),
-constraint fkCliente foreign key (cedula) references Cliente,
-constraint fkProyecto2 foreign key (codProyecto) references Proyecto
-);
