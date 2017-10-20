@@ -17,7 +17,8 @@
           <label for="apellidos" #LabelApellidos>Apellidos</label>
         </div>
         <div class="input-field col s12">
-          <input (keypress)= "Only_Numbers($event)"  maxlength="9" id="cedula" type="text" [(ngModel)]="cedula" name="cedula" class="validate" #inputcedula>
+          <input (keypress)="Only_Numbers($event)" maxlength="9" id="cedula" type="text" [(ngModel)]="cedula" name="cedula" class="validate"
+            #inputcedula>
           <label for="cedula" #LabelCedula>Cedula</label>
         </div>
         <div class="input-field col s12">
@@ -25,7 +26,8 @@
           <label for="correo" #LabelCorreo data-error="wrong" data-success="right">Correo</label>
         </div>
         <div class="input-field col s12">
-          <input (keypress)= "Only_Numbers($event)" id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate" #inputtelefono>
+          <input (keypress)="Only_Numbers($event)" id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate"
+            #inputtelefono>
           <label for="telefono" #LabelTelefono>Telefono</label>
         </div>
         <div class="input-field col s12">
@@ -33,11 +35,12 @@
           <label for="name" #LabelUsuario>Usuario</label>
         </div>
         <div class="input-field col s12">
-          <input id="name"type='password' [(ngModel)]="contrasena" name="contrasena" class="validate" #inputcontrasena>
+          <input id="name" type='password' [(ngModel)]="contrasena" name="contrasena" class="validate" #inputcontrasena>
           <label for="name" #LabelContrasena>Contraseña</label>
         </div>
         <div class="input-field col s12">
-          <input (keypress)= "Only_Numbers($event)" id="privilegios" type="text" [(ngModel)]="privilegios" name="privilegios" class="validate" #inputprivilegios>
+          <input (keypress)="Only_Numbers($event)" id="privilegios" type="text" [(ngModel)]="privilegios" name="privilegios" class="validate"
+            #inputprivilegios>
           <label for="privilegios" #LabelPrivilegios>Privilegios</label>
         </div>
         <div class="input-field col s12">
@@ -67,16 +70,16 @@
 <div id="modal3" class="modal">
   <div class="modal-content">
     <form (submit)="BuscarPorFiltro()" class="col s12">
-        <div class="row">
-            <div class="input-field col s12">
-              <input id="filtro" type="text" [(ngModel)]="parametro" name="parametro" class="validate">
-              <label for="filtro">{{filtro}}</label>
-            </div>
-            <div class="input-field col s12">
-                <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
-                <input type="submit" class="#0277bd light-blue darken-3 btn" value="Buscar">
-              </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="filtro" type="text" [(ngModel)]="parametro" name="parametro" class="validate">
+          <label for="filtro">{{filtro}}</label>
         </div>
+        <div class="input-field col s12">
+          <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
+          <input type="submit" class="#0277bd light-blue darken-3 btn" value="Buscar">
+        </div>
+      </div>
     </form>
   </div>
 </div>
@@ -88,6 +91,7 @@
     <div class="col s12 m12">
       <div class="card #f5f5f5 grey lighten-4">
         <div class="card-content ">
+          <span class="card-title">Gestión de empleados</span>
           <div class="input-field col m6 offset-m5 s8">
             <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Agregar</button>
           </div>
@@ -108,7 +112,7 @@
               <tr>
                 <td>Nombre</td>
                 <td>Apellidos</td>
-                <td>Cedula</td>    
+                <td>Cedula</td>
                 <td>Telefono</td>
                 <td>Correo</td>
                 <td>Usuario</td>
@@ -133,8 +137,8 @@
                 </td>
                 <td>
                   <a class="waves-effect waves-light btn-flat" (click)="Confirmar_Eliminar(v.cedula)">
-                        <i class="tiny material-icons left">delete</i>
-                    </a>
+                    <i class="tiny material-icons left">delete</i>
+                  </a>
                 </td>
 
               </tr>
