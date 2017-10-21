@@ -24,7 +24,7 @@ export class EmpleadosComponent implements OnInit {
   ax: any[];
   filtro: any
   parametro: String
-  privilegios: String
+  // privilegios: string
   usuario: String
   contrasena: String
   
@@ -49,8 +49,8 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('LabelTelefono')
   private LabelTelefono: ElementRef
 
-  @ViewChild('LabelPrivilegios')
-  private LabelPrivilegios: ElementRef
+  // @ViewChild('LabelPrivilegios')
+  // private LabelPrivilegios: ElementRef
 
   @ViewChild('LabelUsuario')
   private LabelUsuario: ElementRef
@@ -73,8 +73,8 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('inputtelefono')
   private inputTelefono: ElementRef
 
-  @ViewChild('inputprivilegios')
-  private inputPrivilegios: ElementRef
+  // @ViewChild('inputprivilegios')
+  // private inputPrivilegios: ElementRef
 
   @ViewChild('inputusuario')
   private inputUsuario: ElementRef
@@ -121,10 +121,11 @@ export class EmpleadosComponent implements OnInit {
     this.renderer2.removeClass(this.LabelTelefono.nativeElement,"active")
     this.telefono = ""
 
-    this.renderer2.removeClass(this.LabelPrivilegios.nativeElement,"active")
-    this.privilegios = ""
+    // this.renderer2.removeClass(this.LabelPrivilegios.nativeElement,"active")
+    // this.privilegios = ""
 
     this.renderer2.removeClass(this.LabelUsuario.nativeElement,"active")
+    this.renderer2.removeAttribute(this.inputUsuario.nativeElement,'disabled');
     this.usuario = ""
 
     this.renderer2.removeClass(this.LabelContrasena.nativeElement,"active")
@@ -165,8 +166,8 @@ export class EmpleadosComponent implements OnInit {
       this.renderer2.setAttribute(this.LabelContrasena.nativeElement, "class", "active")
       this.contrasena = data.contrasena
 
-      this.renderer2.setAttribute(this.LabelPrivilegios.nativeElement, "class", "active")
-      this.privilegios = data.privilegios
+      // this.renderer2.setAttribute(this.LabelPrivilegios.nativeElement, "class", "active")
+      // this.privilegios = data.privilegios
 
       this.switch = false
       $('#modal1').modal('open');
@@ -218,8 +219,7 @@ export class EmpleadosComponent implements OnInit {
       telefono: this.telefono,
       correo: this.correo,
       usuario: this.usuario,
-      contrasena: this.contrasena,
-      privilegios: this.privilegios
+      contrasena: this.contrasena
     }
     if(this.ValidateForm()){
       if (this.switch) {//si el switch esta en true guarda
@@ -273,8 +273,8 @@ export class EmpleadosComponent implements OnInit {
       return false
     if(this.inputContrasena.nativeElement.value == '')
       return false
-    if(this.inputPrivilegios.nativeElement.value == '')
-      return false
+    // if(this.inputPrivilegios.nativeElement.value == '')
+    //   return false
 
     return true
   }

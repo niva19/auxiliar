@@ -24,10 +24,15 @@ export class ProyectosComponent implements OnInit {
   switch: Boolean = true
   detalles: any[] = []
   ax: any[]
-  // = [{nombre: "juan"}, {nombre: "Rocio"}, {nombre: "Pedro"}]
+
   filtro: any
   parametro: String
-  
+  RegOrArt: String = ""
+  financiamento: String = ""
+
+  DetalleCliente: any
+  DetalleEmpleado: any
+
   @ViewChild('dropdownEmpleados')
   private dropdownEmpleados: ElementRef
 
@@ -85,8 +90,13 @@ export class ProyectosComponent implements OnInit {
       today: 'Today',
       clear: 'Clear',
       close: 'Ok',
+      monthsFull: [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Augosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ],
+      monthsShort: [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ],
+      weekdaysFull: [ 'Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado' ],
+      weekdaysShort: [ 'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab' ],
       closeOnSelect: false // Close upon selecting a date,
     });
+
 
     this.getAll();
     this.DropdownClientes();
@@ -181,11 +191,15 @@ export class ProyectosComponent implements OnInit {
       this.renderer2.setAttribute(this.Labelbanco.nativeElement, "class", "active")
       this.banco = data.banco
 
-      $(`#ddTipoProyecto option[value='${data.tipoproyecto}']`).prop('selected', true);
+      // console.log(data.tipoproyecto.split("/")[0])
+      // $("#ddTipoProyecto option[value='Subsidios']").prop('selected', true);
+      this.tipoProyecto = data.tipoproyecto
 
-      $(`#ddTipoObra option[value='${data.tipoobra}']`).prop('selected', true);
+      // $(`#ddTipoObra option[value='${data.tipoobra}']`).prop('selected', true);
+      this.tipoObra = data.tipoobra
 
-      $(`#ddEstado option[value='${data.estado}']`).prop('selected', true);
+      // $(`#ddEstado option[value='${data.estado}']`).prop('selected', true);
+      this.estado = data.estado
 
       $('#ddClientes').val(data.cliente).trigger('change')
 
@@ -242,24 +256,27 @@ export class ProyectosComponent implements OnInit {
   }
   // --------------------------------- SUBMIT PROYECTO ---------------------------------
   ProyectoSubmit() {
-    const proyecto = {
-      nombreProyecto: this.nombreProyecto,
-      tipoProyecto: this.tipoProyecto,
-      tipoObra: this.tipoObra,
-      descripcion: this.descripcion,
-      fechaInicio: $('#fechaInicio').val(),
-      fechaFinaliza: $('#fechaFinaliza').val(),
-      estado: this.estado,
-      banco: this.banco,
-      cliente: $('select[name=state]').val(),
-      profesionalResponsable: $('select[name=state2]').val(),
-    }
-    // if(this.ValidateForm()){
-    //   console.log(proyecto)
-    // }
-    // else Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
-
+    
     if(this.ValidateForm()){
+
+      const proyecto = {
+        nombreProyecto: this.nombreProyecto,
+        tipoProyecto: this.tipoProyecto,
+        tipoObra: this.tipoObra,
+        descripcion: this.descripcion,
+        fechaInicio: $('#fechaInicio').val(),
+        fechaFinaliza: $('#fechaFinaliza').val(),
+        estado: this.estado,
+        banco: this.banco,
+        cliente: $('select[name=state]').val(),
+        profesionalResponsable: $('select[name=state2]').val(),
+      }
+      
+      if(this.RegOrArt != "" && this.financiamento != ""){
+        proyecto.tipoProyecto = 
+        `${this.tipoProyecto}/${this.RegOrArt}/${this.financiamento}`
+      }
+
       if (this.switch) {//si el switch esta en true guarda
         this.ProyService.GuardarProyecto(proyecto).subscribe(data => {
           if (data.success) {
@@ -274,10 +291,12 @@ export class ProyectosComponent implements OnInit {
       }
       else {//si el switch esta en false edita
         this.ProyService.EditarProyecto(proyecto).subscribe(data => {
-          console.log(data);
-          this.getAll();
-          this.switch = true;
-          $('#modal1').modal('close');
+          if(data){
+            this.getAll();
+            this.switch = true;
+            $('#modal1').modal('close');
+          }
+          else Materialize.toast('Error en el servidor, ', 3000, 'red rounded')
         });
       }
     }
@@ -301,6 +320,8 @@ export class ProyectosComponent implements OnInit {
     if(this.inputnombreProyecto.nativeElement.value == '')
       return false
     if(this.tipoProyecto == '')
+      return false
+    if(this.tipoProyecto == 'Subsidios' && (this.RegOrArt == "" || this.financiamento ==""))
       return false
     if(this.tipoObra == '')
       return false
@@ -346,16 +367,65 @@ export class ProyectosComponent implements OnInit {
   Detalles(v){
     console.log(v)
     let detalle = {
-      banco: v.banco,
-      cliente: v.cliente,
-      fechafinaliza: v.fechafinaliza,
-      profresponsable: v.profresponsable,
       tipoobra: v.tipoobra,
+      tipoproyecto: v.tipoproyecto,
+      banco: v.banco,
+      fechainicio: v.fechainicio,
+      fechafinaliza: v.fechafinaliza,
+      estado: v.estado,
       descripcion: v.descripcion
     }
-    this.detalles = [detalle]
-    $('#modal4').modal('open');
+
+    let cliente ={
+      cedula: v.cliente
+    }
+
+    let empleado ={
+      cedula: v.profresponsable
+    }
+
+    this.clientesService.getById(cliente).subscribe(DetalleCliente =>{
+      this.DetalleCliente = [DetalleCliente]
+      this.empleadosService.getById(empleado).subscribe(DetalleEmpleado =>{
+        this.DetalleEmpleado = [DetalleEmpleado]
+        this.detalles = [detalle]
+        $('#modal4').modal('open');
+      })
+    })
+    
   }
+
+  TipoFinanciamiento(){
+    if(this.tipoProyecto == "Subsidios") $('#modal5').modal('open')
+    else{
+      this.RegOrArt = ""
+      this.financiamento = ""
+    }
+      
+  }
+
+  IsArticulo59(){
+    return (this.RegOrArt == "Articulo 59") ? true : false
+  }
+
+  IsRegulares(){
+    return (this.RegOrArt == "Regulares") ? true : false
+  }
+
+  isInput(){
+    return (this.filtro == "nombreProyecto" || 
+    this.filtro == "banco" || 
+    this.filtro == "profResponsable") ? true : false
+  }
+
+  isTipoObra(){
+    return (this.filtro == "tipoObra") ? true : false
+  }
+
+  isEstadoProyecto(){
+    return (this.filtro == "estado") ? true : false
+  }
+
   // prueba(){
   //   // let ax = $('select[name=state]').val()
   //   let ax = $('#fechaInicio').val();
