@@ -8,7 +8,7 @@
     <div class="col m1"><img src="assets/img/oie_transparent.png" height="100" width="300"></div>
   </div>
   <nav>
-    <div class="nav-wrapper #0277bd light-blue darken-3">
+    <div class="nav-wrapper" id="navegador">
       <a [routerLink]="['/inicio']" class="brand-logo"><i class="material-icons">home</i>Inicio</a>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -23,7 +23,7 @@
           <!-- ################### DROP DOWN TRIGGER ################## -->
           <!-- ################### NOMBRE DE USUARIO ################## -->
           <!-- ######################################################## -->
-          <li><a class="dropdown-button #283593 indigo darken-3" href="#!" data-activates="dropdown" data-beloworigin="true">{{username}}</a></li>
+          <li><a class="dropdown-button" id="User" href="#!" data-activates="dropdown" data-beloworigin="true">{{username}}</a></li>
         </div>
         <ng-template #other>
           <li><a [routerLink]="['/ingresar']">Ingresar</a></li>
@@ -33,7 +33,7 @@
         <div *ngIf="anyone_In_Session() && this.updateName(); else other">
           <!-- ######################################################## -->
           <!-- ############### PROFILE PLACE HOLDER ################### -->
-          <li ><a class="#0277bd light-blue darken-3" href="#!"><i class="tiny material-icons">account_circle</i>{{username}}</a></li>
+          <li ><a class="#2e7d32" id="User" href="#!"><i class="tiny material-icons">account_circle</i>{{username}}</a></li>
           <li [routerLinkActive]="['active']"><a [routerLink]="['/empleados']">Recurso Humano</a></li>
           <li [routerLinkActive]="['active']"><a [routerLink]="['/proyectos']">Proyectos</a></li>
           <li [routerLinkActive]="['active']"><a [routerLink]="['/cliente']">Clientes</a></li>
