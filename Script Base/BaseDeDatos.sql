@@ -45,7 +45,8 @@ profResponsable text,
 -- ubicacion text,
 -- 
 constraint pkProyecto primary key (nombreProyecto) 
--- constraint fkEmpleado foreign key (profResponsable) references Empleado --Agregar cuando este listo dropdown
+constraint fkEmpleado foreign key (profResponsable) references Empleado
+constraint fkCliente foreign key (cliente) references Cliente
 );
 
 /* Tabla de Archivo */

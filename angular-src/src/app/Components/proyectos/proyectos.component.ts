@@ -33,6 +33,12 @@ export class ProyectosComponent implements OnInit {
   DetalleCliente: any
   DetalleEmpleado: any
 
+  @ViewChild('dropdownEmpleadoss')
+  private dropdownEmpleadosss: ElementRef
+
+  @ViewChild('dropdownClientess')
+  private dropdownClientess: ElementRef
+
   @ViewChild('dropdownEmpleados')
   private dropdownEmpleados: ElementRef
 
@@ -83,13 +89,18 @@ export class ProyectosComponent implements OnInit {
   ngOnInit() {
     $('.modal').modal();
     $(".js-example-basic-single").select2();
+    $(".js1").select2();
     $('select').material_select();
+    $('#BuscaFecha').css("display", "none")
+    $('#bc1').css("display", "none")
+    $('#be1').css("display", "none")
     $('.datepicker').pickadate({
       selectMonths: true, // Creates a dropdown to control month
       selectYears: 15, // Creates a dropdown of 15 years to control year,
       today: 'Today',
       clear: 'Clear',
       close: 'Ok',
+      container: 'body',
       monthsFull: [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Augosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ],
       monthsShort: [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ],
       weekdaysFull: [ 'Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado' ],
@@ -100,7 +111,9 @@ export class ProyectosComponent implements OnInit {
 
     this.getAll();
     this.DropdownClientes();
+    this.DropdownClientes2();
     this.DropdownEmpleados();
+    this.DropdownEmpleados2();
   }
 
   getAll() {
@@ -120,13 +133,32 @@ export class ProyectosComponent implements OnInit {
       this.renderer2.setProperty(option,"selected", "true")
       this.renderer.setElementProperty(option,"value", '')
       this.renderer2.appendChild(this.dropdownClientes.nativeElement,option)
-
       //se crea las opciones con los clientes en el dropdown
       listaCliente.forEach(e => {
         option = this.renderer2.createElement('option')
         this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
         this.renderer.setElementProperty(option,"value", e.cedula)
         this.renderer2.appendChild(this.dropdownClientes.nativeElement,option)
+      });
+    })
+  }
+
+  DropdownClientes2(){
+    this.clientesService.getCNA().subscribe(listaCliente =>{
+
+      //se crea la opcion por default, no se puede quemar en el html
+      let option = this.renderer2.createElement('option')
+      this.renderer2.appendChild(option,this.renderer2.createText("Cliente asignado"))
+      this.renderer2.setProperty(option,"disabled", "true")
+      this.renderer2.setProperty(option,"selected", "true")
+      this.renderer.setElementProperty(option,"value", '')
+      this.renderer2.appendChild(this.dropdownClientess.nativeElement,option)
+      //se crea las opciones con los clientes en el dropdown
+      listaCliente.forEach(e => {
+        option = this.renderer2.createElement('option')
+        this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option,"value", e.cedula)
+        this.renderer2.appendChild(this.dropdownClientess.nativeElement,option)
       });
     })
   }
@@ -141,13 +173,32 @@ export class ProyectosComponent implements OnInit {
       this.renderer2.setProperty(option,"selected", "true")
       this.renderer.setElementProperty(option,"value", '')
       this.renderer2.appendChild(this.dropdownEmpleados.nativeElement,option)
-
       //se crea las opciones con los clientes en el dropdown
       listaEmpleados.forEach(e => {
         option = this.renderer2.createElement('option')
         this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
         this.renderer.setElementProperty(option,"value", e.cedula)
         this.renderer2.appendChild(this.dropdownEmpleados.nativeElement,option)
+      });
+    })
+  }
+
+  DropdownEmpleados2(){
+    this.empleadosService.getCNA().subscribe(listaEmpleados =>{
+
+      //se crea la opcion por default, no se puede quemar en el html
+      let option = this.renderer2.createElement('option')
+      this.renderer2.appendChild(option,this.renderer2.createText("Profesional Responsable"))
+      this.renderer2.setProperty(option,"disabled", "true")
+      this.renderer2.setProperty(option,"selected", "true")
+      this.renderer.setElementProperty(option,"value", '')
+      this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement,option)
+      //se crea las opciones con los clientes en el dropdown
+      listaEmpleados.forEach(e => {
+        option = this.renderer2.createElement('option')
+        this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option,"value", e.cedula)
+        this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement,option)
       });
     })
   }
@@ -337,6 +388,8 @@ export class ProyectosComponent implements OnInit {
       return false
     if($('select[name=state]').val() == '')
       return false
+    if($('select[name=state2]').val() == '')
+      return false
     // if(this.inputprofesionalResponsable.nativeElement.value == '')
     //   return false
 
@@ -348,20 +401,53 @@ export class ProyectosComponent implements OnInit {
     if(this.buscador.nativeElement.value == "todos")
       this.getAll();
     else{
-      this.filtro = this.buscador.nativeElement.value
+      this.filtro = this.buscador.nativeElement.value;
+
+      (this.filtro == "fechaInicio" || this.filtro == "fechaFinaliza") ? $('#BuscaFecha').css("display", "block")
+                                     : $('#BuscaFecha').css("display", "none");
+
+        
+      (this.filtro == "cliente") ? $('#bc1').css("display", "block")
+                                     : $('#bc1').css("display", "none");
+
+      (this.filtro == "profResponsable") ? $('#be1').css("display", "block")
+                                     : $('#be1').css("display", "none"); 
+
       $('#modal3').modal('open');
     }
   }
 
   BuscarPorFiltro(){
-    const FilPar = {
-      parametro: this.parametro,
-      filtro: this.filtro
-    }    
-    this.ProyService.BuscarProyecto(FilPar).subscribe(data => {
-      this.ax = data
-      $('#modal3').modal('close');
-    });
+    console.log($('select[name=state3]').val())
+    if($("#Fecha").val() != ""){
+      this.parametro = $("#Fecha").val()
+      $("#Fecha").val("")
+    }
+
+    if($('select[name=state3]').val() != null){
+      this.parametro = $('select[name=state3]').val()
+      $('#ddClientes2').val('').trigger('change')
+    }
+
+    if($('select[name=state4]').val() != null){
+      this.parametro = $('select[name=state4]').val()
+      $('#ddEmpleados2').val('').trigger('change')
+    }
+
+    if(this.parametro != "" ){
+      const FilPar = {
+        parametro: this.parametro,
+        filtro: this.filtro
+      }    
+
+      // if(this.filtro == "fechaInicio" || this.filtro == "fechaFinaliza") FilPar.parametro = $("#Fecha").val()
+      
+      this.ProyService.BuscarProyecto(FilPar).subscribe(data => {
+        this.ax = data
+        $('#modal3').modal('close');
+      });
+    }
+    else Materialize.toast('Complete el espacio para continuar', 3000, 'red rounded')
   }
 
   Detalles(v){
@@ -414,8 +500,7 @@ export class ProyectosComponent implements OnInit {
 
   isInput(){
     return (this.filtro == "nombreProyecto" || 
-    this.filtro == "banco" || 
-    this.filtro == "profResponsable") ? true : false
+    this.filtro == "banco") ? true : false
   }
 
   isTipoObra(){
@@ -425,6 +510,15 @@ export class ProyectosComponent implements OnInit {
   isEstadoProyecto(){
     return (this.filtro == "estado") ? true : false
   }
+
+  isCliente(){
+    return (this.filtro == "cliente") ? true : false
+  }
+
+  isProfResponsable(){
+    return (this.filtro == "profResponsable") ? true : false
+  }
+
 
   // prueba(){
   //   // let ax = $('select[name=state]').val()
