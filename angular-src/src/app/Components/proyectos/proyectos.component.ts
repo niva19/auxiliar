@@ -80,11 +80,11 @@ export class ProyectosComponent implements OnInit {
 
   // --------------------------------- CONSTRUCTOR ---------------------------------
   constructor(private ProyService: ProyectosService,
-              private clientesService: ClientesService,
-              private empleadosService: EmpleadosService, 
-              private router: Router, 
-              private renderer2: Renderer2,
-              private renderer: Renderer) { }
+    private clientesService: ClientesService,
+    private empleadosService: EmpleadosService,
+    private router: Router,
+    private renderer2: Renderer2,
+    private renderer: Renderer) { }
 
   ngOnInit() {
     $('.modal').modal();
@@ -101,10 +101,10 @@ export class ProyectosComponent implements OnInit {
       clear: 'Clear',
       close: 'Ok',
       container: 'body',
-      monthsFull: [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Augosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ],
-      monthsShort: [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ],
-      weekdaysFull: [ 'Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado' ],
-      weekdaysShort: [ 'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab' ],
+      monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Augosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+      weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
       closeOnSelect: false // Close upon selecting a date,
     });
 
@@ -123,82 +123,82 @@ export class ProyectosComponent implements OnInit {
     });
   }
 
-  DropdownClientes(){
-    this.clientesService.getCNA().subscribe(listaCliente =>{
+  DropdownClientes() {
+    this.clientesService.getCNA().subscribe(listaCliente => {
 
       //se crea la opcion por default, no se puede quemar en el html
       let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option,this.renderer2.createText("Cliente asignado"))
-      this.renderer2.setProperty(option,"disabled", "true")
-      this.renderer2.setProperty(option,"selected", "true")
-      this.renderer.setElementProperty(option,"value", '')
-      this.renderer2.appendChild(this.dropdownClientes.nativeElement,option)
+      this.renderer2.appendChild(option, this.renderer2.createText("Cliente asignado"))
+      this.renderer2.setProperty(option, "disabled", "true")
+      this.renderer2.setProperty(option, "selected", "true")
+      this.renderer.setElementProperty(option, "value", '')
+      this.renderer2.appendChild(this.dropdownClientes.nativeElement, option)
       //se crea las opciones con los clientes en el dropdown
       listaCliente.forEach(e => {
         option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option,"value", e.cedula)
-        this.renderer2.appendChild(this.dropdownClientes.nativeElement,option)
+        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option, "value", e.cedula)
+        this.renderer2.appendChild(this.dropdownClientes.nativeElement, option)
       });
     })
   }
 
-  DropdownClientes2(){
-    this.clientesService.getCNA().subscribe(listaCliente =>{
+  DropdownClientes2() {
+    this.clientesService.getCNA().subscribe(listaCliente => {
 
       //se crea la opcion por default, no se puede quemar en el html
       let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option,this.renderer2.createText("Cliente asignado"))
-      this.renderer2.setProperty(option,"disabled", "true")
-      this.renderer2.setProperty(option,"selected", "true")
-      this.renderer.setElementProperty(option,"value", '')
-      this.renderer2.appendChild(this.dropdownClientess.nativeElement,option)
+      this.renderer2.appendChild(option, this.renderer2.createText("Cliente asignado"))
+      this.renderer2.setProperty(option, "disabled", "true")
+      this.renderer2.setProperty(option, "selected", "true")
+      this.renderer.setElementProperty(option, "value", '')
+      this.renderer2.appendChild(this.dropdownClientess.nativeElement, option)
       //se crea las opciones con los clientes en el dropdown
       listaCliente.forEach(e => {
         option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option,"value", e.cedula)
-        this.renderer2.appendChild(this.dropdownClientess.nativeElement,option)
+        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option, "value", e.cedula)
+        this.renderer2.appendChild(this.dropdownClientess.nativeElement, option)
       });
     })
   }
 
-  DropdownEmpleados(){
-    this.empleadosService.getCNA().subscribe(listaEmpleados =>{
+  DropdownEmpleados() {
+    this.empleadosService.getCNA().subscribe(listaEmpleados => {
 
       //se crea la opcion por default, no se puede quemar en el html
       let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option,this.renderer2.createText("Profesional Responsable"))
-      this.renderer2.setProperty(option,"disabled", "true")
-      this.renderer2.setProperty(option,"selected", "true")
-      this.renderer.setElementProperty(option,"value", '')
-      this.renderer2.appendChild(this.dropdownEmpleados.nativeElement,option)
+      this.renderer2.appendChild(option, this.renderer2.createText("Profesional Responsable"))
+      this.renderer2.setProperty(option, "disabled", "true")
+      this.renderer2.setProperty(option, "selected", "true")
+      this.renderer.setElementProperty(option, "value", '')
+      this.renderer2.appendChild(this.dropdownEmpleados.nativeElement, option)
       //se crea las opciones con los clientes en el dropdown
       listaEmpleados.forEach(e => {
         option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option,"value", e.cedula)
-        this.renderer2.appendChild(this.dropdownEmpleados.nativeElement,option)
+        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option, "value", e.cedula)
+        this.renderer2.appendChild(this.dropdownEmpleados.nativeElement, option)
       });
     })
   }
 
-  DropdownEmpleados2(){
-    this.empleadosService.getCNA().subscribe(listaEmpleados =>{
+  DropdownEmpleados2() {
+    this.empleadosService.getCNA().subscribe(listaEmpleados => {
 
       //se crea la opcion por default, no se puede quemar en el html
       let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option,this.renderer2.createText("Profesional Responsable"))
-      this.renderer2.setProperty(option,"disabled", "true")
-      this.renderer2.setProperty(option,"selected", "true")
-      this.renderer.setElementProperty(option,"value", '')
-      this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement,option)
+      this.renderer2.appendChild(option, this.renderer2.createText("Profesional Responsable"))
+      this.renderer2.setProperty(option, "disabled", "true")
+      this.renderer2.setProperty(option, "selected", "true")
+      this.renderer.setElementProperty(option, "value", '')
+      this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement, option)
       //se crea las opciones con los clientes en el dropdown
       listaEmpleados.forEach(e => {
         option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option,"value", e.cedula)
-        this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement,option)
+        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option, "value", e.cedula)
+        this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement, option)
       });
     })
   }
@@ -207,7 +207,7 @@ export class ProyectosComponent implements OnInit {
     alert(v)
   }
   // --------------------------------- LIMPIAR FORMULARIO ---------------------------------
-  LimpiarGuardar(){
+  LimpiarGuardar() {
     // this.renderer2.removeClass(this.LabelNombreProyecto.nativeElement,"active")
     // this.nombreProyecto = ""
 
@@ -266,10 +266,10 @@ export class ProyectosComponent implements OnInit {
 
       this.switch = false
       $('#modal1').modal('open');
-    }); 
+    });
   }
   // --------------------------------- ELIMINAR PROYECTO ---------------------------------
-  Eliminar(nom){
+  Eliminar(nom) {
     const proyecto = {
       nombreProyecto: nom
     }
@@ -277,38 +277,39 @@ export class ProyectosComponent implements OnInit {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
+        Materialize.toast('El proyecto se borró exitosamente', 3000, 'green rounded')
       }
-      else{
+      else {
         alert("algo salio mal")
       }
     });
   }
 
-  Confirmar_Eliminar(id){
+  Confirmar_Eliminar(id) {
     let button = this.renderer2.createElement('a');
-    this.renderer2.removeChild(this.modal2Footer.nativeElement,this.modal2Footer.nativeElement.children[1]);
+    this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
     // this.modal2Footer.nativeElement.innerHTML ='';
 
-    this.renderer2.setAttribute(button,"class","modal-action")
-    this.renderer2.setAttribute(button,"class","modal-close")
-    this.renderer2.setAttribute(button,"class","waves-effect")
-    this.renderer2.setAttribute(button,"class","waves-green")
-    this.renderer2.setAttribute(button,"class","btn-flat")
+    this.renderer2.setAttribute(button, "class", "modal-action")
+    this.renderer2.setAttribute(button, "class", "modal-close")
+    this.renderer2.setAttribute(button, "class", "waves-effect")
+    this.renderer2.setAttribute(button, "class", "waves-green")
+    this.renderer2.setAttribute(button, "class", "btn-flat")
     let txt = this.renderer2.createText("Confirmar")
-    this.renderer2.appendChild(button,txt)
-    this.renderer2.listen(button,'click',()=>{
+    this.renderer2.appendChild(button, txt)
+    this.renderer2.listen(button, 'click', () => {
       this.Eliminar(id)
     })
 
-    this.renderer2.appendChild(this.modal2Footer.nativeElement,button);
-    
+    this.renderer2.appendChild(this.modal2Footer.nativeElement, button);
+
     console.log(id)
     $('#modal2').modal('open');
   }
   // --------------------------------- SUBMIT PROYECTO ---------------------------------
   ProyectoSubmit() {
-    
-    if(this.ValidateForm()){
+
+    if (this.ValidateForm()) {
 
       const proyecto = {
         nombreProyecto: this.nombreProyecto,
@@ -322,10 +323,10 @@ export class ProyectosComponent implements OnInit {
         cliente: $('select[name=state]').val(),
         profesionalResponsable: $('select[name=state2]').val(),
       }
-      
-      if(this.RegOrArt != "" && this.financiamento != ""){
-        proyecto.tipoProyecto = 
-        `${this.tipoProyecto}/${this.RegOrArt}/${this.financiamento}`
+
+      if (this.RegOrArt != "" && this.financiamento != "") {
+        proyecto.tipoProyecto =
+          `${this.tipoProyecto}/${this.RegOrArt}/${this.financiamento}`
       }
 
       if (this.switch) {//si el switch esta en true guarda
@@ -334,6 +335,7 @@ export class ProyectosComponent implements OnInit {
             console.log(data);
             this.getAll();
             $('#modal1').modal('close');
+            Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
           }
           else {
             Materialize.toast('Error, nombre repetido', 3000, 'red rounded')
@@ -342,19 +344,20 @@ export class ProyectosComponent implements OnInit {
       }
       else {//si el switch esta en false edita
         this.ProyService.EditarProyecto(proyecto).subscribe(data => {
-          if(data){
+          if (data) {
             this.getAll();
             this.switch = true;
             $('#modal1').modal('close');
+            Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
           }
           else Materialize.toast('Error en el servidor, ', 3000, 'red rounded')
         });
       }
     }
-    else{
+    else {
       Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
     }
-      
+
   }
 
   Only_Numbers(event: any) {
@@ -367,90 +370,92 @@ export class ProyectosComponent implements OnInit {
     }
   }
 
-  ValidateForm(){
-    if(this.inputnombreProyecto.nativeElement.value == '')
+  ValidateForm() {
+    if (this.inputnombreProyecto.nativeElement.value == '')
       return false
-    if(this.tipoProyecto == '')
+    if (this.tipoProyecto == '')
       return false
-    if(this.tipoProyecto == 'Subsidios' && (this.RegOrArt == "" || this.financiamento ==""))
+    if (this.tipoProyecto == 'Subsidios' && (this.RegOrArt == "" || this.financiamento == ""))
       return false
-    if(this.tipoObra == '')
+    if (this.tipoObra == '')
       return false
-    if(this.inputdescripcion.nativeElement.value == '')
+    if (this.inputdescripcion.nativeElement.value == '')
       return false
-    if($('#fechaInicio').val() == '')
+    if ($('#fechaInicio').val() == '')
       return false
-    if($('#fechaFinaliza').val() == '')
+    if ($('#fechaFinaliza').val() == '')
       return false
-    if(this.estado == '')
+    if (this.estado == '')
       return false
-    if(this.inputbanco.nativeElement.value == '')
+    if (this.inputbanco.nativeElement.value == '')
       return false
-    if($('select[name=state]').val() == '')
+    if ($('select[name=state]').val() == '')
       return false
-    if($('select[name=state2]').val() == '')
+    if ($('select[name=state2]').val() == '')
       return false
     // if(this.inputprofesionalResponsable.nativeElement.value == '')
     //   return false
 
     return true
   }
- // --------------------------------- BUSCAR PROYECTO ---------------------------------
-  buscar(){
+  // --------------------------------- BUSCAR PROYECTO ---------------------------------
+  buscar() {
     this.parametro = ''
-    if(this.buscador.nativeElement.value == "todos")
+    if (this.buscador.nativeElement.value == "todos")
       this.getAll();
-    else{
+    else {
       this.filtro = this.buscador.nativeElement.value;
 
       (this.filtro == "fechaInicio" || this.filtro == "fechaFinaliza") ? $('#BuscaFecha').css("display", "block")
-                                     : $('#BuscaFecha').css("display", "none");
+        : $('#BuscaFecha').css("display", "none");
 
-        
+
       (this.filtro == "cliente") ? $('#bc1').css("display", "block")
-                                     : $('#bc1').css("display", "none");
+        : $('#bc1').css("display", "none");
 
       (this.filtro == "profResponsable") ? $('#be1').css("display", "block")
-                                     : $('#be1').css("display", "none"); 
+        : $('#be1').css("display", "none");
 
       $('#modal3').modal('open');
     }
   }
 
-  BuscarPorFiltro(){
+  BuscarPorFiltro() {
     console.log($('select[name=state3]').val())
-    if($("#Fecha").val() != ""){
+    if ($("#Fecha").val() != "") {
       this.parametro = $("#Fecha").val()
       $("#Fecha").val("")
     }
 
-    if($('select[name=state3]').val() != null){
+    if ($('select[name=state3]').val() != null) {
       this.parametro = $('select[name=state3]').val()
       $('#ddClientes2').val('').trigger('change')
     }
 
-    if($('select[name=state4]').val() != null){
+    if ($('select[name=state4]').val() != null) {
       this.parametro = $('select[name=state4]').val()
       $('#ddEmpleados2').val('').trigger('change')
     }
 
-    if(this.parametro != "" ){
+    if (this.parametro != "") {
       const FilPar = {
         parametro: this.parametro,
         filtro: this.filtro
-      }    
+      }
 
       // if(this.filtro == "fechaInicio" || this.filtro == "fechaFinaliza") FilPar.parametro = $("#Fecha").val()
-      
+
       this.ProyService.BuscarProyecto(FilPar).subscribe(data => {
         this.ax = data
+        if (this.ax.length == 0)
+          Materialize.toast('Sin resultados', 3000, 'red rounded')
         $('#modal3').modal('close');
       });
     }
     else Materialize.toast('Complete el espacio para continuar', 3000, 'red rounded')
   }
 
-  Detalles(v){
+  Detalles(v) {
     console.log(v)
     let detalle = {
       tipoobra: v.tipoobra,
@@ -462,60 +467,60 @@ export class ProyectosComponent implements OnInit {
       descripcion: v.descripcion
     }
 
-    let cliente ={
+    let cliente = {
       cedula: v.cliente
     }
 
-    let empleado ={
+    let empleado = {
       cedula: v.profresponsable
     }
 
-    this.clientesService.getById(cliente).subscribe(DetalleCliente =>{
+    this.clientesService.getById(cliente).subscribe(DetalleCliente => {
       this.DetalleCliente = [DetalleCliente]
-      this.empleadosService.getById(empleado).subscribe(DetalleEmpleado =>{
+      this.empleadosService.getById(empleado).subscribe(DetalleEmpleado => {
         this.DetalleEmpleado = [DetalleEmpleado]
         this.detalles = [detalle]
         $('#modal4').modal('open');
       })
     })
-    
+
   }
 
-  TipoFinanciamiento(){
-    if(this.tipoProyecto == "Subsidios") $('#modal5').modal('open')
-    else{
+  TipoFinanciamiento() {
+    if (this.tipoProyecto == "Subsidios") $('#modal5').modal('open')
+    else {
       this.RegOrArt = ""
       this.financiamento = ""
     }
-      
+
   }
 
-  IsArticulo59(){
+  IsArticulo59() {
     return (this.RegOrArt == "Articulo 59") ? true : false
   }
 
-  IsRegulares(){
+  IsRegulares() {
     return (this.RegOrArt == "Regulares") ? true : false
   }
 
-  isInput(){
-    return (this.filtro == "nombreProyecto" || 
-    this.filtro == "banco") ? true : false
+  isInput() {
+    return (this.filtro == "nombreProyecto" ||
+      this.filtro == "banco") ? true : false
   }
 
-  isTipoObra(){
+  isTipoObra() {
     return (this.filtro == "tipoObra") ? true : false
   }
 
-  isEstadoProyecto(){
+  isEstadoProyecto() {
     return (this.filtro == "estado") ? true : false
   }
 
-  isCliente(){
+  isCliente() {
     return (this.filtro == "cliente") ? true : false
   }
 
-  isProfResponsable(){
+  isProfResponsable() {
     return (this.filtro == "profResponsable") ? true : false
   }
 

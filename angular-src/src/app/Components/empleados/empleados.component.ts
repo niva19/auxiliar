@@ -27,7 +27,7 @@ export class EmpleadosComponent implements OnInit {
   // privilegios: string
   usuario: String
   contrasena: String
-  
+
   @ViewChild('buscador')
   private buscador: ElementRef
 
@@ -104,31 +104,31 @@ export class EmpleadosComponent implements OnInit {
     alert(v)
   }
 
-  LimpiarGuardar(){
-    this.renderer2.removeClass(this.LabelNombre.nativeElement,"active")
+  LimpiarGuardar() {
+    this.renderer2.removeClass(this.LabelNombre.nativeElement, "active")
     this.nombre = ""
 
-    this.renderer2.removeClass(this.LabelApellidos.nativeElement,"active")
+    this.renderer2.removeClass(this.LabelApellidos.nativeElement, "active")
     this.apellidos = ""
 
-    this.renderer2.removeClass(this.LabelCedula.nativeElement,"active")
-    this.renderer2.removeAttribute(this.inputcedula.nativeElement,'disabled');
+    this.renderer2.removeClass(this.LabelCedula.nativeElement, "active")
+    this.renderer2.removeAttribute(this.inputcedula.nativeElement, 'disabled');
     this.cedula = ""
 
-    this.renderer2.removeClass(this.LabelCorreo.nativeElement,"active")
+    this.renderer2.removeClass(this.LabelCorreo.nativeElement, "active")
     this.correo = ""
 
-    this.renderer2.removeClass(this.LabelTelefono.nativeElement,"active")
+    this.renderer2.removeClass(this.LabelTelefono.nativeElement, "active")
     this.telefono = ""
 
     // this.renderer2.removeClass(this.LabelPrivilegios.nativeElement,"active")
     // this.privilegios = ""
 
-    this.renderer2.removeClass(this.LabelUsuario.nativeElement,"active")
-    this.renderer2.removeAttribute(this.inputUsuario.nativeElement,'disabled');
+    this.renderer2.removeClass(this.LabelUsuario.nativeElement, "active")
+    this.renderer2.removeAttribute(this.inputUsuario.nativeElement, 'disabled');
     this.usuario = ""
 
-    this.renderer2.removeClass(this.LabelContrasena.nativeElement,"active")
+    this.renderer2.removeClass(this.LabelContrasena.nativeElement, "active")
     this.contrasena = ""
   }
 
@@ -171,10 +171,10 @@ export class EmpleadosComponent implements OnInit {
 
       this.switch = false
       $('#modal1').modal('open');
-    }); 
+    });
   }
 
-  Eliminar(id){
+  Eliminar(id) {
     const empleado = {
       cedula: id
     }
@@ -182,31 +182,32 @@ export class EmpleadosComponent implements OnInit {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
+        Materialize.toast('El empleado se borró exitosamente', 3000, 'green rounded')
       }
-      else{
+      else {
         alert("algo salio mal")
       }
     });
   }
 
-  Confirmar_Eliminar(id){
+  Confirmar_Eliminar(id) {
     let button = this.renderer2.createElement('a');
-    this.renderer2.removeChild(this.modal2Footer.nativeElement,this.modal2Footer.nativeElement.children[1]);
+    this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
     // this.modal2Footer.nativeElement.innerHTML ='';
 
-    this.renderer2.setAttribute(button,"class","modal-action")
-    this.renderer2.setAttribute(button,"class","modal-close")
-    this.renderer2.setAttribute(button,"class","waves-effect")
-    this.renderer2.setAttribute(button,"class","waves-green")
-    this.renderer2.setAttribute(button,"class","btn-flat")
+    this.renderer2.setAttribute(button, "class", "modal-action")
+    this.renderer2.setAttribute(button, "class", "modal-close")
+    this.renderer2.setAttribute(button, "class", "waves-effect")
+    this.renderer2.setAttribute(button, "class", "waves-green")
+    this.renderer2.setAttribute(button, "class", "btn-flat")
     let txt = this.renderer2.createText("Confirmar")
-    this.renderer2.appendChild(button,txt)
-    this.renderer2.listen(button,'click',()=>{
+    this.renderer2.appendChild(button, txt)
+    this.renderer2.listen(button, 'click', () => {
       this.Eliminar(id)
     })
 
-    this.renderer2.appendChild(this.modal2Footer.nativeElement,button);
-    
+    this.renderer2.appendChild(this.modal2Footer.nativeElement, button);
+
     console.log(id)
     $('#modal2').modal('open');
   }
@@ -221,12 +222,13 @@ export class EmpleadosComponent implements OnInit {
       usuario: this.usuario,
       contrasena: this.contrasena
     }
-    if(this.ValidateForm()){
+    if (this.ValidateForm()) {
       if (this.switch) {//si el switch esta en true guarda
         this.EmpService.GuardarEmpleado(empleado).subscribe(data => {
           if (data.success) {
             this.getAll();
             $('#modal1').modal('close');
+            Materialize.toast('El empleado se guardó exitosamente', 3000, 'green rounded')
           }
           else {
             Materialize.toast('Error, cedula repetida', 3000, 'red rounded')
@@ -239,13 +241,14 @@ export class EmpleadosComponent implements OnInit {
           this.getAll();
           this.switch = true;
           $('#modal1').modal('close');
+          Materialize.toast('El empleado se guardó exitosamente', 3000, 'green rounded')
         });
       }
     }
-    else{
+    else {
       Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
     }
-      
+
   }
 
   Only_Numbers(event: any) {
@@ -258,20 +261,20 @@ export class EmpleadosComponent implements OnInit {
     }
   }
 
-  ValidateForm(){
-    if(this.inputnombre.nativeElement.value == '')
+  ValidateForm() {
+    if (this.inputnombre.nativeElement.value == '')
       return false
-    if(this.inputapellidos.nativeElement.value == '')
+    if (this.inputapellidos.nativeElement.value == '')
       return false
-    if(this.inputcedula.nativeElement.value == '')
+    if (this.inputcedula.nativeElement.value == '')
       return false
-    if(this.inputTelefono.nativeElement.value == '')
+    if (this.inputTelefono.nativeElement.value == '')
       return false
-    if(this.inputcorreo.nativeElement.value == '')
+    if (this.inputcorreo.nativeElement.value == '')
       return false
-    if(this.inputUsuario.nativeElement.value == '')
+    if (this.inputUsuario.nativeElement.value == '')
       return false
-    if(this.inputContrasena.nativeElement.value == '')
+    if (this.inputContrasena.nativeElement.value == '')
       return false
     // if(this.inputPrivilegios.nativeElement.value == '')
     //   return false
@@ -279,23 +282,25 @@ export class EmpleadosComponent implements OnInit {
     return true
   }
 
-  buscar(){
+  buscar() {
     this.parametro = ''
-    if(this.buscador.nativeElement.value == "todos")
+    if (this.buscador.nativeElement.value == "todos")
       this.getAll();
-    else{
+    else {
       this.filtro = this.buscador.nativeElement.value
       $('#modal3').modal('open');
     }
   }
 
-  BuscarPorFiltro(){
+  BuscarPorFiltro() {
     const FilPar = {
       parametro: this.parametro,
       filtro: this.filtro
-    }    
+    }
     this.EmpService.BuscarEmpleado(FilPar).subscribe(data => {
       this.ax = data
+      if (this.ax.length == 0)
+        Materialize.toast('Sin resultados', 3000, 'red rounded')
       $('#modal3').modal('close');
     });
   }
