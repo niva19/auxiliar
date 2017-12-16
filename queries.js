@@ -6,7 +6,7 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:postgres@localhost:5432/PROARINSADB';
+var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
 var db = pgp(connectionString);
 
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -171,7 +171,7 @@ function getEmployeesCNA(req, res, next) {
 
 function saveEmployee(req, res, next) {
   console.log(req.body);
-  db.none('insert into Empleado values(${nombre}, ${apellidos}, ${cedula}, ${telefono}, ${correo}, ${usuario}, ${contrasena}, ${privilegios})',
+  db.none('insert into Empleado values(${nombre}, ${apellidos}, ${cedula}, ${telefono}, ${correo}, ${usuario}, ${contrasena})',
     req.body)
     .then(() => {
       res.status(200)
@@ -189,7 +189,7 @@ function saveEmployee(req, res, next) {
 
 function editEmployee(req, res, next) {
   console.log(req.body);
-  db.none('UPDATE Empleado SET nombre = ${nombre}, apellidos = ${apellidos}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena}, privilegios= ${privilegios}  where cedula = ${cedula}',
+  db.none('UPDATE Empleado SET nombre = ${nombre}, apellidos = ${apellidos}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena} where cedula = ${cedula}',
     req.body)
     .then(() => {
       res.status(200)

@@ -24,10 +24,21 @@ export class ProyectosComponent implements OnInit {
   switch: Boolean = true
   detalles: any[] = []
   ax: any[]
-  // = [{nombre: "juan"}, {nombre: "Rocio"}, {nombre: "Pedro"}]
+
   filtro: any
   parametro: String
-  
+  RegOrArt: String = ""
+  financiamento: String = ""
+
+  DetalleCliente: any
+  DetalleEmpleado: any
+
+  @ViewChild('dropdownEmpleadoss')
+  private dropdownEmpleadosss: ElementRef
+
+  @ViewChild('dropdownClientess')
+  private dropdownClientess: ElementRef
+
   @ViewChild('dropdownEmpleados')
   private dropdownEmpleados: ElementRef
 
@@ -69,28 +80,40 @@ export class ProyectosComponent implements OnInit {
 
   // --------------------------------- CONSTRUCTOR ---------------------------------
   constructor(private ProyService: ProyectosService,
-              private clientesService: ClientesService,
-              private empleadosService: EmpleadosService, 
-              private router: Router, 
-              private renderer2: Renderer2,
-              private renderer: Renderer) { }
+    private clientesService: ClientesService,
+    private empleadosService: EmpleadosService,
+    private router: Router,
+    private renderer2: Renderer2,
+    private renderer: Renderer) { }
 
   ngOnInit() {
     $('.modal').modal();
     $(".js-example-basic-single").select2();
+    $(".js1").select2();
     $('select').material_select();
+    $('#BuscaFecha').css("display", "none")
+    $('#bc1').css("display", "none")
+    $('#be1').css("display", "none")
     $('.datepicker').pickadate({
       selectMonths: true, // Creates a dropdown to control month
       selectYears: 15, // Creates a dropdown of 15 years to control year,
       today: 'Today',
       clear: 'Clear',
       close: 'Ok',
+      container: 'body',
+      monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Augosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+      weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
       closeOnSelect: false // Close upon selecting a date,
     });
 
+
     this.getAll();
     this.DropdownClientes();
+    this.DropdownClientes2();
     this.DropdownEmpleados();
+    this.DropdownEmpleados2();
   }
 
   getAll() {
@@ -100,44 +123,82 @@ export class ProyectosComponent implements OnInit {
     });
   }
 
-  DropdownClientes(){
-    this.clientesService.getCNA().subscribe(listaCliente =>{
+  DropdownClientes() {
+    this.clientesService.getCNA().subscribe(listaCliente => {
 
       //se crea la opcion por default, no se puede quemar en el html
       let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option,this.renderer2.createText("Cliente asignado"))
-      this.renderer2.setProperty(option,"disabled", "true")
-      this.renderer2.setProperty(option,"selected", "true")
-      this.renderer.setElementProperty(option,"value", '')
-      this.renderer2.appendChild(this.dropdownClientes.nativeElement,option)
-
+      this.renderer2.appendChild(option, this.renderer2.createText("Cliente asignado"))
+      this.renderer2.setProperty(option, "disabled", "true")
+      this.renderer2.setProperty(option, "selected", "true")
+      this.renderer.setElementProperty(option, "value", '')
+      this.renderer2.appendChild(this.dropdownClientes.nativeElement, option)
       //se crea las opciones con los clientes en el dropdown
       listaCliente.forEach(e => {
         option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option,"value", e.cedula)
-        this.renderer2.appendChild(this.dropdownClientes.nativeElement,option)
+        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option, "value", e.cedula)
+        this.renderer2.appendChild(this.dropdownClientes.nativeElement, option)
       });
     })
   }
 
-  DropdownEmpleados(){
-    this.empleadosService.getCNA().subscribe(listaEmpleados =>{
+  DropdownClientes2() {
+    this.clientesService.getCNA().subscribe(listaCliente => {
 
       //se crea la opcion por default, no se puede quemar en el html
       let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option,this.renderer2.createText("Profesional Responsable"))
-      this.renderer2.setProperty(option,"disabled", "true")
-      this.renderer2.setProperty(option,"selected", "true")
-      this.renderer.setElementProperty(option,"value", '')
-      this.renderer2.appendChild(this.dropdownEmpleados.nativeElement,option)
+      this.renderer2.appendChild(option, this.renderer2.createText("Cliente asignado"))
+      this.renderer2.setProperty(option, "disabled", "true")
+      this.renderer2.setProperty(option, "selected", "true")
+      this.renderer.setElementProperty(option, "value", '')
+      this.renderer2.appendChild(this.dropdownClientess.nativeElement, option)
+      //se crea las opciones con los clientes en el dropdown
+      listaCliente.forEach(e => {
+        option = this.renderer2.createElement('option')
+        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option, "value", e.cedula)
+        this.renderer2.appendChild(this.dropdownClientess.nativeElement, option)
+      });
+    })
+  }
 
+  DropdownEmpleados() {
+    this.empleadosService.getCNA().subscribe(listaEmpleados => {
+
+      //se crea la opcion por default, no se puede quemar en el html
+      let option = this.renderer2.createElement('option')
+      this.renderer2.appendChild(option, this.renderer2.createText("Profesional Responsable"))
+      this.renderer2.setProperty(option, "disabled", "true")
+      this.renderer2.setProperty(option, "selected", "true")
+      this.renderer.setElementProperty(option, "value", '')
+      this.renderer2.appendChild(this.dropdownEmpleados.nativeElement, option)
       //se crea las opciones con los clientes en el dropdown
       listaEmpleados.forEach(e => {
         option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option,this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option,"value", e.cedula)
-        this.renderer2.appendChild(this.dropdownEmpleados.nativeElement,option)
+        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option, "value", e.cedula)
+        this.renderer2.appendChild(this.dropdownEmpleados.nativeElement, option)
+      });
+    })
+  }
+
+  DropdownEmpleados2() {
+    this.empleadosService.getCNA().subscribe(listaEmpleados => {
+
+      //se crea la opcion por default, no se puede quemar en el html
+      let option = this.renderer2.createElement('option')
+      this.renderer2.appendChild(option, this.renderer2.createText("Profesional Responsable"))
+      this.renderer2.setProperty(option, "disabled", "true")
+      this.renderer2.setProperty(option, "selected", "true")
+      this.renderer.setElementProperty(option, "value", '')
+      this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement, option)
+      //se crea las opciones con los clientes en el dropdown
+      listaEmpleados.forEach(e => {
+        option = this.renderer2.createElement('option')
+        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
+        this.renderer.setElementProperty(option, "value", e.cedula)
+        this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement, option)
       });
     })
   }
@@ -146,7 +207,7 @@ export class ProyectosComponent implements OnInit {
     alert(v)
   }
   // --------------------------------- LIMPIAR FORMULARIO ---------------------------------
-  LimpiarGuardar(){
+  LimpiarGuardar() {
     // this.renderer2.removeClass(this.LabelNombreProyecto.nativeElement,"active")
     // this.nombreProyecto = ""
 
@@ -181,11 +242,15 @@ export class ProyectosComponent implements OnInit {
       this.renderer2.setAttribute(this.Labelbanco.nativeElement, "class", "active")
       this.banco = data.banco
 
-      $(`#ddTipoProyecto option[value='${data.tipoproyecto}']`).prop('selected', true);
+      // console.log(data.tipoproyecto.split("/")[0])
+      // $("#ddTipoProyecto option[value='Subsidios']").prop('selected', true);
+      this.tipoProyecto = data.tipoproyecto
 
-      $(`#ddTipoObra option[value='${data.tipoobra}']`).prop('selected', true);
+      // $(`#ddTipoObra option[value='${data.tipoobra}']`).prop('selected', true);
+      this.tipoObra = data.tipoobra
 
-      $(`#ddEstado option[value='${data.estado}']`).prop('selected', true);
+      // $(`#ddEstado option[value='${data.estado}']`).prop('selected', true);
+      this.estado = data.estado
 
       $('#ddClientes').val(data.cliente).trigger('change')
 
@@ -201,10 +266,10 @@ export class ProyectosComponent implements OnInit {
 
       this.switch = false
       $('#modal1').modal('open');
-    }); 
+    });
   }
   // --------------------------------- ELIMINAR PROYECTO ---------------------------------
-  Eliminar(nom){
+  Eliminar(nom) {
     const proyecto = {
       nombreProyecto: nom
     }
@@ -212,60 +277,65 @@ export class ProyectosComponent implements OnInit {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
+        Materialize.toast('El proyecto se borró exitosamente', 3000, 'green rounded')
       }
-      else{
+      else {
         alert("algo salio mal")
       }
     });
   }
 
-  Confirmar_Eliminar(id){
+  Confirmar_Eliminar(id) {
     let button = this.renderer2.createElement('a');
-    this.renderer2.removeChild(this.modal2Footer.nativeElement,this.modal2Footer.nativeElement.children[1]);
+    this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
     // this.modal2Footer.nativeElement.innerHTML ='';
 
-    this.renderer2.setAttribute(button,"class","modal-action")
-    this.renderer2.setAttribute(button,"class","modal-close")
-    this.renderer2.setAttribute(button,"class","waves-effect")
-    this.renderer2.setAttribute(button,"class","waves-green")
-    this.renderer2.setAttribute(button,"class","btn-flat")
+    this.renderer2.setAttribute(button, "class", "modal-action")
+    this.renderer2.setAttribute(button, "class", "modal-close")
+    this.renderer2.setAttribute(button, "class", "waves-effect")
+    this.renderer2.setAttribute(button, "class", "waves-green")
+    this.renderer2.setAttribute(button, "class", "btn-flat")
     let txt = this.renderer2.createText("Confirmar")
-    this.renderer2.appendChild(button,txt)
-    this.renderer2.listen(button,'click',()=>{
+    this.renderer2.appendChild(button, txt)
+    this.renderer2.listen(button, 'click', () => {
       this.Eliminar(id)
     })
 
-    this.renderer2.appendChild(this.modal2Footer.nativeElement,button);
-    
+    this.renderer2.appendChild(this.modal2Footer.nativeElement, button);
+
     console.log(id)
     $('#modal2').modal('open');
   }
   // --------------------------------- SUBMIT PROYECTO ---------------------------------
   ProyectoSubmit() {
-    const proyecto = {
-      nombreProyecto: this.nombreProyecto,
-      tipoProyecto: this.tipoProyecto,
-      tipoObra: this.tipoObra,
-      descripcion: this.descripcion,
-      fechaInicio: $('#fechaInicio').val(),
-      fechaFinaliza: $('#fechaFinaliza').val(),
-      estado: this.estado,
-      banco: this.banco,
-      cliente: $('select[name=state]').val(),
-      profesionalResponsable: $('select[name=state2]').val(),
-    }
-    // if(this.ValidateForm()){
-    //   console.log(proyecto)
-    // }
-    // else Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
 
-    if(this.ValidateForm()){
+    if (this.ValidateForm()) {
+
+      const proyecto = {
+        nombreProyecto: this.nombreProyecto,
+        tipoProyecto: this.tipoProyecto,
+        tipoObra: this.tipoObra,
+        descripcion: this.descripcion,
+        fechaInicio: $('#fechaInicio').val(),
+        fechaFinaliza: $('#fechaFinaliza').val(),
+        estado: this.estado,
+        banco: this.banco,
+        cliente: $('select[name=state]').val(),
+        profesionalResponsable: $('select[name=state2]').val(),
+      }
+
+      if (this.RegOrArt != "" && this.financiamento != "") {
+        proyecto.tipoProyecto =
+          `${this.tipoProyecto}/${this.RegOrArt}/${this.financiamento}`
+      }
+
       if (this.switch) {//si el switch esta en true guarda
         this.ProyService.GuardarProyecto(proyecto).subscribe(data => {
           if (data.success) {
             console.log(data);
             this.getAll();
             $('#modal1').modal('close');
+            Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
           }
           else {
             Materialize.toast('Error, nombre repetido', 3000, 'red rounded')
@@ -274,17 +344,20 @@ export class ProyectosComponent implements OnInit {
       }
       else {//si el switch esta en false edita
         this.ProyService.EditarProyecto(proyecto).subscribe(data => {
-          console.log(data);
-          this.getAll();
-          this.switch = true;
-          $('#modal1').modal('close');
+          if (data) {
+            this.getAll();
+            this.switch = true;
+            $('#modal1').modal('close');
+            Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
+          }
+          else Materialize.toast('Error en el servidor, ', 3000, 'red rounded')
         });
       }
     }
-    else{
+    else {
       Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
     }
-      
+
   }
 
   Only_Numbers(event: any) {
@@ -297,65 +370,161 @@ export class ProyectosComponent implements OnInit {
     }
   }
 
-  ValidateForm(){
-    if(this.inputnombreProyecto.nativeElement.value == '')
+  ValidateForm() {
+    if (this.inputnombreProyecto.nativeElement.value == '')
       return false
-    if(this.tipoProyecto == '')
+    if (this.tipoProyecto == '')
       return false
-    if(this.tipoObra == '')
+    if (this.tipoProyecto == 'Subsidios' && (this.RegOrArt == "" || this.financiamento == ""))
       return false
-    if(this.inputdescripcion.nativeElement.value == '')
+    if (this.tipoObra == '')
       return false
-    if($('#fechaInicio').val() == '')
+    if (this.inputdescripcion.nativeElement.value == '')
       return false
-    if($('#fechaFinaliza').val() == '')
+    if ($('#fechaInicio').val() == '')
       return false
-    if(this.estado == '')
+    if ($('#fechaFinaliza').val() == '')
       return false
-    if(this.inputbanco.nativeElement.value == '')
+    if (this.estado == '')
       return false
-    if($('select[name=state]').val() == '')
+    if (this.inputbanco.nativeElement.value == '')
+      return false
+    if ($('select[name=state]').val() == '')
+      return false
+    if ($('select[name=state2]').val() == '')
       return false
     // if(this.inputprofesionalResponsable.nativeElement.value == '')
     //   return false
 
     return true
   }
- // --------------------------------- BUSCAR PROYECTO ---------------------------------
-  buscar(){
+  // --------------------------------- BUSCAR PROYECTO ---------------------------------
+  buscar() {
     this.parametro = ''
-    if(this.buscador.nativeElement.value == "todos")
+    if (this.buscador.nativeElement.value == "todos")
       this.getAll();
-    else{
-      this.filtro = this.buscador.nativeElement.value
+    else {
+      this.filtro = this.buscador.nativeElement.value;
+
+      (this.filtro == "fechaInicio" || this.filtro == "fechaFinaliza") ? $('#BuscaFecha').css("display", "block")
+        : $('#BuscaFecha').css("display", "none");
+
+
+      (this.filtro == "cliente") ? $('#bc1').css("display", "block")
+        : $('#bc1').css("display", "none");
+
+      (this.filtro == "profResponsable") ? $('#be1').css("display", "block")
+        : $('#be1').css("display", "none");
+
       $('#modal3').modal('open');
     }
   }
 
-  BuscarPorFiltro(){
-    const FilPar = {
-      parametro: this.parametro,
-      filtro: this.filtro
-    }    
-    this.ProyService.BuscarProyecto(FilPar).subscribe(data => {
-      this.ax = data
-      $('#modal3').modal('close');
-    });
+  BuscarPorFiltro() {
+    console.log($('select[name=state3]').val())
+    if ($("#Fecha").val() != "") {
+      this.parametro = $("#Fecha").val()
+      $("#Fecha").val("")
+    }
+
+    if ($('select[name=state3]').val() != null) {
+      this.parametro = $('select[name=state3]').val()
+      $('#ddClientes2').val('').trigger('change')
+    }
+
+    if ($('select[name=state4]').val() != null) {
+      this.parametro = $('select[name=state4]').val()
+      $('#ddEmpleados2').val('').trigger('change')
+    }
+
+    if (this.parametro != "") {
+      const FilPar = {
+        parametro: this.parametro,
+        filtro: this.filtro
+      }
+
+      // if(this.filtro == "fechaInicio" || this.filtro == "fechaFinaliza") FilPar.parametro = $("#Fecha").val()
+
+      this.ProyService.BuscarProyecto(FilPar).subscribe(data => {
+        this.ax = data
+        if (this.ax.length == 0)
+          Materialize.toast('Sin resultados', 3000, 'red rounded')
+        $('#modal3').modal('close');
+      });
+    }
+    else Materialize.toast('Complete el espacio para continuar', 3000, 'red rounded')
   }
 
-  Detalles(v){
+  Detalles(v) {
     console.log(v)
     let detalle = {
-      banco: v.banco,
-      cliente: v.cliente,
-      fechafinaliza: v.fechafinaliza,
-      profresponsable: v.profresponsable,
       tipoobra: v.tipoobra,
+      tipoproyecto: v.tipoproyecto,
+      banco: v.banco,
+      fechainicio: v.fechainicio,
+      fechafinaliza: v.fechafinaliza,
+      estado: v.estado,
       descripcion: v.descripcion
     }
-    this.detalles = [detalle]
-    $('#modal4').modal('open');
+
+    let cliente = {
+      cedula: v.cliente
+    }
+
+    let empleado = {
+      cedula: v.profresponsable
+    }
+
+    this.clientesService.getById(cliente).subscribe(DetalleCliente => {
+      this.DetalleCliente = [DetalleCliente]
+      this.empleadosService.getById(empleado).subscribe(DetalleEmpleado => {
+        this.DetalleEmpleado = [DetalleEmpleado]
+        this.detalles = [detalle]
+        $('#modal4').modal('open');
+      })
+    })
+
   }
+
+  TipoFinanciamiento() {
+    if (this.tipoProyecto == "Subsidios") $('#modal5').modal('open')
+    else {
+      this.RegOrArt = ""
+      this.financiamento = ""
+    }
+
+  }
+
+  IsArticulo59() {
+    return (this.RegOrArt == "Articulo 59") ? true : false
+  }
+
+  IsRegulares() {
+    return (this.RegOrArt == "Regulares") ? true : false
+  }
+
+  isInput() {
+    return (this.filtro == "nombreProyecto" ||
+      this.filtro == "banco") ? true : false
+  }
+
+  isTipoObra() {
+    return (this.filtro == "tipoObra") ? true : false
+  }
+
+  isEstadoProyecto() {
+    return (this.filtro == "estado") ? true : false
+  }
+
+  isCliente() {
+    return (this.filtro == "cliente") ? true : false
+  }
+
+  isProfResponsable() {
+    return (this.filtro == "profResponsable") ? true : false
+  }
+
+
   // prueba(){
   //   // let ax = $('select[name=state]').val()
   //   let ax = $('#fechaInicio').val();

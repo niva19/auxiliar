@@ -13,7 +13,7 @@
           <label for="nombreProyecto" #LabelNombreProyecto>Nombre del proyecto</label>
         </div>
         <div class="input-field col s12">
-          <select materialize="material_select" [(ngModel)]="tipoProyecto" name="tipoProyecto" id="ddTipoProyecto">
+          <select materialize="material_select" [(ngModel)]="tipoProyecto" name="tipoProyecto" id="ddTipoProyecto" (change)="TipoFinanciamiento()">
             <option value="" disabled selected>Tipo de Proyecto</option>
             <option value="Corto Plazo">Corto Plazo</option>
             <option value="Subsidios">Subsidios(bonos)</option>
@@ -55,8 +55,7 @@
           </select>
         </div>
         <div class="input-field col s12">
-          <select id="ddEmpleados" materialize="material_select" class="js-example-basic-single" name="state2" style="width: 100%;"
-            #dropdownEmpleados>
+          <select id="ddEmpleados" materialize="material_select" class="js-example-basic-single" name="state2" style="width: 100%;" #dropdownEmpleados>
           </select>
         </div>
         <div class="input-field col s12">
@@ -81,32 +80,110 @@
   </div>
 </div>
 
+<div id="modal5" class="modal">
+  <div class="modal-content">
+    <h4>Tipo de Financiamiento</h4>
+    <select materialize="material_select" [(ngModel)]="RegOrArt" name="RegOrArt">
+      <option value="" disabled selected>Elija una opcion</option>
+      <option value="Articulo 59">Articulo 59</option>
+      <option value="Regulares">Regulares</option>
+    </select>
+    <form action="#" *ngIf="IsArticulo59();">
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test1" value="Adulto Mayor" />
+        <label for="test1">Adulto Mayor</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test2"  value="Persona con discapacidad"/>
+        <label for="test2">Persona con discapacidad</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test3"  value="Situación de emergencia"/>
+        <label for="test3">Situación de emergencia</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test4" value="Extrema necesidad" />
+        <label for="test4">Extrema necesidad</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test5"  value="Bono diferido"/>
+        <label for="test5">Bono diferido</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test6" value="S-001-04" />
+        <label for="test6">S-001-04</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test7" value="S-002-04" />
+        <label for="test7">S-002-04</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test8" value="S-003-06" />
+        <label for="test8">S-003-06</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test9" value="S-004-04" />
+        <label for="test9">S-004-04</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test10" value="Llave en mano" />
+        <label for="test10">Llave en mano</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test11" value="ABC para vivienda vertical" />
+        <label for="test11">ABC para vivienda vertical</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test12" value="Bono de segunda planta" />
+        <label for="test12">Bono de segunda planta</label>
+      </p>
+
+    </form>
+    <form action="#" *ngIf="IsRegulares();">
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test1" value="Ordenario" />
+        <label for="test1">Ordenario</label>
+      </p>
+      <p>
+        <input class="with-gap" [(ngModel)]="financiamento" name="financiamento" type="radio" id="test2" value="Ahorro-Bono-Credito(ABC)" />
+        <label for="test2">Ahorro-Bono-Credito(ABC)</label>
+      </p>
+    </form>
+    <br>
+    <a class="modal-action modal-close waves-effect light-blue darken-3 btn">Listo</a>
+  </div>
+</div>
+
 <div id="modal4" class="modal">
   <div class="modal-content">
-    <h4>Detalles del Proyecto</h4>
-    <table>
-      <thead class="centered">
-        <tr>
-          <td>Banco</td>
-          <td>Cliente</td>
-          <td>Fecha de Finalizacion</td>
-          <td>Profesional Responsable</td>
-          <td>Tipo de Obra</td>
-          <td>Descripción</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let v of detalles">
-          <td>{{v.banco}}</td>
-          <td>{{v.cliente}}</td>
-          <td>{{v.fechafinaliza}}</td>
-          <td>{{v.profresponsable}}</td>
-          <td>{{v.tipoobra}}</td>
-          <td>{{v.descripcion}}</td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- <p>{{v.descripcion}}</p> -->
+    <blockquote>Detalles del proyecto</blockquote>
+    <ul class="collection" *ngFor="let v of detalles">
+        <li class="collection-item"><strong>Tipo de obra: </strong>{{v.tipoobra}}</li>
+        <li class="collection-item"><strong>Tipo de proyecto: </strong>{{v.tipoproyecto}}</li>
+        <li class="collection-item"><strong>Banco: </strong> {{v.banco}}</li>
+        <li class="collection-item"><strong>Fecha Inicio: </strong>{{v.fechainicio}}</li>
+        <li class="collection-item"><strong>Fecha de Finalización: </strong>{{v.fechafinaliza}}</li>
+        <li class="collection-item"><strong>Estado: </strong>{{v.estado}}</li>
+        <li class="collection-item"><strong>Descripción: </strong>{{v.descripcion}}</li>
+    </ul>
+    <br>
+    <blockquote>Detalles del Cliente</blockquote>
+    <ul class="collection" *ngFor="let v of DetalleCliente">
+        <li class="collection-item"><strong>Nombre: </strong> {{v.nombre}}</li>
+        <li class="collection-item"><strong>Apellidos: </strong>{{v.apellidos}}</li>
+        <li class="collection-item"><strong>Cedula: </strong>{{v.cedula}}</li>
+        <li class="collection-item"><strong>Telefono: </strong>{{v.telefono}}</li>
+        <li class="collection-item"><strong>Correo: </strong>{{v.correo}}</li>
+    </ul>
+    <br>
+    <blockquote>Detalles del Empleado</blockquote>
+    <ul class="collection" *ngFor="let v of DetalleEmpleado">
+        <li class="collection-item"><strong>Nombre: </strong> {{v.nombre}}</li>
+        <li class="collection-item"><strong>Apellidos: </strong>{{v.apellidos}}</li>
+        <li class="collection-item"><strong>Cedula: </strong>{{v.cedula}}</li>
+        <li class="collection-item"><strong>Telefono: </strong>{{v.telefono}}</li>
+        <li class="collection-item"><strong>Correo: </strong>{{v.correo}}</li>
+    </ul>
   </div>
 </div>
 
@@ -117,10 +194,45 @@
   <div class="modal-content">
     <form (submit)="BuscarPorFiltro()" class="col s12">
       <div class="row">
-        <div class="input-field col s12">
+
+        <div class="input-field col s12" *ngIf="isInput()">
           <input id="filtro" type="text" [(ngModel)]="parametro" name="parametro" class="validate">
           <label for="filtro">{{filtro}}</label>
         </div>
+
+        <div class="input-field col s12" *ngIf="isTipoObra()">
+            <select materialize="material_select" [(ngModel)]="parametro" name="parametro">
+              <option value="" disabled selected>Tipo de Obra</option>
+              <option value="Obras Mayores">Obras Mayores</option>
+              <option value="Obras Menores">Obras Menores</option>
+            </select>
+        </div>
+
+        <div class="input-field col s12" *ngIf="isEstadoProyecto()">
+            <select materialize="material_select" [(ngModel)]="parametro" name="parametro">
+              <option value="" disabled selected>Estado del proyecto</option>
+              <option value="En Proceso">En Proceso</option>
+              <option value="Pausado">Pausado</option>
+              <option value="Finalizado">Finalizado</option>
+            </select>
+            <br>
+            <br>
+        </div>
+
+        <div class="input-field col s12" id="bc1">
+          <select id="ddClientes2" materialize="material_select" class="js1" name="state3" style="width: 100%;" #dropdownClientess>
+          </select>
+        </div>
+        <div class="input-field col s12" id="be1">
+          <select id="ddEmpleados2" materialize="material_select" class="js1" name="state4" style="width: 100%;" #dropdownEmpleadoss>
+          </select>
+        </div>
+
+        <div class="input-field col s12" id="BuscaFecha">
+          <input id="Fecha" type="date" class="datepicker">
+          <label for="Fecha" class="active">{{filtro}}</label>
+        </div>
+
         <div class="input-field col s12">
           <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
           <input type="submit" class="#0277bd light-blue darken-3 btn" value="Buscar">
@@ -147,10 +259,12 @@
             <select materialize="material_select" (change)="buscar()" #buscador>
               <option value="" disabled selected>Buscar por</option>
               <option value="nombreProyecto">Nombre Proyecto</option>
-              <option value="tipoProyecto">Tipo de Proyecto</option>
-              <option value="tipoObra">Tipo de Obra</option>
+              <option value="banco">Banco</option>
+              <option value="cliente">Cliente</option>
               <option value="profResponsable">Profesional Responsable</option>
+              <option value="tipoObra">Tipo de Obra</option>
               <option value="fechaInicio">Fecha de inicio</option>
+              <option value="fechaFinaliza">Fecha de Finalización</option>
               <option value="estado">Estado</option>
               <option value="todos">Todos</option>
             </select>
@@ -160,11 +274,7 @@
             <thead class="centered">
               <tr>
                 <td>Nombre del Proyecto</td>
-                <td>Tipo de proyecto</td>
-                <td>Tipo de obra</td>
-                <td>Fecha Inicio</td>
-                <td>Estado</td>
-                <td>Inspeccionar</td>
+                <td>Detalles</td>
                 <td>Editar</td>
                 <td>Eliminar</td>
               </tr>
@@ -172,10 +282,6 @@
             <tbody>
               <tr *ngFor="let v of ax">
                 <td>{{v.nombreproyecto}}</td>
-                <td>{{v.tipoproyecto}}</td>
-                <td>{{v.tipoobra}}</td>
-                <td>{{v.fechainicio}}</td>
-                <td>{{v.estado}}</td>
                 <!-- OJO CAMBIAR DESPUES nombreProyecto por codProyecto -->
                 <td>
                   <a class="waves-effect waves-light btn-flat" (click)="Detalles(v)">
