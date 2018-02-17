@@ -32,7 +32,7 @@ function getAllCustomers(req, res, next) {
 
 function SaveCustomer(req, res, next) {
   console.log(req.body);
-  db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${telefono}, ${correo})',
+  db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono}, ${correo})',
     req.body)
     .then(() => {
       res.status(200)
@@ -50,7 +50,7 @@ function SaveCustomer(req, res, next) {
 
 function EditCustomer(req, res, next) {
   console.log(req.body);
-  db.none('UPDATE Cliente SET nombre = ${nombre}, apellidos = ${apellidos}, telefono = ${telefono}, correo = ${correo} where cedula = ${cedula}',
+  db.none('UPDATE Cliente SET nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, telefono = ${telefono}, correo = ${correo} where cedula = ${cedula}',
     req.body)
     .then(() => {
       res.status(200)
@@ -172,7 +172,7 @@ function getEmployeesCNA(req, res, next) {
 
 function saveEmployee(req, res, next) {
   console.log(req.body);
-  db.none('insert into Empleado values(${nombre}, ${apellidos}, ${cedula}, ${telefono}, ${correo}, ${usuario}, ${contrasena})',
+  db.none('insert into Empleado values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono}, ${correo}, ${usuario}, ${contrasena})',
     req.body)
     .then(() => {
       res.status(200)
@@ -190,7 +190,7 @@ function saveEmployee(req, res, next) {
 
 function editEmployee(req, res, next) {
   console.log(req.body);
-  db.none('UPDATE Empleado SET nombre = ${nombre}, apellidos = ${apellidos}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena} where cedula = ${cedula}',
+  db.none('UPDATE Empleado SET nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena} where cedula = ${cedula}',
     req.body)
     .then(() => {
       res.status(200)
@@ -294,7 +294,7 @@ function saveProject(req, res, next) {
 
   var path='C:\\Users\\casca\\Desktop\\SistemaPROARINSA\\'+anio+'\\'+mes+'\\'+nomJunto+'\\archivos'
 
-  db.none('insert into Proyecto values(${nombreProyecto}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente}, ${profesionalResponsable})',
+  db.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente}, ${profesionalResponsable})',
    req.body)
     .then(() => {
       //EJECUTAR EL COMANDO AQUI
@@ -318,7 +318,7 @@ function saveProject(req, res, next) {
 
 function editProject(req, res, next) {
   console.log(req.body);
-  db.none('UPDATE Proyecto SET tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}, cliente = ${cliente}, profresponsable = ${profesionalResponsable}  where nombreproyecto = ${nombreProyecto}',
+  db.none('UPDATE Proyecto SET direccion = ${direccion}, tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}, cliente = ${cliente}, profresponsable = ${profesionalResponsable}  where nombreproyecto = ${nombreProyecto}',
     req.body)
     .then(() => {
       res.status(200)

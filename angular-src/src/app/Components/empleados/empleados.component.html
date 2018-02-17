@@ -2,7 +2,7 @@
 <!-- ########################################## BODY ############################################ -->
 <!-- ############################################################################################ -->
 
-<!-- ########################################## INGRESAR EMPRELADO ############################## -->
+<!-- ########################################## INGRESAR EMPLEADO ############################## -->
 
 <div id="modal1" class="modal">
   <div class="modal-content">
@@ -22,14 +22,18 @@
           <label for="cedula" #LabelCedula>Cedula</label>
         </div>
         <div class="input-field col s12">
-          <input id="correo" type="email" [(ngModel)]="correo" name="correo" class="validate" #inputcorreo>
-          <label for="correo" #LabelCorreo data-error="wrong" data-success="right">Correo</label>
+            <input id="direccion" type="text" [(ngModel)]="direccion" name="direccion" class="validate" #inputdireccion>
+            <label for="direccion" #Labeldireccion>Dirección</label>
         </div>
         <div class="input-field col s12">
-          <input (keypress)="Only_Numbers($event)" id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate"
-            #inputtelefono>
-          <label for="telefono" #LabelTelefono>Telefono</label>
-        </div>
+            <input (keypress)="Only_Numbers($event)" id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate"
+              #inputtelefono>
+            <label for="telefono" #LabelTelefono>Telefono</label>
+          </div>
+        <div class="input-field col s12">
+          <input id="correo" type="email" [(ngModel)]="correo" name="correo" class="validate" #inputcorreo>
+          <label for="correo" #LabelCorreo data-error="wrong" data-success="right">Correo</label>
+        </div>        
         <div class="input-field col s12">
           <input id="name" type="text" [(ngModel)]="usuario" name="usuario" class="validate" #inputusuario>
           <label for="name" #LabelUsuario>Usuario</label>
@@ -113,6 +117,7 @@
                 <td>Nombre</td>
                 <td>Apellidos</td>
                 <td>Cedula</td>
+                <td>Dirección</td>
                 <td>Telefono</td>
                 <td>Correo</td>
                 <td>Usuario</td>
@@ -126,6 +131,7 @@
                 <td>{{v.nombre}}</td>
                 <td>{{v.apellidos}}</td>
                 <td>{{v.cedula}}</td>
+                <td>{{v.direccion}}</td>
                 <td>{{v.telefono}}</td>
                 <td>{{v.correo}}</td>
                 <td>{{v.usuario}}</td>

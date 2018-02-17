@@ -16,6 +16,7 @@ declare var $: any;
 export class ProyectosComponent implements OnInit {
   // ################################## ATRIBUTOS ##################################
   nombreProyecto: String
+  direccion: String
   tipoProyecto: String
   tipoObra: String
   descripcion: String
@@ -54,6 +55,9 @@ export class ProyectosComponent implements OnInit {
   @ViewChild('LabelNombreProyecto')
   private LabelNombreProyecto: ElementRef
 
+  @ViewChild('Labeldireccion')
+  private Labeldireccion: ElementRef
+
   @ViewChild('Labeldescripcion')
   private Labeldescripcion: ElementRef
 
@@ -68,6 +72,9 @@ export class ProyectosComponent implements OnInit {
 
   @ViewChild('inputnombreProyecto')
   private inputnombreProyecto: ElementRef
+
+  @ViewChild('inputdireccion')
+  private inputdireccion: ElementRef
 
   @ViewChild('inputdescripcion')
   private inputdescripcion: ElementRef
@@ -236,6 +243,9 @@ export class ProyectosComponent implements OnInit {
       this.renderer2.setAttribute(this.LabelNombreProyecto.nativeElement, "class", "active")
       this.nombreProyecto = data.nombreproyecto
 
+      this.renderer2.setAttribute(this.Labeldireccion.nativeElement, "class", "active")
+      this.direccion = data.direccion
+
       this.renderer2.setAttribute(this.Labeldescripcion.nativeElement, "class", "active")
       this.descripcion = data.descripcion
 
@@ -313,6 +323,7 @@ export class ProyectosComponent implements OnInit {
 
       const proyecto = {
         nombreProyecto: this.nombreProyecto,
+        direccion: this.direccion,
         tipoProyecto: this.tipoProyecto,
         tipoObra: this.tipoObra,
         descripcion: this.descripcion,
@@ -372,6 +383,8 @@ export class ProyectosComponent implements OnInit {
 
   ValidateForm() {
     if (this.inputnombreProyecto.nativeElement.value == '')
+      return false
+    if (this.inputdireccion.nativeElement.value == '')
       return false
     if (this.tipoProyecto == '')
       return false
@@ -458,6 +471,7 @@ export class ProyectosComponent implements OnInit {
   Detalles(v) {
     console.log(v)
     let detalle = {
+      direccion: v.direccion,
       tipoobra: v.tipoobra,
       tipoproyecto: v.tipoproyecto,
       banco: v.banco,

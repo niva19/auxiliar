@@ -17,6 +17,7 @@ export class EmpleadosComponent implements OnInit {
   nombre: String
   apellidos: String
   cedula: String
+  direccion: String
   telefono: String
   correo: String
   switch: Boolean = true
@@ -43,6 +44,9 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('LabelCedula')
   private LabelCedula: ElementRef
 
+  @ViewChild('Labeldireccion')
+  private Labeldireccion: ElementRef
+
   @ViewChild('LabelCorreo')
   private LabelCorreo: ElementRef
 
@@ -66,6 +70,9 @@ export class EmpleadosComponent implements OnInit {
 
   @ViewChild('inputcedula')
   private inputcedula: ElementRef
+
+  @ViewChild('inputdireccion')
+  private inputdireccion: ElementRef
 
   @ViewChild('inputcorreo')
   private inputcorreo: ElementRef
@@ -115,6 +122,9 @@ export class EmpleadosComponent implements OnInit {
     this.renderer2.removeAttribute(this.inputcedula.nativeElement, 'disabled');
     this.cedula = ""
 
+    this.renderer2.removeClass(this.Labeldireccion.nativeElement, "active")
+    this.direccion = ""
+
     this.renderer2.removeClass(this.LabelCorreo.nativeElement, "active")
     this.correo = ""
 
@@ -152,6 +162,9 @@ export class EmpleadosComponent implements OnInit {
       this.renderer2.setAttribute(this.LabelCedula.nativeElement, "class", "active")
       this.renderer2.setAttribute(this.inputcedula.nativeElement, 'disabled', 'true');
       this.cedula = data.cedula
+
+      this.renderer2.setAttribute(this.Labeldireccion.nativeElement, "class", "active")
+      this.direccion = data.direccion
 
       this.renderer2.setAttribute(this.LabelTelefono.nativeElement, "class", "active")
       this.telefono = data.telefono
@@ -217,6 +230,7 @@ export class EmpleadosComponent implements OnInit {
       nombre: this.nombre,
       apellidos: this.apellidos,
       cedula: this.cedula,
+      direccion: this.direccion,
       telefono: this.telefono,
       correo: this.correo,
       usuario: this.usuario,
@@ -267,6 +281,8 @@ export class EmpleadosComponent implements OnInit {
     if (this.inputapellidos.nativeElement.value == '')
       return false
     if (this.inputcedula.nativeElement.value == '')
+      return false
+    if (this.inputdireccion.nativeElement.value == '')
       return false
     if (this.inputTelefono.nativeElement.value == '')
       return false

@@ -15,6 +15,7 @@ export class ClienteComponent implements OnInit {
   nombre: String
   apellidos: String
   cedula: String
+  direccion: String
   telefono: String
   correo: String
   switch: Boolean = true
@@ -36,10 +37,13 @@ export class ClienteComponent implements OnInit {
   private LabelNombre: ElementRef
 
   @ViewChild('LabelApellidos')
-  private LabeApellidos: ElementRef
+  private LabelApellidos: ElementRef
 
   @ViewChild('LabelCedula')
   private LabelCedula: ElementRef
+
+  @ViewChild('Labeldireccion')
+  private Labeldireccion: ElementRef
 
   @ViewChild('LabelCorreo')
   private LabelCorreo: ElementRef
@@ -55,6 +59,9 @@ export class ClienteComponent implements OnInit {
 
   @ViewChild('inputcedula')
   private inputcedula: ElementRef
+
+  @ViewChild('inputdireccion')
+  private inputdireccion: ElementRef
 
   @ViewChild('inputcorreo')
   private inputcorreo: ElementRef
@@ -90,12 +97,15 @@ export class ClienteComponent implements OnInit {
     this.renderer2.removeClass(this.LabelNombre.nativeElement, "active")
     this.nombre = ""
 
-    this.renderer2.removeClass(this.LabeApellidos.nativeElement, "active")
+    this.renderer2.removeClass(this.LabelApellidos.nativeElement, "active")
     this.apellidos = ""
 
     this.renderer2.removeClass(this.LabelCedula.nativeElement, "active")
     this.renderer2.removeAttribute(this.inputcedula.nativeElement, 'disabled');
     this.cedula = ""
+
+    this.renderer2.removeClass(this.Labeldireccion.nativeElement, "active")
+    this.direccion = ""
 
     this.renderer2.removeClass(this.LabelCorreo.nativeElement, "active")
     this.correo = ""
@@ -118,12 +128,15 @@ export class ClienteComponent implements OnInit {
       this.renderer2.setAttribute(this.LabelNombre.nativeElement, "class", "active")
       this.nombre = data.nombre
 
-      this.renderer2.setAttribute(this.LabeApellidos.nativeElement, "class", "active")
+      this.renderer2.setAttribute(this.LabelApellidos.nativeElement, "class", "active")
       this.apellidos = data.apellidos
 
       this.renderer2.setAttribute(this.LabelCedula.nativeElement, "class", "active")
       this.renderer2.setAttribute(this.inputcedula.nativeElement, 'disabled', 'true');
       this.cedula = data.cedula
+
+      this.renderer2.setAttribute(this.Labeldireccion.nativeElement, "class", "active")
+      this.direccion = data.direccion
 
       this.renderer2.setAttribute(this.LabelCorreo.nativeElement, "class", "active")
       this.correo = data.correo
@@ -179,6 +192,7 @@ export class ClienteComponent implements OnInit {
       nombre: this.nombre,
       apellidos: this.apellidos,
       cedula: this.cedula,
+      direccion: this.direccion,
       telefono: this.telefono,
       correo: this.correo
     }
@@ -227,6 +241,8 @@ export class ClienteComponent implements OnInit {
     if (this.inputapellidos.nativeElement.value == '')
       return false
     if (this.inputcedula.nativeElement.value == '')
+      return false
+    if (this.inputdireccion.nativeElement.value == '')
       return false
     if (this.inputcorreo.nativeElement.value == '')
       return false

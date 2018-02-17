@@ -13,6 +13,10 @@
           <label for="nombreProyecto" #LabelNombreProyecto>Nombre del proyecto</label>
         </div>
         <div class="input-field col s12">
+          <input id="direccion" type="text" [(ngModel)]="direccion" name="direccion" class="validate" #inputdireccion>
+          <label for="direccion" #Labeldireccion>Dirección</label>
+        </div>
+        <div class="input-field col s12">
           <select materialize="material_select" [(ngModel)]="tipoProyecto" name="tipoProyecto" id="ddTipoProyecto" (change)="TipoFinanciamiento()">
             <option value="" disabled selected>Tipo de Proyecto</option>
             <option value="Corto Plazo">Corto Plazo</option>
@@ -158,6 +162,7 @@
   <div class="modal-content">
     <blockquote>Detalles del proyecto</blockquote>
     <ul class="collection" *ngFor="let v of detalles">
+        <li class="collection-item"><strong>Dirección: </strong>{{v.direccion}}</li>
         <li class="collection-item"><strong>Tipo de obra: </strong>{{v.tipoobra}}</li>
         <li class="collection-item"><strong>Tipo de proyecto: </strong>{{v.tipoproyecto}}</li>
         <li class="collection-item"><strong>Banco: </strong> {{v.banco}}</li>
