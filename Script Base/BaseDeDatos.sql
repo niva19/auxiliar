@@ -1,10 +1,3 @@
-/* Tabla de Financiamiento */
-
-/*create table Financiamiento
-tipo text,BANHVI ARTICULO 59 O REGULARES 
-detalle text,
-*/
-
 /* Tabla de Empleado */
 
 create table Empleado
@@ -37,6 +30,8 @@ banco text,
 -- Foraneas 
 cliente text,
 profResponsable text,
+-- Path de archivos 
+archivos text,
 -- Localizacion  -- Cuando se haga lo del API DE GOOGLE osea vacaciones 
 -- latitud int,
 -- longitud int,
@@ -44,22 +39,9 @@ profResponsable text,
 -- segundos int,
 -- ubicacion text,
 -- 
-constraint pkProyecto primary key (nombreProyecto) 
-constraint fkEmpleado foreign key (profResponsable) references Empleado
+constraint pkProyecto primary key (nombreProyecto),
+constraint fkEmpleado foreign key (profResponsable) references Empleado,
 constraint fkCliente foreign key (cliente) references Cliente
-);
-
-/* Tabla de Archivo */
-
-create table Archivo
-( 
-codArchivo text,
-nombre text,
-ubicacion text,
--- Foraneas
-codProyecto text,
-constraint pkArchivo primary key (codArchivo),
-constraint fkProyecto foreign key (codProyecto) references Proyecto
 );
 
 /* Tabla de Cliente */

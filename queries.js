@@ -6,7 +6,8 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
+//var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
+var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
 var db = pgp(connectionString);
 
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -266,12 +267,42 @@ function getAllProject(req, res, next) {
       return next(err);
     });
 }
+// ---------- ARBOL DE CARPETAS ----------
+var exec = require('child_process').exec;
+
+function execute(command, callback){
+    exec(command, function(error, stdout, stderr){ callback(stdout); });
+};
 
 function saveProject(req, res, next) {
   console.log(req.body);
+  
+  //EL NOMBRE SE JUNTA EN UNA SOLA CADENA
+  var nomProy = req.body.nombreProyecto;
+  //Separador: el split elimina los caracteres asignados a lo separadores
+  var separador = " "; 
+  var nomJunto = nomProy.split(separador).join('');
+
+  //LAS FECHAS SE JUNTA EN UNA SOLA CADENA
+  var fecha = req.body.fechaInicio;  
+  //Separador: el split elimina los caracteres asignados a lo separadores
+  var separador1 = " "; 
+  var separador2 = ", "; 
+  // Se logra el formato mes y año de las carpetas
+  var mes = fecha.split(separador2).splice(0, 1).toString().split(separador1).pop();
+  var anio = fecha.split(separador1).pop();
+
+  var path='C:\\Users\\casca\\Desktop\\SistemaPROARINSA\\'+anio+'\\'+mes+'\\'+nomJunto+'\\archivos'
+
   db.none('insert into Proyecto values(${nombreProyecto}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente}, ${profesionalResponsable})',
-    req.body)
+   req.body)
     .then(() => {
+      //EJECUTAR EL COMANDO AQUI
+      //CREAR DIRECTORIO
+      db.none('UPDATE Proyecto SET archivos = $1 WHERE nombreProyecto = $2', [path, req.body.nombreProyecto]);
+      execute('mkdir '+path, function(output) {
+        console.log(output);
+      });
       res.status(200)
         .json({
           success: true
