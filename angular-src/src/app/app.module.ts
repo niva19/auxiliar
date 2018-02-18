@@ -11,7 +11,6 @@ import { ClientesService } from './services/clientes.service'
 import { IngresarService } from './services/ingresar.service'
 import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
-import { GoogleService } from './services/google.service'
 
 import { AppComponent } from './app.component'
 import { RegisterComponent } from './Components/register/register.component'
@@ -64,7 +63,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService,GoogleService],
+  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService],
   bootstrap: [AppComponent]
 })
 
