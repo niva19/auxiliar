@@ -1,0 +1,12 @@
+agm-map {
+    height: 600px;
+    width: 950px;
+}
+
+.mover{
+  position: relative;
+  top:  10px; 
+  bottom: 0px;
+  left: 460px;
+  right: 0px;
+}
