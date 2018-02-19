@@ -32,7 +32,7 @@ export class IngresarComponent implements OnInit {
     // ################### FALTAN LOS N ESPACIOS EN BLANCO####################
     // #######################################################################
     if (empleado.user == null || empleado.password == null){
-      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+      Materialize.toast('Complete los espacios en blanco para continuar', 3000, 'red rounded')
       return;
     }
 
@@ -43,7 +43,7 @@ export class IngresarComponent implements OnInit {
         localStorage.setItem('nombre', data.data.nombre)
         localStorage.setItem('privilegio', data.data.privilegios)
         this.router.navigate(['/inicio'])
-        Materialize.toast('Validación completada, bienvenido', 4000, 'green rounded')
+        Materialize.toast('Bienvenido al sistema', 4000, 'green rounded')
       } else {
         //logeado incorrecto
         Materialize.toast('Usuario o contraseña incorrecto, intente de nuevo', 4000, 'red rounded')
