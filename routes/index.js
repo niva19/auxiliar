@@ -52,5 +52,11 @@ router.post('/api/getproject', db.getProject);
 router.post('/api/deleteproject', db.deleteProject);
 // ------------ BUSCAR PROYECTOS
 router.post('/api/searchproject', db.searchProject);
+// ------------ GUARDAR ARCHIVOS
+router.post('/api/savefiles', db.savefiles);
+// ------------ BUSCAR ARCHIVOS
+router.post('/api/searchfiles', db.searchfiles);
+
+router.post('/api/openfile', db.openfile);
 
 module.exports = router;

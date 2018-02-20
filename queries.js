@@ -7,7 +7,7 @@ var options = {
 
 var pgp = require('pg-promise')(options);
 //var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
-var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
+var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -68,23 +68,23 @@ function EditCustomer(req, res, next) {
 
 function GetCustomer(req, res, next) {
   console.log(req.body);
-  db.any('select * from Cliente where cedula=${cedula}',req.body)
-  .then((data) => {
-    console.log(data);
-    res.status(200)
-      .json(data[0]);
-  })
-  .catch(function (err) {
-    res.status(200)
-      .json({
-        success: false
-      });
-  });
+  db.any('select * from Cliente where cedula=${cedula}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data[0]);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
 }
 
 function DeleteCustomer(req, res, next) {
   console.log(req.body);
-  db.none('DELETE FROM cliente WHERE cedula = ${cedula}',req.body)
+  db.none('DELETE FROM cliente WHERE cedula = ${cedula}', req.body)
     .then(() => {
       res.status(200)
         .json({
@@ -101,19 +101,19 @@ function DeleteCustomer(req, res, next) {
 
 function SearchCustomers(req, res, next) {
   console.log(req.body)
-  db.any('select * from Cliente where '+ req.body.filtro +' = ${parametro}',req.body)
-  .then((data) => {
-    console.log(data);
-    res.status(200)
-      .json(data);
-  })
-  .catch(function (err) {
-    res.status(200)
-      .json({
-        success: false
-      });
-  });
-}  
+  db.any('select * from Cliente where ' + req.body.filtro + ' = ${parametro}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
 
 function getCNA(req, res, next) {
   db.any('select cedula, nombre, apellidos from Cliente')
@@ -203,28 +203,28 @@ function editEmployee(req, res, next) {
         .json({
           success: false
         });
-    })    
+    })
 }
 
 function getEmployee(req, res, next) {
   console.log(req.body);
-  db.any('select * from Empleado where cedula=${cedula}',req.body)
-  .then((data) => {
-    console.log(data);
-    res.status(200)
-      .json(data[0]);
-  })
-  .catch(function (err) {
-    res.status(200)
-      .json({
-        success: false
-      });
-  });
+  db.any('select * from Empleado where cedula=${cedula}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data[0]);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
 }
 
 function deleteEmployee(req, res, next) {
   console.log(req.body);
-  db.none('DELETE FROM Empleado WHERE cedula = ${cedula}',req.body)
+  db.none('DELETE FROM Empleado WHERE cedula = ${cedula}', req.body)
     .then(() => {
       res.status(200)
         .json({
@@ -242,19 +242,19 @@ function deleteEmployee(req, res, next) {
 
 function searchEmployee(req, res, next) {
   console.log(req.body)
-  db.any('select * from Empleado where '+ req.body.filtro +' = ${parametro}',req.body)
-  .then((data) => {
-    console.log(data);
-    res.status(200)
-      .json(data);
-  })
-  .catch(function (err) {
-    res.status(200)
-      .json({
-        success: false
-      });
-  });
-}  
+  db.any('select * from Empleado where ' + req.body.filtro + ' = ${parametro}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
 
 //  ********************************* PROYECTO ************************************
 function getAllProject(req, res, next) {
@@ -270,37 +270,37 @@ function getAllProject(req, res, next) {
 // ---------- ARBOL DE CARPETAS ----------
 var exec = require('child_process').exec;
 
-function execute(command, callback){
-    exec(command, function(error, stdout, stderr){ callback(stdout); });
+function execute(command, callback) {
+  exec(command, function (error, stdout, stderr) { callback(stdout); });
 };
 
 function saveProject(req, res, next) {
   console.log(req.body);
-  
+
   //EL NOMBRE SE JUNTA EN UNA SOLA CADENA
   var nomProy = req.body.nombreProyecto;
   //Separador: el split elimina los caracteres asignados a lo separadores
-  var separador = " "; 
+  var separador = " ";
   var nomJunto = nomProy.split(separador).join('');
 
   //LAS FECHAS SE JUNTA EN UNA SOLA CADENA
-  var fecha = req.body.fechaInicio;  
+  var fecha = req.body.fechaInicio;
   //Separador: el split elimina los caracteres asignados a lo separadores
-  var separador1 = " "; 
-  var separador2 = ", "; 
+  var separador1 = " ";
+  var separador2 = ", ";
   // Se logra el formato mes y año de las carpetas
   var mes = fecha.split(separador2).splice(0, 1).toString().split(separador1).pop();
   var anio = fecha.split(separador1).pop();
 
-  var path='C:\\Users\\casca\\Desktop\\SistemaPROARINSA\\'+anio+'\\'+mes+'\\'+nomJunto+'\\archivos'
+  var path = 'C:\\Users\\Admin\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto + '\\archivos'
 
   db.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente}, ${profesionalResponsable})',
-   req.body)
+    req.body)
     .then(() => {
       //EJECUTAR EL COMANDO AQUI
       //CREAR DIRECTORIO
       db.none('UPDATE Proyecto SET archivos = $1 WHERE nombreProyecto = $2', [path, req.body.nombreProyecto]);
-      execute('mkdir '+path, function(output) {
+      execute('mkdir ' + path, function (output) {
         console.log(output);
       });
       res.status(200)
@@ -331,28 +331,28 @@ function editProject(req, res, next) {
         .json({
           success: false
         });
-    })    
+    })
 }
 
 function getProject(req, res, next) {
   console.log(req.body);
-  db.any('select * from Proyecto where nombreproyecto=${nombreProyecto}',req.body)
-  .then((data) => {
-    console.log(data);
-    res.status(200)
-      .json(data[0]);
-  })
-  .catch(function (err) {
-    res.status(200)
-      .json({
-        success: false
-      });
-  });
+  db.any('select * from Proyecto where nombreproyecto=${nombreProyecto}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data[0]);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
 }
 
 function deleteProject(req, res, next) {
   console.log(req.body);
-  db.none('DELETE FROM Proyecto WHERE nombreproyecto = ${nombreProyecto}',req.body)
+  db.none('DELETE FROM Proyecto WHERE nombreproyecto = ${nombreProyecto}', req.body)
     .then(() => {
       res.status(200)
         .json({
@@ -369,19 +369,81 @@ function deleteProject(req, res, next) {
 
 function searchProject(req, res, next) {
   console.log(req.body)
-  db.any('select * from Proyecto where '+ req.body.filtro +' = ${parametro}',req.body)
-  .then((data) => {
-    console.log(data);
-    res.status(200)
-      .json(data);
-  })
-  .catch(function (err) {
-    res.status(200)
-      .json({
-        success: false
+  db.any('select * from Proyecto where ' + req.body.filtro + ' = ${parametro}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+function savefiles(req, res, next) {
+
+  db.none('insert into Archivos values(${name}, ${proyect})',
+    req.body)
+    .then(() => {
+      db.any('select archivos from Proyecto where nombreproyecto = ${proyect}', req.body)
+      .then((data) => {
+        // console.log(`AQUI: copy \"${req.body.realPath}\" \" ${data[0].archivos} \"`);
+        execute(`copy \"${req.body.realPath}\" \"${data[0].archivos}\"`, function (output) {
+          console.log(output);
+        });
+        res.status(200)
+        .json({
+          success: true
+        });
       });
-  });
-}  
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function openfile(req, res, next) {
+
+  db.any('select archivos from Proyecto where nombreproyecto = ${pkproyecto}', req.body)
+    .then((data) => {
+      let path = `start ${data[0].archivos}\\\"${req.body.file}\"`;
+      console.log(path);
+      
+      execute(path, function (output) {
+        console.log(output);
+      });
+      res.status(200)
+        .json(data);
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function searchfiles(req, res, next) {
+  console.log(req.body)
+  db.any('select nombre from Archivos where nombreproyecto = ${nombre}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
 
 
 //  ********************************* ARCHIVOS ************************************
@@ -411,4 +473,7 @@ module.exports = {
   getProject: getProject,
   deleteProject: deleteProject,
   searchProject: searchProject,
+  savefiles: savefiles,
+  searchfiles: searchfiles,
+  openfile: openfile
 }

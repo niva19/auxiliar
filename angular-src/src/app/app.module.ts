@@ -11,6 +11,7 @@ import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
 
 import { AppComponent } from './app.component'
+import { NgxPaginationModule } from 'ngx-pagination'
 import { RegisterComponent } from './Components/register/register.component'
 import { MaterializeModule } from 'angular2-materialize'
 import { MainPageComponent } from './Components/main-page/main-page.component'
@@ -50,7 +51,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     FormsModule,
     HttpModule,
-    MaterializeModule
+    MaterializeModule,
+    NgxPaginationModule
   ],
   providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService],
   bootstrap: [AppComponent]

@@ -52,3 +52,10 @@ constraint pkProyecto primary key (nombreProyecto),
 constraint fkEmpleado foreign key (profResponsable) references Empleado,
 constraint fkCliente foreign key (cliente) references Cliente
 );
+
+
+create table Archivos(
+    nombre text,
+    nombreProyecto text,
+    constraint fkProyecto foreign key (nombreProyecto) references Proyecto
+);
