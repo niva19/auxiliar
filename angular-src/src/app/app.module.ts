@@ -4,6 +4,8 @@ import { RouterModule, Routes } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { HttpModule } from '@angular/http'
 
+import { AgmCoreModule } from '@agm/core';
+
 //services
 import { ClientesService } from './services/clientes.service'
 import { IngresarService } from './services/ingresar.service'
@@ -23,6 +25,8 @@ import { NavbarComponent } from './Components/navbar/navbar.component'
 import { FooterComponent } from './Components/footer/footer.component'
 import { PrivilegiosComponent } from './Components/privilegios/privilegios.component'
 
+import { GoogleComponent } from './Components/google/google.component'
+
 const appRoutes: Routes = [
   { path: 'cliente', component: ClienteComponent },
   { path: 'inicio', component: MainPageComponent },
@@ -30,6 +34,7 @@ const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'empleados', component: EmpleadosComponent },
   { path: 'proyectos', component: ProyectosComponent },
+  { path: 'google', component: GoogleComponent },
   { path: 'privilegios', component: PrivilegiosComponent }
 ]
 
@@ -44,6 +49,7 @@ const appRoutes: Routes = [
     ProyectosComponent,
     NavbarComponent,
     FooterComponent,
+    GoogleComponent,
     PrivilegiosComponent
   ],
   imports: [
@@ -52,7 +58,11 @@ const appRoutes: Routes = [
     FormsModule,
     HttpModule,
     MaterializeModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyCojg33P1ZSFRgnjLFJqAtivnT1bm_krRU'
+    })
+
   ],
   providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService],
   bootstrap: [AppComponent]
