@@ -25,15 +25,21 @@ export class EmpleadosComponent implements OnInit {
   ax: any[];
   filtro: any
   parametro: String
-  // privilegios: string
+  privilegios: string
   usuario: String
   contrasena: String
+
+  @ViewChild('empleadoSeleccionado')
+  private empleadoSeleccionado: ElementRef
 
   @ViewChild('buscador')
   private buscador: ElementRef
 
   @ViewChild('modal2Footer')
   private modal2Footer: ElementRef
+
+  @ViewChild('modal4Footer')
+  private modal4Footer: ElementRef
 
   @ViewChild('LabelNombre')
   private LabelNombre: ElementRef
@@ -53,8 +59,8 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('LabelTelefono')
   private LabelTelefono: ElementRef
 
-  // @ViewChild('LabelPrivilegios')
-  // private LabelPrivilegios: ElementRef
+  @ViewChild('LabelPrivilegios')
+  private LabelPrivilegios: ElementRef
 
   @ViewChild('LabelUsuario')
   private LabelUsuario: ElementRef
@@ -64,6 +70,9 @@ export class EmpleadosComponent implements OnInit {
 
   @ViewChild('inputnombre')
   private inputnombre: ElementRef
+
+  @ViewChild('inputPrivilegio')
+  private inputPrivilegio: ElementRef
 
   @ViewChild('inputapellidos')
   private inputapellidos: ElementRef
@@ -80,8 +89,8 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('inputtelefono')
   private inputTelefono: ElementRef
 
-  // @ViewChild('inputprivilegios')
-  // private inputPrivilegios: ElementRef
+  @ViewChild('inputprivilegios')
+  private inputPrivilegios: ElementRef
 
   @ViewChild('inputusuario')
   private inputUsuario: ElementRef
@@ -98,7 +107,6 @@ export class EmpleadosComponent implements OnInit {
     // });
     this.getAll();
   }
-
 
   getAll() {
     this.EmpService.getAll().subscribe(data => {
@@ -179,9 +187,6 @@ export class EmpleadosComponent implements OnInit {
       this.renderer2.setAttribute(this.LabelContrasena.nativeElement, "class", "active")
       this.contrasena = data.contrasena
 
-      // this.renderer2.setAttribute(this.LabelPrivilegios.nativeElement, "class", "active")
-      // this.privilegios = data.privilegios
-
       this.switch = false
       $('#modal1').modal('open');
     });
@@ -198,7 +203,7 @@ export class EmpleadosComponent implements OnInit {
         Materialize.toast('El empleado se borró exitosamente', 3000, 'green rounded')
       }
       else {
-        alert("algo salio mal")
+        Materialize.toast('Algo salio mal', 3000, 'red rounded')
       }
     });
   }
@@ -206,8 +211,6 @@ export class EmpleadosComponent implements OnInit {
   Confirmar_Eliminar(id) {
     let button = this.renderer2.createElement('a');
     this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
-    // this.modal2Footer.nativeElement.innerHTML ='';
-
     this.renderer2.setAttribute(button, "class", "modal-action")
     this.renderer2.setAttribute(button, "class", "modal-close")
     this.renderer2.setAttribute(button, "class", "waves-effect")
@@ -223,6 +226,56 @@ export class EmpleadosComponent implements OnInit {
 
     console.log(id)
     $('#modal2').modal('open');
+  }
+
+  Cambio_Privilegios(id) {
+    const empleado = {
+      cedula: id
+    }
+    this.EmpService.getById(empleado).subscribe(data => {
+      //init
+      let button = this.renderer2.createElement('a')
+      this.renderer2.removeChild(this.modal4Footer.nativeElement, this.modal4Footer.nativeElement.children[1])
+      this.renderer2.setAttribute(button, "class", "modal-action")
+      this.renderer2.setAttribute(button, "class", "modal-close")
+      this.renderer2.setAttribute(button, "class", "waves-effect")
+      this.renderer2.setAttribute(button, "class", "waves-green")
+      this.renderer2.setAttribute(button, "class", "btn-flat")
+      let txt = this.renderer2.createText("Confirmar")
+
+      this.renderer2.appendChild(button, txt)
+      this.renderer2.appendChild(this.modal4Footer.nativeElement, button);
+
+      this.renderer2.setAttribute(this.LabelNombre.nativeElement, "class", "active")
+      this.empleadoSeleccionado.nativeElement.innerHTML = data.nombre + " " + data.apellidos
+      //event
+      this.renderer2.listen(button, 'click', () => {
+        this.Actualiza_Privilegio(data)
+      })
+      $('#modal4').modal('open');
+    });
+  }
+
+  Actualiza_Privilegio(data) {
+    console.log(data)
+    if (this.ValidateFormPrivilegios()) {
+      data.privilegios = this.privilegios
+      this.EmpService.EditarEmpleado(data).subscribe(data => {
+        console.log(data);
+        if (data.success) {
+          this.getAll();
+          this.switch = true;
+          $('#modal4').modal('close');
+          Materialize.toast('Se aplicaron los privilegios exitosamente', 3000, 'green rounded')
+        }
+        else {
+          Materialize.toast('Error, algo ha ocurrido', 3000, 'red rounded')
+        }
+      });
+    }
+    else {
+      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+    }
   }
 
   EmpleadoSubmit() {
@@ -292,9 +345,12 @@ export class EmpleadosComponent implements OnInit {
       return false
     if (this.inputContrasena.nativeElement.value == '')
       return false
-    // if(this.inputPrivilegios.nativeElement.value == '')
-    //   return false
+    return true
+  }
 
+  ValidateFormPrivilegios() {
+    if (this.inputPrivilegios.nativeElement.value == '')
+      return false
     return true
   }
 

@@ -59,3 +59,8 @@ create table Archivos(
     nombreProyecto text,
     constraint fkProyecto foreign key (nombreProyecto) references Proyecto
 );
+
+-- DATA
+
+insert into empleado values ('Luis','Carrillo','4013235','Ribera','7645855','luis@gmail.com','Luis','Luis',3)
+

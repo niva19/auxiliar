@@ -22,18 +22,18 @@
           <label for="cedula" #LabelCedula>Cedula</label>
         </div>
         <div class="input-field col s12">
-            <input id="direccion" type="text" [(ngModel)]="direccion" name="direccion" class="validate" #inputdireccion>
-            <label for="direccion" #Labeldireccion>Dirección</label>
+          <input id="direccion" type="text" [(ngModel)]="direccion" name="direccion" class="validate" #inputdireccion>
+          <label for="direccion" #Labeldireccion>Dirección</label>
         </div>
         <div class="input-field col s12">
-            <input (keypress)="Only_Numbers($event)" id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate"
-              #inputtelefono>
-            <label for="telefono" #LabelTelefono>Telefono</label>
-          </div>
+          <input (keypress)="Only_Numbers($event)" id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate"
+            #inputtelefono>
+          <label for="telefono" #LabelTelefono>Telefono</label>
+        </div>
         <div class="input-field col s12">
           <input id="correo" type="email" [(ngModel)]="correo" name="correo" class="validate" #inputcorreo>
           <label for="correo" #LabelCorreo data-error="wrong" data-success="right">Correo</label>
-        </div>        
+        </div>
         <div class="input-field col s12">
           <input id="usuario" type="text" [(ngModel)]="usuario" name="usuario" class="validate" #inputusuario>
           <label for="name" #LabelUsuario>Usuario</label>
@@ -64,7 +64,7 @@
     <p>Realmente deseea eliminar el empleado</p>
   </div>
   <div class="modal-footer" #modal2Footer>
-    <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+    <a class="modal-action modal-close waves-effect waves-red btn-flat">Cancelar</a>
     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
   </div>
 </div>
@@ -80,7 +80,7 @@
           <label for="filtro">{{filtro}}</label>
         </div>
         <div class="input-field col s12">
-          <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
+          <a class="modal-action modal-close waves-effect waves-red btn">Cancelar</a>
           <input type="submit" class="#0277bd light-blue darken-3 btn" value="Buscar">
         </div>
       </div>
@@ -88,6 +88,54 @@
   </div>
 </div>
 
+<!-- ################################### CAMBIO PRIVILEGIOS ########################################-->
+
+<div id="modal4" class="modal">
+  <div class="modal-content">
+    <h4>Privilegios</h4>
+    <h6 name="empleadoSeleccionado" id="empleadoSeleccionado" #empleadoSeleccionado></h6>
+    <!--###################################SELECT-->
+    <select materialize="material_select" id="privilegios" type="text" [(ngModel)]="privilegios" name="privilegios" #inputprivilegios
+      class="modal-content">
+      <option value="" disabled selected>Seleccione su opción</option>
+      <option value="1">Nivel 1</option>
+      <option value="2">Nivel 2</option>
+      <option value="3">Nivel 3</option>
+    </select>
+    <!--###################################SELECT-->
+    <h5>Información:</h5>
+    <ul class="collapsible" data-collapsible="accordion">
+      <li>
+        <div class="collapsible-header active">
+          <i class="material-icons">star_border</i>Nivel 1</div>
+        <div class="collapsible-body">
+          <span>Permite al usuario consultar, modificar y eliminar datos básicos como la información de clientes.</span>
+        </div>
+      </li>
+      <li>
+        <div class="collapsible-header">
+          <i class="material-icons">star_half</i>Nivel 2</div>
+        <div class="collapsible-body">
+          <span>Permite al usuario consultar, modificar y eliminar datos de proyectos y clientes. No tiene acceso a datos financieros
+            de los proyectos.</span>
+        </div>
+      </li>
+      <li>
+        <div class="collapsible-header">
+          <i class="material-icons">star</i>Nivel 3</div>
+        <div class="collapsible-body">
+          <span>Permite al usuario consultar, modificar y eliminar datos de empleados, proyectos, clientes sin limitaciones.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-footer" #modal4Footer>
+    <a class="modal-action modal-close waves-effect waves-red btn-flat">Cancelar</a>
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
+  </div>
+</div>
+
+<!-- ############################################### TABLA ######################################### -->
 
 <div class="container">
 
@@ -121,7 +169,7 @@
                 <td>Telefono</td>
                 <td>Correo</td>
                 <td>Usuario</td>
-                <!-- <td>Privilegios</td> -->
+                <td>Privilegios</td>
                 <td>Editar</td>
                 <td>Eliminar</td>
               </tr>
@@ -135,7 +183,18 @@
                 <td>{{v.telefono}}</td>
                 <td>{{v.correo}}</td>
                 <td>{{v.usuario}}</td>
-                <!-- <td>{{v.privilegios}}</td> -->
+                <!-- #####################PRIVILEGIOS CON ICONOS DINAMICOS#####################-->
+                <td>
+                  <a class="waves-effect waves-light btn-flat" (click)="Cambio_Privilegios(v.cedula)">
+                    <div [ngSwitch]="v.privilegios">
+                      <i *ngSwitchCase="0" class="tiny material-icons left">error_outline</i>
+                      <i *ngSwitchCase="1" class="tiny material-icons left">star_border</i>
+                      <i *ngSwitchCase="2" class="tiny material-icons left">star_half</i>
+                      <i *ngSwitchCase="3" class="tiny material-icons left">star</i>
+                    </div>
+                  </a>
+                </td>
+                <!-- ############################################################################-->
                 <td>
                   <a class="waves-effect waves-light btn-flat" (click)="Editar(v.cedula)">
                     <i class="tiny material-icons left">create</i>

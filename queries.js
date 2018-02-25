@@ -6,8 +6,8 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-//var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
-var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
+var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
+//var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
 // METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -172,7 +172,7 @@ function getEmployeesCNA(req, res, next) {
 
 function saveEmployee(req, res, next) {
   console.log(req.body);
-  db.none('insert into Empleado values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono}, ${correo}, ${usuario}, ${contrasena})',
+  db.none('insert into Empleado values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono}, ${correo}, ${usuario}, ${contrasena}, 0)',
     req.body)
     .then(() => {
       res.status(200)
@@ -190,7 +190,7 @@ function saveEmployee(req, res, next) {
 
 function editEmployee(req, res, next) {
   console.log(req.body);
-  db.none('UPDATE Empleado SET nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena} where cedula = ${cedula}',
+  db.none('update empleado set nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena}, privilegios=${privilegios} where cedula = ${cedula}',
     req.body)
     .then(() => {
       res.status(200)
@@ -238,7 +238,6 @@ function deleteEmployee(req, res, next) {
         });
     })
 }
-
 
 function searchEmployee(req, res, next) {
   console.log(req.body)
@@ -292,7 +291,7 @@ function saveProject(req, res, next) {
   var mes = fecha.split(separador2).splice(0, 1).toString().split(separador1).pop();
   var anio = fecha.split(separador1).pop();
 
-  var path = 'C:\\Users\\Admin\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto + '\\archivos'
+  var path = 'E:\\Users\\User\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto + '\\archivos'
 
   db.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente}, ${profesionalResponsable})',
     req.body)

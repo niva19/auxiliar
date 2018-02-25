@@ -18,14 +18,10 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     $('.modal').modal();
     $(".button-collapse").sideNav();
-    /*
-        if (localStorage.getItem('cedula')) {
-          this.username = localStorage.getItem('nombre');
-    }*/
   }
 
   anyone_In_Session(): Boolean {
-    return (localStorage.getItem('cedula')) ? true : false
+    return (localStorage.getItem('cedula') && localStorage.getItem('privilegio')) ? true : false
   }
 
   updateName() {

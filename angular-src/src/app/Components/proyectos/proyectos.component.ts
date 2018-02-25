@@ -487,7 +487,6 @@ export class ProyectosComponent implements OnInit {
 
 
     this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
-
       files.forEach(val =>{
         for(var f1 in val){
           var extension = "";

@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 
+import * as CryptoJS from 'crypto-js';
+
 @Injectable()
 export class IngresarService {
   empleado: any
+  secretKey = 'notToday'
 
   constructor(private http: Http) { }
 
@@ -18,6 +21,26 @@ export class IngresarService {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     return this.http.get('http://localhost:3000/api/getemployees', { headers: headers }).map(res => res.json())
+  }
+
+  store(value) {
+    console.log(value)
+    return CryptoJS.AES.encrypt(value, this.secretKey)
+  }
+
+  loggedIn() {
+    //check storage
+    return (localStorage.getItem('cedula') && localStorage.getItem('privilegio')) ? true : false
+  }
+
+  get(key) {
+    var encryptedData = window.localStorage.getItem(key)
+    if (encryptedData) {
+      var bytes = CryptoJS.AES.decrypt(encryptedData.toString(), this.secretKey)
+      var plaintext = bytes.toString(CryptoJS.enc.Utf8)
+      return plaintext
+    }
+    return null;
   }
 
 }

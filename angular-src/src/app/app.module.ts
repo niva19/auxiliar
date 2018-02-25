@@ -1,8 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser'
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { HttpModule } from '@angular/http'
+
+//guards
+import { AuthGuard } from './Guards/auth.guard'
+import { Level1Guard } from './Guards/level1.guard'
+import { Level2Guard } from './Guards/level2.guard'
+import { Level3Guard } from './Guards/level3.guard'
+
 
 import { AgmCoreModule } from '@agm/core';
 
@@ -23,19 +31,16 @@ import { EmpleadosComponent } from './Components/empleados/empleados.component'
 import { ProyectosComponent } from './Components/proyectos/proyectos.component'
 import { NavbarComponent } from './Components/navbar/navbar.component'
 import { FooterComponent } from './Components/footer/footer.component'
-import { PrivilegiosComponent } from './Components/privilegios/privilegios.component'
-
 import { GoogleComponent } from './Components/google/google.component'
 
 const appRoutes: Routes = [
-  { path: 'cliente', component: ClienteComponent },
+  { path: 'cliente', component: ClienteComponent, canActivate: [AuthGuard, Level1Guard] },
   { path: 'inicio', component: MainPageComponent },
   { path: 'ingresar', component: IngresarComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'empleados', component: EmpleadosComponent },
-  { path: 'proyectos', component: ProyectosComponent },
-  { path: 'google', component: GoogleComponent },
-  { path: 'privilegios', component: PrivilegiosComponent }
+  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
+  { path: 'empleado', component: EmpleadosComponent, canActivate: [AuthGuard, Level3Guard] },
+  { path: 'proyecto', component: ProyectosComponent, canActivate: [AuthGuard, Level2Guard] },
+  { path: 'google', component: GoogleComponent, canActivate: [AuthGuard, Level1Guard] }
 ]
 
 @NgModule({
@@ -49,10 +54,10 @@ const appRoutes: Routes = [
     ProyectosComponent,
     NavbarComponent,
     FooterComponent,
-    GoogleComponent,
-    PrivilegiosComponent
+    GoogleComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     FormsModule,
@@ -64,7 +69,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService],
+  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 

@@ -3,6 +3,7 @@ import { IngresarService } from '../../services/ingresar.service'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
+
 @Component({
   selector: 'app-ingresar',
   templateUrl: './ingresar.component.html',
@@ -15,7 +16,7 @@ export class IngresarComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private ingresarService: IngresarService,
+    private ingresarService: IngresarService
   ) { }
 
   ngOnInit() {
@@ -31,19 +32,33 @@ export class IngresarComponent implements OnInit {
     // #######################################################################
     // ################### FALTAN LOS N ESPACIOS EN BLANCO####################
     // #######################################################################
-    if (empleado.user == null || empleado.password == null){
-      Materialize.toast('Complete los espacios en blanco para continuar', 3000, 'red rounded')
+    if (empleado.user == null || empleado.password == null) {
+      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
       return;
     }
 
     this.ingresarService.logear(empleado).subscribe(data => {
       if (data.success) {
+        var access = 'uno'
         //logeado correctamente
         localStorage.setItem('cedula', data.data.cedula)
         localStorage.setItem('nombre', data.data.nombre)
-        localStorage.setItem('privilegio', data.data.privilegios)
+
+        //PRIVILEGIOS
+        if (data.data.privilegios == 1) {
+          localStorage.setItem('privilegio', this.ingresarService.store('uno'))
+        }
+        else
+          if (data.data.privilegios == 2)
+            localStorage.setItem('privilegio', this.ingresarService.store('dos'))
+          else
+            if (data.data.privilegios == 3)
+              localStorage.setItem('privilegio', this.ingresarService.store('tres'))
+            else
+              localStorage.setItem('privilegio', this.ingresarService.store('cero'))
+
         this.router.navigate(['/inicio'])
-        Materialize.toast('Bienvenido al sistema', 4000, 'green rounded')
+        Materialize.toast('Validación completada, bienvenido', 4000, 'green rounded')
       } else {
         //logeado incorrecto
         Materialize.toast('Usuario o contraseña incorrecto, intente de nuevo', 4000, 'red rounded')
