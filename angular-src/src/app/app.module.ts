@@ -11,12 +11,11 @@ import { Level1Guard } from './Guards/level1.guard'
 import { Level2Guard } from './Guards/level2.guard'
 import { Level3Guard } from './Guards/level3.guard'
 
-
 import { AgmCoreModule } from '@agm/core';
 
 //services
 import { ClientesService } from './services/clientes.service'
-import { IngresarService } from './services/ingresar.service'
+import { IngresarService } from './Services/ingresar.service'
 import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
 

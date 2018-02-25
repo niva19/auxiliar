@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
-import { IngresarService } from '../services/ingresar.service';
+import { IngresarService } from '../Services/ingresar.service';
 import * as Materialize from 'angular2-materialize'
 
 

@@ -32,6 +32,16 @@ export class IngresarService {
     return (localStorage.getItem('cedula') && localStorage.getItem('privilegio')) ? true : false
   }
 
+  updateName() {
+    if (localStorage.getItem('cedula')) {
+      return localStorage.getItem('nombre');
+    } else {
+      return '';
+    }
+  }
+
+
+
   get(key) {
     var encryptedData = window.localStorage.getItem(key)
     if (encryptedData) {
@@ -40,6 +50,30 @@ export class IngresarService {
       return plaintext
     }
     return null;
+  }
+
+  isLevel1() {
+    var priv = this.get('privilegio')
+    if (priv == "dos" || priv == "uno" || priv == "tres")
+      return true
+    else
+      return false
+  }
+  isLevel2() {
+    var priv = this.get('privilegio')
+    if (priv == "dos" || priv == "tres")
+      return true
+    else
+      return false
+  }
+
+
+  isLevel3() {
+    var priv = this.get('privilegio')
+    if (priv == "tres")
+      return true
+    else
+      return false
   }
 
 }
