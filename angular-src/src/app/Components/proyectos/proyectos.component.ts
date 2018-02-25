@@ -472,13 +472,13 @@ export class ProyectosComponent implements OnInit {
     else Materialize.toast('Complete el espacio para continuar', 3000, 'red rounded')
   }
 
-  Archivos(nombre){
+  Archivos(nombre) {
 
     function invertir(cadena) {
       var x = cadena.length;
       var cadenaInvertida = "";
-     
-      while (x>=0) {
+
+      while (x >= 0) {
         cadenaInvertida += cadena.charAt(x);
         x--;
       }
@@ -486,26 +486,26 @@ export class ProyectosComponent implements OnInit {
     }
 
 
-    this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
-      files.forEach(val =>{
-        for(var f1 in val){
+    this.ProyService.BuscarArchivos({ nombre: nombre }).subscribe(files => {
+      files.forEach(val => {
+        for (var f1 in val) {
           var extension = "";
-          for(var i=val[f1].length - 1; i > -1; i--){
-            if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
+          for (var i = val[f1].length - 1; i > -1; i--) {
+            if (val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
             else break
           }
-          val["extension"] = invertir(extension)  
+          val["extension"] = invertir(extension)
         }
       })
- 
+
       this.archivos = files
       this.pkProyecto = nombre
       $('#modal6').modal('open')
     })
   }
 
-  Enlazar_Archivos(){
-    if(this.abc.nativeElement.files[0]){
+  Enlazar_Archivos() {
+    if (this.abc.nativeElement.files[0]) {
       var realPath = this.abc.nativeElement.files[0].path;
 
       let path = {
@@ -514,7 +514,7 @@ export class ProyectosComponent implements OnInit {
         proyect: this.pkProyecto
       }
       console.log(path)
-      this.ProyService.GuardarArchivo(path).subscribe(bol =>{
+      this.ProyService.GuardarArchivo(path).subscribe(bol => {
         this.Archivos(this.pkProyecto)
         Materialize.toast('El archivo se enlazo al proyecto exitosamente', 3000, 'green rounded')
       })
@@ -522,9 +522,9 @@ export class ProyectosComponent implements OnInit {
     else Materialize.toast('Debe elegir un archivo', 3000, 'red rounded')
   }
 
-  Abrir_Archivo(file_name){
+  Abrir_Archivo(file_name) {
 
-    this.ProyService.AbrirArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
+    this.ProyService.AbrirArchivo({ pkproyecto: this.pkProyecto, file: file_name }).subscribe(res => {
       console.log(res)
     })
   }
@@ -598,13 +598,7 @@ export class ProyectosComponent implements OnInit {
   isProfResponsable() {
     return (this.filtro == "profResponsable") ? true : false
   }
-
-
-  // prueba(){
-  //   // let ax = $('select[name=state]').val()
-  //   let ax = $('#fechaInicio').val();
-  //   console.log(ax)
-  // }
+  
 
 }
 

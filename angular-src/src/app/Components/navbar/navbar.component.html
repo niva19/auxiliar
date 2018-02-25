@@ -29,17 +29,17 @@
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/empleado']">Empleados</a>
           </li>
-          <!-- ########################################################### -->
-          <!-- ############### PRIVILEGIOS PLACEHOLDER ################### -->
-          <li *ngIf="Is_Privilegie_3();">
-            <a [routerLink]="['/privilegio']">Privilegios</a>
-          </li>
-          <!-- ######################################################## -->
           <!-- ################### DROP DOWN TRIGGER ################## -->
           <!-- ################### NOMBRE DE USUARIO ################## -->
           <!-- ######################################################## -->
-          <li>
+          <!-- <li>
             <a class="dropdown-button" id="User" data-activates="dropdown" data-beloworigin="true">{{username}}</a>
+            
+          </li> -->
+          <li>
+            <a class="dropdown-button" id="User" data-activates="dropdown" data-beloworigin="true">{{username}}
+              <i class="material-icons right">arrow_drop_down</i>
+            </a>
           </li>
         </div>
         <ng-template #other>

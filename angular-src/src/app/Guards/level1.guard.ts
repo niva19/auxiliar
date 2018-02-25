@@ -13,7 +13,6 @@ export class Level1Guard implements CanActivate {
     canActivate() {
         var privilegio = this.ingresarService.get('privilegio')
         if (privilegio == "uno" || privilegio == "dos" || privilegio == "tres") {
-            console.log('Guard nivel 1 superado')
             return true;
         } else {
             Materialize.toast('Error de seguridad', 3000, 'red rounded')

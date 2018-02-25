@@ -139,9 +139,6 @@ export class EmpleadosComponent implements OnInit {
     this.renderer2.removeClass(this.LabelTelefono.nativeElement, "active")
     this.telefono = ""
 
-    // this.renderer2.removeClass(this.LabelPrivilegios.nativeElement,"active")
-    // this.privilegios = ""
-
     this.renderer2.removeClass(this.LabelUsuario.nativeElement, "active")
     this.renderer2.removeAttribute(this.inputUsuario.nativeElement, 'disabled');
     this.usuario = ""
@@ -154,6 +151,12 @@ export class EmpleadosComponent implements OnInit {
     this.switch = true;
     this.LimpiarGuardar();
     $('#modal1').modal('open');
+  }
+
+  Limpiar() {
+    this.renderer2.removeClass(this.LabelNombre.nativeElement, "active")
+    this.empleadoSeleccionado.nativeElement.innerHTML = ""
+    this.privilegios = ""
   }
 
   Editar(id) {
@@ -229,6 +232,8 @@ export class EmpleadosComponent implements OnInit {
   }
 
   Cambio_Privilegios(id) {
+    //clean
+    this.Limpiar()
     const empleado = {
       cedula: id
     }
@@ -375,6 +380,11 @@ export class EmpleadosComponent implements OnInit {
         Materialize.toast('Sin resultados', 3000, 'red rounded')
       $('#modal3').modal('close');
     });
+  }
+
+  //init
+  ngAfterViewInit() {
+    $('.collapsible').collapsible();
   }
 
 }

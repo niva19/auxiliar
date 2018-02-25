@@ -34,6 +34,7 @@ import { FooterComponent } from './Components/footer/footer.component'
 import { GoogleComponent } from './Components/google/google.component'
 
 const appRoutes: Routes = [
+  { path: '', component: MainPageComponent },
   { path: 'cliente', component: ClienteComponent, canActivate: [AuthGuard, Level1Guard] },
   { path: 'inicio', component: MainPageComponent },
   { path: 'ingresar', component: IngresarComponent },

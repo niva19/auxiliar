@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core'
-declare var jQuery: any
-declare var $: any
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
+
+
+declare var jQuery: any;
+declare var $: any;
 
 @Component({
   selector: 'app-navbar',
@@ -18,6 +20,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     $('.modal').modal();
     $(".button-collapse").sideNav();
+    $(".dropdown-button").dropdown();
   }
 
   anyone_In_Session(): Boolean {
@@ -44,4 +47,6 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/ingresar'])
     return false
   }
+
+
 }

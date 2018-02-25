@@ -12,7 +12,6 @@ export class Level3Guard implements CanActivate {
 
     canActivate() {
         if (this.ingresarService.get('privilegio') == "tres") {
-            console.log('Guard nivel 3 superado')
             return true;
         } else {
             Materialize.toast('Error de seguridad', 3000, 'red rounded')

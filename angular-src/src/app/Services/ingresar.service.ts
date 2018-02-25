@@ -29,7 +29,6 @@ export class IngresarService {
   }
 
   loggedIn() {
-    //check storage
     return (localStorage.getItem('cedula') && localStorage.getItem('privilegio')) ? true : false
   }
 
