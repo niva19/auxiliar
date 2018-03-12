@@ -57,5 +57,8 @@ constraint fkCliente foreign key (cliente) references Cliente
 create table Archivos(
     nombre text,
     nombreProyecto text,
+    enlazado boolean DEFAULT TRUE,
+    publico boolean, 
+    primary key (nombre, nombreProyecto),
     constraint fkProyecto foreign key (nombreProyecto) references Proyecto
 );

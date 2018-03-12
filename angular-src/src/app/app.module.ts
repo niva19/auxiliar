@@ -24,8 +24,9 @@ import { ProyectosComponent } from './Components/proyectos/proyectos.component'
 import { NavbarComponent } from './Components/navbar/navbar.component'
 import { FooterComponent } from './Components/footer/footer.component'
 import { PrivilegiosComponent } from './Components/privilegios/privilegios.component'
-
-import { GoogleComponent } from './Components/google/google.component'
+import { GoogleComponent } from './Components/google/google.component';
+import { HistorialComponent } from './Components/historial/historial.component';
+import { ArchivosComponent } from './Components/archivos/archivos.component'
 
 const appRoutes: Routes = [
   { path: 'cliente', component: ClienteComponent },
@@ -35,7 +36,9 @@ const appRoutes: Routes = [
   { path: 'empleados', component: EmpleadosComponent },
   { path: 'proyectos', component: ProyectosComponent },
   { path: 'google', component: GoogleComponent },
-  { path: 'privilegios', component: PrivilegiosComponent }
+  { path: 'historial', component: HistorialComponent },
+  { path: 'privilegios', component: PrivilegiosComponent },
+  { path: 'archivos', component: ArchivosComponent }
 ]
 
 @NgModule({
@@ -50,7 +53,9 @@ const appRoutes: Routes = [
     NavbarComponent,
     FooterComponent,
     GoogleComponent,
-    PrivilegiosComponent
+    PrivilegiosComponent,
+    HistorialComponent,
+    ArchivosComponent
   ],
   imports: [
     BrowserModule,

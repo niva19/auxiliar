@@ -302,6 +302,15 @@ function saveProject(req, res, next) {
       db.none('UPDATE Proyecto SET archivos = $1 WHERE nombreProyecto = $2', [path, req.body.nombreProyecto]);
       execute('mkdir ' + path, function (output) {
         console.log(output);
+
+        execute('mkdir ' + path + '\\publico', function (output) {
+          console.log(output);
+        });
+
+        execute('mkdir ' + path + '\\privado', function (output) {
+          console.log(output);
+        });
+
       });
       res.status(200)
         .json({
@@ -385,25 +394,31 @@ function searchProject(req, res, next) {
 
 function savefiles(req, res, next) {
 
-  db.none('insert into Archivos values(${name}, ${proyect})',
+  db.none('insert into Archivos values(${name}, ${proyect}, ${estado})',
     req.body)
     .then(() => {
       db.any('select archivos from Proyecto where nombreproyecto = ${proyect}', req.body)
-      .then((data) => {
-        // console.log(`AQUI: copy \"${req.body.realPath}\" \" ${data[0].archivos} \"`);
-        execute(`copy \"${req.body.realPath}\" \"${data[0].archivos}\"`, function (output) {
-          console.log(output);
+        .then((data) => {
+          // console.log(`AQUI: copy \"${req.body.realPath}\" \" ${data[0].archivos} \"`);
+
+          let estado;
+          (req.body.estado) ? estado = "publico"
+          : estado = "privado";
+
+          execute(`copy \"${req.body.realPath}\" \"${data[0].archivos}\\${estado}\"`, function (output) {
+            console.log(output);
+          });
+          res.status(200)
+            .json({
+              success: true
+            });
         });
-        res.status(200)
-        .json({
-          success: true
-        });
-      });
     })
     .catch((err) => {
       res.status(200)
         .json({
-          success: false
+          success: false,
+          error: err
         });
     })
 }
@@ -414,7 +429,7 @@ function openfile(req, res, next) {
     .then((data) => {
       let path = `start ${data[0].archivos}\\\"${req.body.file}\"`;
       console.log(path);
-      
+
       execute(path, function (output) {
         console.log(output);
       });
@@ -428,10 +443,50 @@ function openfile(req, res, next) {
         });
     })
 }
+function unlink(req, res, next) {
+  db.any('update archivos set enlazado = FALSE where nombreproyecto = ${pkproyecto} and nombre = ${file}', req.body)
+  .then(() => {
+    res.status(200)
+    .json({
+      success: true
+    });
+  })
+  .catch((err) => {
+    res.status(200)
+      .json({
+        success: false
+      });
+  })
+}
+
+function deletefile(req, res, next) {
+  db.any('select archivos from Proyecto where nombreproyecto = ${pkproyecto}', req.body)
+    .then((data) => {
+      let path = `del ${data[0].archivos}\\\"${req.body.file}\"`;
+      console.log(path);
+
+      execute(path, function (output) {
+        console.log(output);
+      });
+      db.any('delete from archivos where nombreproyecto = ${pkproyecto} and nombre = ${file}', req.body)
+        .then(() => {
+          res.status(200)
+            .json({
+              success: true
+            });
+        })
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
 
 function searchfiles(req, res, next) {
   console.log(req.body)
-  db.any('select nombre from Archivos where nombreproyecto = ${nombre}', req.body)
+  db.any('select nombre from Archivos where nombreproyecto = ${nombre} and enlazado = TRUE', req.body)
     .then((data) => {
       console.log(data);
       res.status(200)
@@ -444,8 +499,33 @@ function searchfiles(req, res, next) {
         });
     });
 }
+ 
+function getunlinkfiles(req, res, next) {
+  db.any('select * from archivos where enlazado = FALSE')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
 
-
+function recoveryfile(req, res, next) {
+  db.any('update archivos set enlazado = TRUE where nombreproyecto = ${pkproyecto} and nombre = ${file}', req.body)
+  .then(() => {
+    res.status(200)
+    .json({
+      success: true
+    });
+  })
+  .catch((err) => {
+    res.status(200)
+      .json({
+        success: false
+      });
+  })
+}
 //  ********************************* ARCHIVOS ************************************
 
 module.exports = {
@@ -475,5 +555,9 @@ module.exports = {
   searchProject: searchProject,
   savefiles: savefiles,
   searchfiles: searchfiles,
-  openfile: openfile
+  openfile: openfile,
+  deletefile: deletefile,
+  unlink: unlink,
+  getunlinkfiles: getunlinkfiles,
+  recoveryfile: recoveryfile
 }

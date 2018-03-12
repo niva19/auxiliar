@@ -18,6 +18,9 @@
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <div *ngIf="anyone_In_Session() && this.updateName(); else other">
           <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/historial']">Historial</a>
+          </li>
+          <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
           </li>
           <li [routerLinkActive]="['active']">
@@ -57,6 +60,9 @@
               <i class="tiny material-icons">account_circle</i>{{username}}</a>
           </li>
           <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/historial']">Historial</a>
+          </li>
+          <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
           </li>
           <li [routerLinkActive]="['active']">
@@ -68,6 +74,7 @@
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/empleados']">Empleados</a>
           </li>
+          
           <!-- ######################################################## -->
           <!-- ######################### SALIR ######################## -->
           <li>

@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2, Renderer } from '@angular/core';
+import { Route } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 import { ProyectosService } from '../../services/proyectos.service'
 import { ClientesService } from '../../services/clientes.service'
 import { EmpleadosService } from '../../services/empleados.service'
@@ -25,8 +27,8 @@ export class ProyectosComponent implements OnInit {
   switch: Boolean = true
   detalles: any[] = []
   ax: any[]
-  pkProyecto: String
-  archivos: any[]
+  // pkProyecto: String
+  // archivos: any[]
 
   filtro: any
   parametro: String
@@ -84,8 +86,8 @@ export class ProyectosComponent implements OnInit {
   @ViewChild('inputbanco')
   private inputbanco: ElementRef
 
-  @ViewChild('abc')
-  private abc: ElementRef
+  // @ViewChild('abc')
+  // private abc: ElementRef
 
   // ################################## METODOS ##################################
 
@@ -95,9 +97,11 @@ export class ProyectosComponent implements OnInit {
     private empleadosService: EmpleadosService,
     private router: Router,
     private renderer2: Renderer2,
-    private renderer: Renderer) { }
+    private renderer: Renderer,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
+    // $('.dropdown-button').dropdown();
     $('.modal').modal();
     $(".js-example-basic-single").select2();
     $(".js1").select2();
@@ -118,7 +122,7 @@ export class ProyectosComponent implements OnInit {
       weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
       closeOnSelect: false // Close upon selecting a date,
     });
-
+    
 
     this.getAll();
     this.DropdownClientes();
@@ -472,62 +476,88 @@ export class ProyectosComponent implements OnInit {
     else Materialize.toast('Complete el espacio para continuar', 3000, 'red rounded')
   }
 
-  Archivos(nombre){
+  // Archivos(nombre){
 
-    function invertir(cadena) {
-      var x = cadena.length;
-      var cadenaInvertida = "";
+  //   function invertir(cadena) {
+  //     var x = cadena.length;
+  //     var cadenaInvertida = "";
      
-      while (x>=0) {
-        cadenaInvertida += cadena.charAt(x);
-        x--;
-      }
-      return cadenaInvertida;
-    }
+  //     while (x>=0) {
+  //       cadenaInvertida += cadena.charAt(x);
+  //       x--;
+  //     }
+  //     return cadenaInvertida;
+  //   }
 
 
-    this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
+  //   this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
 
-      files.forEach(val =>{
-        for(var f1 in val){
-          var extension = "";
-          for(var i=val[f1].length - 1; i > -1; i--){
-            if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
-            else break
-          }
-          val["extension"] = invertir(extension)  
-        }
-      })
+  //     files.forEach(val =>{
+  //       for(var f1 in val){
+  //         var extension = "";
+  //         for(var i=val[f1].length - 1; i > -1; i--){
+  //           if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
+  //           else break
+  //         }
+  //         val["extension"] = invertir(extension)  
+  //       }
+  //     })
  
-      this.archivos = files
-      this.pkProyecto = nombre
-      $('#modal6').modal('open')
-    })
-  }
+  //     this.archivos = files
+  //     this.pkProyecto = nombre
+  //     $('#modal6').modal('open')
+  //   })
+  // }
 
-  Enlazar_Archivos(){
-    if(this.abc.nativeElement.files[0]){
-      var realPath = this.abc.nativeElement.files[0].path;
+  // Enlazar_Archivos(){
+  //   if(this.abc.nativeElement.files[0]){
+  //     var realPath = this.abc.nativeElement.files[0].path;
 
-      let path = {
-        realPath: realPath,
-        name: $('#fl2').val(),
-        proyect: this.pkProyecto
-      }
-      console.log(path)
-      this.ProyService.GuardarArchivo(path).subscribe(bol =>{
-        this.Archivos(this.pkProyecto)
-        Materialize.toast('El archivo se enlazo al proyecto exitosamente', 3000, 'green rounded')
-      })
-    }
-    else Materialize.toast('Debe elegir un archivo', 3000, 'red rounded')
-  }
+  //     let path = {
+  //       realPath: realPath,
+  //       name: $('#fl2').val(),
+  //       proyect: this.pkProyecto
+  //     }
+  //     console.log(path)
+  //     this.ProyService.GuardarArchivo(path).subscribe(res =>{
+  //       if(res.error){
+  //         Materialize.toast('El archivo ya esta enlazado al proyecto', 3000, 'red rounded')
+  //       }
+  //       else{
+  //         this.Archivos(this.pkProyecto)
+  //         Materialize.toast('El archivo se enlazo al proyecto exitosamente', 3000, 'green rounded')
+  //       }
+  //     })
+  //   }
+  //   else Materialize.toast('Debe elegir un archivo', 3000, 'red rounded')
+  // }
 
-  Abrir_Archivo(file_name){
+  // Abrir_Archivo(file_name){
 
-    this.ProyService.AbrirArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
-      console.log(res)
-    })
+  //   this.ProyService.AbrirArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
+  //     console.log(res)
+  //   })
+  // }
+
+  // Desenlazar_Archivo(file_name){
+  //   this.ProyService.DesenlazarArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
+  //     Materialize.toast('El archivo se elimino exitosamente', 3000, 'green rounded')
+  //     this.Archivos(this.pkProyecto)
+  //     console.log(res)
+  //   })
+  // }
+
+  // Eliminar_Archivo(file_name){
+  //   this.ProyService.EliminarArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
+  //     Materialize.toast('El archivo se elimino exitosamente', 3000, 'green rounded')
+  //     this.Archivos(this.pkProyecto)
+  //     console.log(res)
+  //   })
+  // }
+
+  Ir_Archivos(nombre){
+    localStorage.setItem("nombre_proyecto", nombre)
+    this.router.navigate(["/archivos"], { relativeTo: this.route });
   }
 
   Detalles(v) {

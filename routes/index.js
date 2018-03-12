@@ -59,4 +59,12 @@ router.post('/api/searchfiles', db.searchfiles);
 
 router.post('/api/openfile', db.openfile);
 
+router.post('/api/deletefile', db.deletefile);
+
+router.post('/api/unlink', db.unlink);
+
+router.get('/api/getunlinkfiles', db.getunlinkfiles); 
+
+router.post('/api/recoveryfile', db.recoveryfile); 
+
 module.exports = router;

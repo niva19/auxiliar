@@ -4,6 +4,22 @@
 
 <!-- ########################################## INGRESAR PROYECTO ############################## -->
 
+
+<!-- <ul id='dropdown1' class='dropdown-content'>
+  <li><a>one</a></li>
+  <li><a>two</a></li>
+</ul>
+
+<ul id='dropdown2' class='dropdown-content'>
+    <li><a>one</a></li>
+    <li><a>two</a></li>
+  </ul>
+
+  <ul id='dropdown3' class='dropdown-content'>
+      <li><a>one</a></li>
+      <li><a>two</a></li>
+    </ul> -->
+
 <div id="modal1" class="modal">
   <div class="modal-content">
     <form (submit)="ProyectoSubmit()" class="col s12" id="FormAgregar">
@@ -272,7 +288,7 @@
   </div>
 </div>
 
-<div id="modal6" class="modal">
+<!-- <div id="modal6" class="modal">
   <div class="modal-content">
     <div class="container-fluid">
       <div class="row">
@@ -294,7 +310,7 @@
     </div>
 
     <div class="row">
-      <ul class="collection" *ngFor="let i of archivos">
+      <ul class="collection" *ngFor="let i of archivos; let j = index" [style.overflow]="'visible'">
         <li class="collection-item avatar">
           <div *ngIf="i.extension == 'pdf'">
               <img src="assets/img/pdf.png" alt="" class="circle">
@@ -305,17 +321,18 @@
           <div *ngIf="i.extension == 'png'">
               <img src="assets/img/img.png" alt="" class="circle">
           </div>
-          <!-- <img src="assets/img/fondo.png" alt="" class="circle"> -->
           <span class="title">{{i.nombre}}</span>
-          <a class="secondary-content" (click)="Abrir_Archivo(i.nombre)">
-            <i class="material-icons">forward</i>
-          </a>
+          <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'dd'+ j"><i class="material-icons">dehaze</i></a>
+          <ul [attr.id]="'dd'+ j" class='dropdown-content'>
+            <li><a (click)="Abrir_Archivo(i.nombre)">Abrir</a></li>
+            <li><a (click)="Desenlazar_Archivo(i.nombre)">Eliminar</a></li>
+          </ul>
         </li>
       </ul>
     </div>
   </div>
 
-</div>
+</div> -->
 
 
 <div class="container">
@@ -365,7 +382,7 @@
                   </a>
                 </td>
                 <td>
-                  <a class="waves-effect waves-light btn-flat" (click)="Archivos(v.nombreproyecto)">
+                  <a class="waves-effect waves-light btn-flat" (click)="Ir_Archivos(v.nombreproyecto)">
                     <i class="tiny material-icons left">insert_drive_file</i>
                   </a>
                 </td>
