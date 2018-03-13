@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core'
-declare var jQuery: any
-declare var $: any
 import { Router } from '@angular/router'
+import { IngresarService } from '../../Services/ingresar.service'
 import * as Materialize from 'angular2-materialize'
+
+
+declare var jQuery: any;
+declare var $: any;
+declare var angular: any;
 
 @Component({
   selector: 'app-navbar',
@@ -11,34 +15,15 @@ import * as Materialize from 'angular2-materialize'
 })
 export class NavbarComponent implements OnInit {
   username: String
-  constructor(
-    private router: Router
-  ) { }
+
+  constructor(private ingresarService: IngresarService, private router: Router) {
+
+  }
 
   ngOnInit() {
     $('.modal').modal();
     $(".button-collapse").sideNav();
-    /*
-        if (localStorage.getItem('cedula')) {
-          this.username = localStorage.getItem('nombre');
-    }*/
-  }
-
-  anyone_In_Session(): Boolean {
-    return (localStorage.getItem('cedula')) ? true : false
-  }
-
-  updateName() {
-    if (localStorage.getItem('cedula')) {
-      this.username = localStorage.getItem('nombre');
-      return true
-    } else {
-      return false
-    }
-  }
-
-  Is_Privilegie_3(): Boolean {
-    return (localStorage.getItem('privilegio') == '3') ? true : false
+    $(".dropdown-button").dropdown();
   }
 
   //PARA CERRAR SESION
@@ -48,4 +33,5 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/ingresar'])
     return false
   }
+
 }

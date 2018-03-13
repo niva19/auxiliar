@@ -14,6 +14,7 @@ export class ArchivosComponent implements OnInit {
 
   pkProyecto: String
   archivos: any[]
+  file: String
 
   @ViewChild('abc')
   private abc: ElementRef
@@ -28,6 +29,11 @@ export class ArchivosComponent implements OnInit {
 
   modal1(){
     $('#modal1').modal('open');
+  }
+
+  Confirmar_eliminar(nombre){
+    $('#eliminar').modal('open');
+    this.file = nombre
   }
 
   Archivos(nombre){
@@ -45,20 +51,23 @@ export class ArchivosComponent implements OnInit {
     
     
         this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
-    
+          console.log(files)
           files.forEach(val =>{
             for(var f1 in val){
-              var extension = "";
-              for(var i=val[f1].length - 1; i > -1; i--){
-                if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
-                else break
+              if(f1 != "publico"){
+                var extension = "";
+                for(var i=val[f1].length - 1; i > -1; i--){
+                  if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
+                  else break
+                }
+                val["extension"] = invertir(extension)  
               }
-              val["extension"] = invertir(extension)  
             }
           })
      
           this.archivos = files
           this.pkProyecto = nombre
+          // console.log(files)
         })
       }
     
@@ -93,16 +102,15 @@ export class ArchivosComponent implements OnInit {
         else Materialize.toast('Debe elegir un archivo', 3000, 'red rounded')
       }
     
-      Abrir_Archivo(file_name){
-    
-        this.ProyService.AbrirArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
-          console.log(res)
+      Abrir_Archivo(file_name, publico){
+        this.ProyService.AbrirArchivo({pkproyecto: this.pkProyecto, file: file_name, publico: publico}).subscribe(res =>{
+          Materialize.toast('Abriendo archivo', 3000, 'green rounded')
         })
       }
     
-      Desenlazar_Archivo(file_name){
-        this.ProyService.DesenlazarArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
-          Materialize.toast('El archivo se elimino exitosamente', 3000, 'green rounded')
+      Desenlazar_Archivo(){
+        this.ProyService.DesenlazarArchivo({pkproyecto: this.pkProyecto, file: this.file}).subscribe(res =>{
+          Materialize.toast('El archivo se desenlazo correctamente', 3000, 'green rounded')
           this.Archivos(this.pkProyecto)
           console.log(res)
         })

@@ -13,10 +13,13 @@ declare var $: any;
 export class HistorialComponent implements OnInit {
 
   files: any[]
+  file: String
+  pkproyecto: String
 
   constructor(private ProyService: ProyectosService) { }
 
   ngOnInit() {
+    $('.modal').modal();
     this.getAll();
   }
 
@@ -27,15 +30,27 @@ export class HistorialComponent implements OnInit {
     });
   }
 
-  Recuperar_Archivo(file, pkproyecto){
-    this.ProyService.RecuperarArchivo({file: file, pkproyecto: pkproyecto}).subscribe(res => {
+  Modal_Recuperar(file, pkproyecto){
+    $('#recuperar').modal('open');
+    this.file = file
+    this.pkproyecto = pkproyecto
+  }
+
+  Modal_Eliminar(file, pkproyecto){
+    $('#eliminar').modal('open');
+    this.file = file
+    this.pkproyecto = pkproyecto
+  }
+
+  Recuperar_Archivo(){
+    this.ProyService.RecuperarArchivo({file: this.file, pkproyecto: this.pkproyecto}).subscribe(res => {
       this.getAll()
       Materialize.toast('El archivo se recupero exitosamente', 3000, 'green rounded')
     });
   }
 
-  Confirmar_Eliminar(file, pkproyecto){
-    this.ProyService.EliminarArchivo({file: file, pkproyecto: pkproyecto}).subscribe(res => {
+  Eliminar_Archivo(){
+    this.ProyService.EliminarArchivo({file: this.file, pkproyecto: this.pkproyecto}).subscribe(res => {
       this.getAll()
       Materialize.toast('El archivo se elimino exitosamente', 3000, 'green rounded')
     });

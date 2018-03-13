@@ -1,14 +1,21 @@
 import { BrowserModule } from '@angular/platform-browser'
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { HttpModule } from '@angular/http'
 
+//guards
+import { AuthGuard } from './Guards/auth.guard'
+import { Level1Guard } from './Guards/level1.guard'
+import { Level2Guard } from './Guards/level2.guard'
+import { Level3Guard } from './Guards/level3.guard'
+
 import { AgmCoreModule } from '@agm/core';
 
 //services
 import { ClientesService } from './services/clientes.service'
-import { IngresarService } from './services/ingresar.service'
+import { IngresarService } from './Services/ingresar.service'
 import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
 
@@ -23,22 +30,21 @@ import { EmpleadosComponent } from './Components/empleados/empleados.component'
 import { ProyectosComponent } from './Components/proyectos/proyectos.component'
 import { NavbarComponent } from './Components/navbar/navbar.component'
 import { FooterComponent } from './Components/footer/footer.component'
-import { PrivilegiosComponent } from './Components/privilegios/privilegios.component'
 import { GoogleComponent } from './Components/google/google.component';
 import { HistorialComponent } from './Components/historial/historial.component';
 import { ArchivosComponent } from './Components/archivos/archivos.component'
 
 const appRoutes: Routes = [
-  { path: 'cliente', component: ClienteComponent },
+  { path: '', component: MainPageComponent },
+  { path: 'cliente', component: ClienteComponent, canActivate: [AuthGuard, Level1Guard] },
   { path: 'inicio', component: MainPageComponent },
   { path: 'ingresar', component: IngresarComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'empleados', component: EmpleadosComponent },
-  { path: 'proyectos', component: ProyectosComponent },
-  { path: 'google', component: GoogleComponent },
-  { path: 'historial', component: HistorialComponent },
-  { path: 'privilegios', component: PrivilegiosComponent },
-  { path: 'archivos', component: ArchivosComponent }
+  { path: 'historial', component: HistorialComponent, canActivate: [AuthGuard, Level3Guard] },
+  { path: 'archivos', component: ArchivosComponent },
+  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
+  { path: 'empleado', component: EmpleadosComponent, canActivate: [AuthGuard, Level3Guard] },
+  { path: 'proyecto', component: ProyectosComponent, canActivate: [AuthGuard, Level2Guard] },
+  { path: 'google', component: GoogleComponent, canActivate: [AuthGuard, Level1Guard] }
 ]
 
 @NgModule({
@@ -53,11 +59,11 @@ const appRoutes: Routes = [
     NavbarComponent,
     FooterComponent,
     GoogleComponent,
-    PrivilegiosComponent,
     HistorialComponent,
     ArchivosComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     FormsModule,
@@ -69,7 +75,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService],
+  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 

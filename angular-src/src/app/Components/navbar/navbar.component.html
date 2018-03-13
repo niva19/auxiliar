@@ -16,48 +16,41 @@
         <i class="material-icons">menu</i>
       </a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <div *ngIf="anyone_In_Session() && this.updateName(); else other">
+        <div *ngIf="ingresarService.loggedIn()">
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Historial</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
           </li>
-          <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/proyectos']">Proyectos</a>
+          <li *ngIf="ingresarService.isLevel2()" [routerLinkActive]="['active']">
+            <a [routerLink]="['/proyecto']">Proyectos</a>
           </li>
-          <li [routerLinkActive]="['active']">
+          <li *ngIf="ingresarService.isLevel1()" [routerLinkActive]="['active']">
             <a [routerLink]="['/cliente']">Clientes</a>
           </li>
-          <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/empleados']">Empleados</a>
+          <li *ngIf="ingresarService.isLevel3()" [routerLinkActive]="['active']">
+            <a [routerLink]="['/empleado']">Empleados</a>
           </li>
-          <!-- ########################################################### -->
-          <!-- ############### PRIVILEGIOS PLACEHOLDER ################### -->
-          <li *ngIf="Is_Privilegie_3();">
-            <a [routerLink]="['/privilegios']">Privilegios</a>
-          </li>
-          <!-- ######################################################## -->
           <!-- ################### DROP DOWN TRIGGER ################## -->
           <!-- ################### NOMBRE DE USUARIO ################## -->
-          <!-- ######################################################## -->
           <li>
-            <a class="dropdown-button" id="User"  data-activates="dropdown" data-beloworigin="true">{{username}}</a>
+            <a class="dropdown-button" id="User" data-activates="dropdown" data-beloworigin="true">{{ingresarService.updateName()}}
+              <i class="material-icons right">arrow_drop_down</i>
+            </a>
           </li>
         </div>
-        <ng-template #other>
-          <li>
-            <a [routerLink]="['/ingresar']">Ingresar</a>
-          </li>
-        </ng-template>
+        <li *ngIf="!ingresarService.loggedIn()" [routerLinkActive]="['active']">
+          <a [routerLink]="['/ingresar']">Ingresar</a>
+        </li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
-        <div *ngIf="anyone_In_Session() && this.updateName(); else other">
+        <div *ngIf="ingresarService.loggedIn()">
           <!-- ######################################################## -->
           <!-- ############### PROFILE PLACE HOLDER ################### -->
           <li>
-            <a class="#2e7d32" id="User" >
-              <i class="tiny material-icons">account_circle</i>{{username}}</a>
+            <a class="#2e7d32" id="User">
+              <i class="tiny material-icons">account_circle</i>{{ingresarService.updateName()}}</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Historial</a>
@@ -66,13 +59,13 @@
             <a [routerLink]="['/google']">Google Maps</a>
           </li>
           <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/proyectos']">Proyectos</a>
+            <a [routerLink]="['/proyecto']">Proyectos</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/cliente']">Clientes</a>
           </li>
           <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/empleados']">Empleados</a>
+            <a [routerLink]="['/empleado']">Empleados</a>
           </li>
           
           <!-- ######################################################## -->
@@ -80,6 +73,9 @@
           <li>
             <a (click)="onLogoutClick()">
               <i class="tiny material-icons">power_settings_new</i>Salir</a>
+          </li>
+          <li *ngIf="!ingresarService.loggedIn()" [routerLinkActive]="['active']">
+            <a [routerLink]="['/ingresar']">Ingresar</a>
           </li>
         </div>
       </ul>
@@ -89,6 +85,6 @@
 
 <ul id='dropdown' class='dropdown-content'>
   <li>
-    <a (click)="onLogoutClick()" >Salir</a>
+    <a (click)="onLogoutClick()">Salir</a>
   </li>
 </ul>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-declare var jQuery:any;
-declare var $:any;
+declare var jQuery: any;
+declare var $: any;
 
 @Component({
   selector: 'app-main-page',
@@ -13,6 +13,7 @@ export class MainPageComponent implements OnInit {
 
   ngOnInit() {
     $(".button-collapse").sideNav();
+    $('.dropdown-button').dropdown();
   }
 
 }

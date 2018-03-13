@@ -10,7 +10,7 @@
       </div>
     </div>
     <p>
-      <input name="group1" type="radio" id="Publico" value="publico"/>
+      <input name="group1" type="radio" id="Publico" value="publico" checked/>
       <label for="Publico">Publico</label>
     </p>
     <p>
@@ -21,6 +21,16 @@
   <div class="modal-footer">
     <a class="btn #f44336 red modal-action modal-close waves-effect waves-red ">Cancelar</a>
     <a class="btn #00b0ff #1565c0 blue darken-3 waves-effect waves-green " (click)="Enlazar_Archivos()">Guardar</a>
+  </div>
+</div>
+
+<div id="eliminar" class="modal">
+  <div class="modal-content">
+    <h4>¿Realmente deseea desenlazar el archivo?</h4>
+  </div>
+  <div class="modal-footer">
+    <a class="btn #f44336 red modal-action modal-close waves-effect waves-red t">Cancelar</a>
+    <a class="btn #00b0ff #1565c0 blue darken-3 modal-action modal-close waves-effect waves-green" (click)="Desenlazar_Archivo()">Aceptar</a>
   </div>
 </div>
 
@@ -63,10 +73,10 @@
                 </a>
                 <ul [attr.id]="'dd'+ j" class='dropdown-content'>
                   <li>
-                    <a (click)="Abrir_Archivo(i.nombre)">Abrir</a>
+                    <a (click)="Abrir_Archivo(i.nombre, i.publico)">Abrir</a>
                   </li>
                   <li>
-                    <a (click)="Desenlazar_Archivo(i.nombre)">Eliminar</a>
+                    <a (click)="Confirmar_eliminar(i.nombre)">Desenlazar</a>
                   </li>
                 </ul>
               </li>

@@ -629,13 +629,7 @@ export class ProyectosComponent implements OnInit {
   isProfResponsable() {
     return (this.filtro == "profResponsable") ? true : false
   }
-
-
-  // prueba(){
-  //   // let ax = $('select[name=state]').val()
-  //   let ax = $('#fechaInicio').val();
-  //   console.log(ax)
-  // }
+  
 
 }
 

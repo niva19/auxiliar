@@ -1,3 +1,23 @@
+<div id="recuperar" class="modal">
+  <div class="modal-content">
+    <h4>¿Desea recuperar el archivo?</h4>
+  </div>
+  <div class="modal-footer">
+    <a class="btn #f44336 red modal-action modal-close waves-effect waves-red t">Cancelar</a>
+    <a class="btn #00b0ff #1565c0 blue darken-3 modal-action modal-close waves-effect waves-green" (click)="Recuperar_Archivo()">Aceptar</a>
+  </div>
+</div>
+
+<div id="eliminar" class="modal">
+  <div class="modal-content">
+    <h4>¿Desea eliminar el archivo permanentemente?</h4>
+  </div>
+  <div class="modal-footer">
+    <a class="btn #f44336 red modal-action modal-close waves-effect waves-red t">Cancelar</a>
+    <a class="btn #00b0ff #1565c0 blue darken-3 modal-action modal-close waves-effect waves-green" (click)="Eliminar_Archivo()">Aceptar</a>
+  </div>
+</div>
+
 <div class="container">
     
       <div class="row">
@@ -36,12 +56,12 @@
                     <td>{{v.nombre}}</td>
                     <td>{{v.nombreproyecto}}</td>
                     <td>
-                      <a class="waves-effect waves-light btn-flat" (click)="Recuperar_Archivo(v.nombre, v.nombreproyecto)">
+                      <a class="waves-effect waves-light btn-flat" (click)="Modal_Recuperar(v.nombre, v.nombreproyecto)">
                         <i class="tiny material-icons left">cached</i>
                       </a>
                     </td>
                     <td>
-                      <a class="waves-effect waves-light btn-flat" (click)="Confirmar_Eliminar(v.nombre, v.nombreproyecto)">
+                      <a class="waves-effect waves-light btn-flat" (click)="Modal_Eliminar(v.nombre, v.nombreproyecto)">
                         <i class="tiny material-icons left">delete_forever</i>
                       </a>
                     </td>
