@@ -18,6 +18,12 @@
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <div *ngIf="ingresarService.loggedIn()">
           <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/planilla']">Planilla</a>
+          </li>
+          <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/proveedores']">Proveedores</a>
+          </li>
+          <li [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Historial</a>
           </li>
           <li [routerLinkActive]="['active']">
@@ -51,6 +57,12 @@
           <li>
             <a class="#2e7d32" id="User">
               <i class="tiny material-icons">account_circle</i>{{ingresarService.updateName()}}</a>
+          </li>
+          <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/Proveedores']">Planilla</a>
+          </li>
+          <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/planilla']">Planilla</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Historial</a>

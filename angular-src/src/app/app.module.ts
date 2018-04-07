@@ -18,6 +18,8 @@ import { ClientesService } from './services/clientes.service'
 import { IngresarService } from './Services/ingresar.service'
 import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
+import { ProveedoresService } from './services/proveedores.service'
+import { PlanillaService } from './services/planilla.service'
 
 import { AppComponent } from './app.component'
 import { NgxPaginationModule } from 'ngx-pagination'
@@ -32,7 +34,9 @@ import { NavbarComponent } from './Components/navbar/navbar.component'
 import { FooterComponent } from './Components/footer/footer.component'
 import { GoogleComponent } from './Components/google/google.component';
 import { HistorialComponent } from './Components/historial/historial.component';
-import { ArchivosComponent } from './Components/archivos/archivos.component'
+import { ArchivosComponent } from './Components/archivos/archivos.component';
+import { PlanillaComponent } from './Components/planilla/planilla.component';
+import { ProveedoresComponent } from './Components/proveedores/proveedores.component'
 
 const appRoutes: Routes = [
   { path: '', component: MainPageComponent },
@@ -44,7 +48,9 @@ const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
   { path: 'empleado', component: EmpleadosComponent, canActivate: [AuthGuard, Level3Guard] },
   { path: 'proyecto', component: ProyectosComponent, canActivate: [AuthGuard, Level2Guard] },
-  { path: 'google', component: GoogleComponent, canActivate: [AuthGuard, Level1Guard] }
+  { path: 'google', component: GoogleComponent, canActivate: [AuthGuard, Level1Guard] },
+  { path: 'planilla', component: PlanillaComponent },  
+  { path: 'proveedores', component: ProveedoresComponent },
 ]
 
 @NgModule({
@@ -60,7 +66,9 @@ const appRoutes: Routes = [
     FooterComponent,
     GoogleComponent,
     HistorialComponent,
-    ArchivosComponent
+    ArchivosComponent,
+    PlanillaComponent,
+    ProveedoresComponent
   ],
   imports: [
     CommonModule,
@@ -75,7 +83,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
+  providers: [PlanillaService, ProveedoresService, ClientesService, IngresarService, EmpleadosService, ProyectosService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 
