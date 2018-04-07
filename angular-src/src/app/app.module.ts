@@ -89,7 +89,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
+  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 
