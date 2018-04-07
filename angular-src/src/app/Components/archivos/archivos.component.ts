@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ProyectosService } from '../../services/proyectos.service'
+import { CarpetasService } from '../../services/carpetas.service'
 import * as Materialize from 'angular2-materialize'
 
 declare var jQuery: any;
@@ -14,17 +15,21 @@ export class ArchivosComponent implements OnInit {
 
   pkProyecto: String
   archivos: any[]
+  carpetas: any[]
   file: String
 
   @ViewChild('abc')
   private abc: ElementRef
 
-  constructor(private ProyService: ProyectosService) { }
+  constructor(private ProyService: ProyectosService,
+              private Carpetas_Service: CarpetasService) { }
 
   ngOnInit() {
+    console.log("ruta_proyecto: ",localStorage.getItem("ruta_proyecto"));
     $('.modal').modal();
     $('.dropdown-button').dropdown();
-    this.Archivos(localStorage.getItem("nombre_proyecto"));
+    this.Carpetas(localStorage.getItem("ruta_proyecto"));
+    // this.Archivos(localStorage.getItem("nombre_proyecto"));
   }
 
   modal1(){
@@ -36,40 +41,47 @@ export class ArchivosComponent implements OnInit {
     this.file = nombre
   }
 
-  Archivos(nombre){
+  Carpetas(ruta){
+    this.Carpetas_Service.Obtener_Carpetas({ruta: ruta}).subscribe(carpetas => {
+      console.log(carpetas)
+        this.carpetas = carpetas
+    })
+  }
+
+  // Archivos(nombre){
     
-        function invertir(cadena) {
-          var x = cadena.length;
-          var cadenaInvertida = "";
+  //       function invertir(cadena) {
+  //         var x = cadena.length;
+  //         var cadenaInvertida = "";
          
-          while (x>=0) {
-            cadenaInvertida += cadena.charAt(x);
-            x--;
-          }
-          return cadenaInvertida;
-        }
+  //         while (x>=0) {
+  //           cadenaInvertida += cadena.charAt(x);
+  //           x--;
+  //         }
+  //         return cadenaInvertida;
+  //       }
     
     
-        this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
-          console.log(files)
-          files.forEach(val =>{
-            for(var f1 in val){
-              if(f1 != "publico"){
-                var extension = "";
-                for(var i=val[f1].length - 1; i > -1; i--){
-                  if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
-                  else break
-                }
-                val["extension"] = invertir(extension)  
-              }
-            }
-          })
+  //       this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
+  //         console.log(files)
+  //         files.forEach(val =>{
+  //           for(var f1 in val){
+  //             if(f1 != "publico"){
+  //               var extension = "";
+  //               for(var i=val[f1].length - 1; i > -1; i--){
+  //                 if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
+  //                 else break
+  //               }
+  //               val["extension"] = invertir(extension)  
+  //             }
+  //           }
+  //         })
      
-          this.archivos = files
-          this.pkProyecto = nombre
-          // console.log(files)
-        })
-      }
+  //         this.archivos = files
+  //         this.pkProyecto = nombre
+  //         // console.log(files)
+  //       })
+  //     }
     
       Enlazar_Archivos(){
         if(this.abc.nativeElement.files[0]){
@@ -93,7 +105,7 @@ export class ArchivosComponent implements OnInit {
               Materialize.toast('El archivo ya esta enlazado al proyecto', 3000, 'red rounded')
             }
             else{
-              this.Archivos(this.pkProyecto)
+              // this.Archivos(this.pkProyecto)
               Materialize.toast('El archivo se enlazo al proyecto exitosamente', 3000, 'green rounded')
               $('#modal1').modal('close');
             }
@@ -111,15 +123,7 @@ export class ArchivosComponent implements OnInit {
       Desenlazar_Archivo(){
         this.ProyService.DesenlazarArchivo({pkproyecto: this.pkProyecto, file: this.file}).subscribe(res =>{
           Materialize.toast('El archivo se desenlazo correctamente', 3000, 'green rounded')
-          this.Archivos(this.pkProyecto)
-          console.log(res)
-        })
-      }
-    
-      Eliminar_Archivo(file_name){
-        this.ProyService.EliminarArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
-          Materialize.toast('El archivo se elimino exitosamente', 3000, 'green rounded')
-          this.Archivos(this.pkProyecto)
+          // this.Archivos(this.pkProyecto)
           console.log(res)
         })
       }

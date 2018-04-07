@@ -20,6 +20,12 @@ export class ClientesService {
     headers.append('Content-Type', 'application/json');
     return this.http.get('http://localhost:3000/api/customers', { headers: headers }).map(res => res.json())
   }
+
+  Detalles(cliente){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/getdetailcustomer', cliente, { headers: headers }).map(res => res.json())
+  }
   ///////////////////////////////////////////////////////////////////////////////////
   getById(cliente) {
     let headers = new Headers();

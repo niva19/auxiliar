@@ -55,18 +55,9 @@
             </div>
           </div>
           <div class="row">
-            <ul class="collection" *ngFor="let i of archivos | paginate: {itemsPerPage:5, currentPage: p} ; let j = index " [style.overflow]="'visible'">
+            <!-- <ul class="collection" *ngFor="let i of archivos; let j = index " [style.overflow]="'visible'">
               <li class="collection-item avatar">
                 <img [attr.src]="'assets/img/' + i.extension + '.png'" alt="" class="circle">
-                <!-- <div *ngIf="i.extension == 'pdf'">
-                    <img src="assets/img/pdf.png" alt="" class="circle">
-                </div>
-                <div *ngIf="i.extension == 'docx'">
-                    <img src="assets/img/word.png" alt="" class="circle">
-                </div>
-                <div *ngIf="i.extension == 'png'">
-                    <img src="assets/img/img.png" alt="" class="circle">
-                </div> -->
                 <span class="title">{{i.nombre}}</span>
                 <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'dd'+ j">
                   <i class="material-icons">dehaze</i>
@@ -80,9 +71,25 @@
                   </li>
                 </ul>
               </li>
+            </ul> -->
+            <ul class="collection" *ngFor="let i of carpetas; let j = index " [style.overflow]="'visible'">
+              <li class="collection-item avatar">
+                <img src="assets/img/folder.png" alt="" class="circle">
+                <span class="title">{{i.nombre}}</span>
+                <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'ddd'+ j">
+                  <i class="material-icons">dehaze</i>
+                </a>
+                <ul [attr.id]="'ddd'+ j" class='dropdown-content'>
+                  <li>
+                    <a (click)="Abrir_Carpeta(i.nombre, i.publico)">Ir</a>
+                  </li>
+                  <li>
+                    <a (click)="Confirmar_eliminar_Carpeta(i.nombre)">Eliminar</a>
+                  </li>
+                </ul>
+              </li>
             </ul>
           </div>
-          <pagination-controls (pageChange)="p = $event"></pagination-controls>
         </div>
       </div>
     </div>

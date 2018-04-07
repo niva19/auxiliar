@@ -20,6 +20,7 @@ import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
 import { ProveedoresService } from './services/proveedores.service'
 import { PlanillaService } from './services/planilla.service'
+import { CarpetasService } from './services/carpetas.service'
 
 import { AppComponent } from './app.component'
 import { NgxPaginationModule } from 'ngx-pagination'
@@ -37,6 +38,9 @@ import { HistorialComponent } from './Components/historial/historial.component';
 import { ArchivosComponent } from './Components/archivos/archivos.component';
 import { PlanillaComponent } from './Components/planilla/planilla.component';
 import { ProveedoresComponent } from './Components/proveedores/proveedores.component'
+import { FilterClientePipe } from './Filters/filter-cliente.pipe'
+import { FilterProyectoPipe } from './Filters/filter-proyecto.pipe';
+
 
 const appRoutes: Routes = [
   { path: '', component: MainPageComponent },
@@ -68,7 +72,9 @@ const appRoutes: Routes = [
     HistorialComponent,
     ArchivosComponent,
     PlanillaComponent,
-    ProveedoresComponent
+    ProveedoresComponent,
+    FilterProyectoPipe,
+    FilterClientePipe
   ],
   imports: [
     CommonModule,
@@ -83,7 +89,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [PlanillaService, ProveedoresService, ClientesService, IngresarService, EmpleadosService, ProyectosService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
+  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 

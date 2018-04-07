@@ -24,13 +24,10 @@
             <a [routerLink]="['/proveedores']">Proveedores</a>
           </li>
           <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/historial']">Historial</a>
+            <a [routerLink]="['/historial']">Papelera</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
-          </li>
-          <li *ngIf="ingresarService.isLevel2()" [routerLinkActive]="['active']">
-            <a [routerLink]="['/proyecto']">Proyectos</a>
           </li>
           <li *ngIf="ingresarService.isLevel1()" [routerLinkActive]="['active']">
             <a [routerLink]="['/cliente']">Clientes</a>
@@ -65,13 +62,10 @@
             <a [routerLink]="['/planilla']">Planilla</a>
           </li>
           <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/historial']">Historial</a>
+            <a [routerLink]="['/historial']">Papelera</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
-          </li>
-          <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/proyecto']">Proyectos</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/cliente']">Clientes</a>
