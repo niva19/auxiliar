@@ -18,6 +18,7 @@ import { ClientesService } from './services/clientes.service'
 import { IngresarService } from './Services/ingresar.service'
 import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
+import { CarpetasService } from './services/carpetas.service'
 
 import { AppComponent } from './app.component'
 import { NgxPaginationModule } from 'ngx-pagination'
@@ -32,7 +33,10 @@ import { NavbarComponent } from './Components/navbar/navbar.component'
 import { FooterComponent } from './Components/footer/footer.component'
 import { GoogleComponent } from './Components/google/google.component';
 import { HistorialComponent } from './Components/historial/historial.component';
-import { ArchivosComponent } from './Components/archivos/archivos.component'
+import { ArchivosComponent } from './Components/archivos/archivos.component';
+import { FilterClientePipe } from './Filters/filter-cliente.pipe'
+import { FilterProyectoPipe } from './Filters/filter-proyecto.pipe';
+
 
 const appRoutes: Routes = [
   { path: '', component: MainPageComponent },
@@ -60,7 +64,9 @@ const appRoutes: Routes = [
     FooterComponent,
     GoogleComponent,
     HistorialComponent,
-    ArchivosComponent
+    ArchivosComponent,
+    FilterProyectoPipe,
+    FilterClientePipe
   ],
   imports: [
     CommonModule,
@@ -75,7 +81,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
+  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 

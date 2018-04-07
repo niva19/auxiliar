@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { ClientesService } from '../../services/clientes.service'
 import { Router } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
 declare var jQuery: any;
@@ -12,20 +13,11 @@ declare var $: any;
   styleUrls: ['./cliente.component.css']
 })
 export class ClienteComponent implements OnInit {
-  nombre: String
-  apellidos: String
-  cedula: String
-  direccion: String
-  telefono: String
-  correo: String
   switch: Boolean = true
   borrar: String//variable auxiliar utilizada para guardar la cedula cuando se proceda a borrar
   ax: any[];
+  detalles: any[];
   filtro: any
-  parametro: String
-  // @ViewChild('modal2Footer')
-  // private modal2Footer: ElementRef
-
 
   @ViewChild('buscador')
   private buscador: ElementRef
@@ -42,42 +34,34 @@ export class ClienteComponent implements OnInit {
   @ViewChild('LabelCedula')
   private LabelCedula: ElementRef
 
-  @ViewChild('Labeldireccion')
-  private Labeldireccion: ElementRef
+  @ViewChild('LabelDireccion')
+  private LabelDireccion: ElementRef
 
-  @ViewChild('LabelCorreo')
-  private LabelCorreo: ElementRef
+  @ViewChild('LabelTelefonoTrabajo')
+  private LabelTelefonoTrabajo: ElementRef
 
-  @ViewChild('LabelTelefono')
-  private LabelTelefono: ElementRef
+  @ViewChild('LabelTelefonoCasa')
+  private LabelTelefonoCasa: ElementRef
 
-  @ViewChild('inputnombre')
-  private inputnombre: ElementRef
+  @ViewChild('LabelCelular')
+  private LabelCelular: ElementRef
 
-  @ViewChild('inputapellidos')
-  private inputapellidos: ElementRef
+  @ViewChild('LabelCorreoPersonal')
+  private LabelCorreoPersonal: ElementRef
 
-  @ViewChild('inputcedula')
-  private inputcedula: ElementRef
-
-  @ViewChild('inputdireccion')
-  private inputdireccion: ElementRef
-
-  @ViewChild('inputcorreo')
-  private inputcorreo: ElementRef
-
-  @ViewChild('intputtelefono')
-  private intputtelefono: ElementRef
+  @ViewChild('LabelCorreoEmpresarial')
+  private LabelCorreoEmpresarial: ElementRef
 
 
 
-  constructor(private CliService: ClientesService, private router: Router, private renderer2: Renderer2) { }
+
+  constructor(private CliService: ClientesService, 
+              private router: Router, 
+              private renderer2: Renderer2,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
     $('.modal').modal();
-    // $("#buscar").change(function() {
-    //   console.log("asd")
-    // });
     this.getAll();
   }
 
@@ -95,23 +79,33 @@ export class ClienteComponent implements OnInit {
 
   LimpiarGuardar() {
     this.renderer2.removeClass(this.LabelNombre.nativeElement, "active")
-    this.nombre = ""
+    $('#Nombre').val("")
 
     this.renderer2.removeClass(this.LabelApellidos.nativeElement, "active")
-    this.apellidos = ""
+    $('#Apellidos').val("")
 
     this.renderer2.removeClass(this.LabelCedula.nativeElement, "active")
-    this.renderer2.removeAttribute(this.inputcedula.nativeElement, 'disabled');
-    this.cedula = ""
+    $("#Cedula").prop('disabled', false);
+    $('#Cedula').val("")
 
-    this.renderer2.removeClass(this.Labeldireccion.nativeElement, "active")
-    this.direccion = ""
+    this.renderer2.removeClass(this.LabelDireccion.nativeElement, "active")
+    $('#Direccion').val("")
 
-    this.renderer2.removeClass(this.LabelCorreo.nativeElement, "active")
-    this.correo = ""
+    this.renderer2.removeClass(this.LabelTelefonoTrabajo.nativeElement, "active")
+    $('#TelefonoTrabajo').val("")
 
-    this.renderer2.removeClass(this.LabelTelefono.nativeElement, "active")
-    this.telefono = ""
+    this.renderer2.removeClass(this.LabelTelefonoCasa.nativeElement, "active")
+    $('#TelefonoCasa').val("")
+    
+    this.renderer2.removeClass(this.LabelCelular.nativeElement, "active")
+    $('#Celular').val("")
+
+    this.renderer2.removeClass(this.LabelCorreoEmpresarial.nativeElement, "active")
+    $('#CorreoEmpresarial').val("")
+
+    this.renderer2.removeClass(this.LabelCorreoPersonal.nativeElement, "active")
+    $('#CorreoPersonal').val("")
+
   }
 
   modal1() {
@@ -126,75 +120,49 @@ export class ClienteComponent implements OnInit {
     }
     this.CliService.getById(cliente).subscribe(data => {
       this.renderer2.setAttribute(this.LabelNombre.nativeElement, "class", "active")
-      this.nombre = data.nombre
+      $('#Nombre').val(data.nombre)
 
       this.renderer2.setAttribute(this.LabelApellidos.nativeElement, "class", "active")
-      this.apellidos = data.apellidos
+      $('#Apellidos').val(data.apellidos)
 
       this.renderer2.setAttribute(this.LabelCedula.nativeElement, "class", "active")
-      this.renderer2.setAttribute(this.inputcedula.nativeElement, 'disabled', 'true');
-      this.cedula = data.cedula
+      $("#Cedula").prop('disabled', true);
+      $('#Cedula').val(data.cedula)
 
-      this.renderer2.setAttribute(this.Labeldireccion.nativeElement, "class", "active")
-      this.direccion = data.direccion
+      this.renderer2.setAttribute(this.LabelDireccion.nativeElement, "class", "active")
+      $('#Direccion').val(data.direccion)
 
-      this.renderer2.setAttribute(this.LabelCorreo.nativeElement, "class", "active")
-      this.correo = data.correo
+      this.renderer2.setAttribute(this.LabelTelefonoTrabajo.nativeElement, "class", "active")
+      $('#TelefonoTrabajo').val(data.telefono_trabajo)
 
-      this.renderer2.setAttribute(this.LabelTelefono.nativeElement, "class", "active")
-      this.telefono = data.telefono
+      this.renderer2.setAttribute(this.LabelTelefonoCasa.nativeElement, "class", "active")
+      $('#TelefonoCasa').val(data.telefono_casa)
+
+      this.renderer2.setAttribute(this.LabelCelular.nativeElement, "class", "active")
+      $('#Celular').val(data.celular)
+
+      this.renderer2.setAttribute(this.LabelCorreoEmpresarial.nativeElement, "class", "active")
+      $('#CorreoEmpresarial').val(data.correo_empresarial)
+
+      this.renderer2.setAttribute(this.LabelCorreoPersonal.nativeElement, "class", "active")
+      $('#CorreoPersonal').val(data.correo_personal)
 
       this.switch = false
       $('#modal1').modal('open');
     });
   }
 
-  Eliminar(id) {
-    const cliente = {
-      cedula: id
-    }
-    this.CliService.EliminarCliente(cliente).subscribe(data => {
-      if (data.success) {
-        this.getAll();
-        $('#modal2').modal('close');
-        Materialize.toast('El cliente se borró exitosamente', 3000, 'green rounded')
-      }
-      else {
-        alert("algo salio mal")
-      }
-    });
-  }
-
-  Confirmar_Eliminar(id) {
-    let button = this.renderer2.createElement('a');
-    this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
-    // this.modal2Footer.nativeElement.innerHTML ='';
-
-    this.renderer2.setAttribute(button, "class", "modal-action")
-    this.renderer2.setAttribute(button, "class", "modal-close")
-    this.renderer2.setAttribute(button, "class", "waves-effect")
-    this.renderer2.setAttribute(button, "class", "waves-green")
-    this.renderer2.setAttribute(button, "class", "btn-flat")
-    let txt = this.renderer2.createText("Confirmar")
-    this.renderer2.appendChild(button, txt)
-    this.renderer2.listen(button, 'click', () => {
-      this.Eliminar(id)
-    })
-
-    this.renderer2.appendChild(this.modal2Footer.nativeElement, button);
-
-    console.log(id)
-    $('#modal2').modal('open');
-  }
-
   ClienteSubmit() {
     const cliente = {
-      nombre: this.nombre,
-      apellidos: this.apellidos,
-      cedula: this.cedula,
-      direccion: this.direccion,
-      telefono: this.telefono,
-      correo: this.correo
+      nombre: $('#Nombre').val(),
+      apellidos: $('#Apellidos').val(),
+      cedula: $('#Cedula').val(),
+      direccion: $('#Direccion').val(),
+      telefono_trabajo: $('#TelefonoTrabajo').val(),
+      telefono_casa: $('#TelefonoCasa').val(),
+      celular: $('#Celular').val(),
+      correo_personal: $('#CorreoPersonal').val(),
+      correo_empresarial: $('#CorreoEmpresarial').val(),
     }
     if (this.ValidateForm()) {
       if (this.switch) {//si el switch esta en true guarda
@@ -235,45 +203,42 @@ export class ClienteComponent implements OnInit {
     }
   }
 
-  ValidateForm() {
-    if (this.inputnombre.nativeElement.value == '')
-      return false
-    if (this.inputapellidos.nativeElement.value == '')
-      return false
-    if (this.inputcedula.nativeElement.value == '')
-      return false
-    if (this.inputdireccion.nativeElement.value == '')
-      return false
-    if (this.inputcorreo.nativeElement.value == '')
-      return false
-    if (this.intputtelefono.nativeElement.value == '')
-      return false
+  Proyecto(id){
+    localStorage.setItem("id_cliente", id)
+    this.router.navigate(["/proyecto"], { relativeTo: this.route });
+  }
 
+  Detalles(id){
+    this.CliService.Detalles({cedula: id}).subscribe(data => {
+      console.log(data)
+        this.detalles = data;
+        $('#Detalles').modal('open');
+    });
+  }
+
+  ValidateForm() {
+
+    if ($('#Nombre').val() == '')
+      return false
+    if ($('#Apellidos').val() == '')
+      return false
+    if ($('#Cedula').val() == '')
+      return false   
+    if ($('#Direccion').val() == '')
+      return false 
+    if ($('#TelefonoTrabajo').val() == '')
+      return false 
+    if ($('#TelefonoCasa').val() == '')
+      return false
+    if ($('#Celular').val() == '')
+      return false  
+    if ($('#CorreoPersonal').val() == '')
+      return false 
+    if ($('#CorreoEmpresarial').val() == '')
+      return false 
+      
     return true
   }
 
-  buscar() {
-    this.parametro = ''
-    if (this.buscador.nativeElement.value == "todos")
-      this.getAll();
-    else {
-      this.filtro = this.buscador.nativeElement.value
-      $('#modal3').modal('open');
-    }
-  }
-
-  BuscarPorFiltro() {
-    const FilPar = {
-      parametro: this.parametro,
-      filtro: this.filtro
-    }
-
-    this.CliService.BuscarCliente(FilPar).subscribe(data => {
-      this.ax = data
-      if (this.ax.length == 0)
-        Materialize.toast('Sin resultados', 3000, 'red rounded')
-      $('#modal3').modal('close');
-    });
-  }
 
 }

@@ -18,13 +18,10 @@
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <div *ngIf="ingresarService.loggedIn()">
           <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/historial']">Historial</a>
+            <a [routerLink]="['/historial']">Papelera</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
-          </li>
-          <li *ngIf="ingresarService.isLevel2()" [routerLinkActive]="['active']">
-            <a [routerLink]="['/proyecto']">Proyectos</a>
           </li>
           <li *ngIf="ingresarService.isLevel1()" [routerLinkActive]="['active']">
             <a [routerLink]="['/cliente']">Clientes</a>
@@ -53,13 +50,10 @@
               <i class="tiny material-icons">account_circle</i>{{ingresarService.updateName()}}</a>
           </li>
           <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/historial']">Historial</a>
+            <a [routerLink]="['/historial']">Papelera</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
-          </li>
-          <li [routerLinkActive]="['active']">
-            <a [routerLink]="['/proyecto']">Proyectos</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/cliente']">Clientes</a>

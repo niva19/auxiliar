@@ -6,9 +6,11 @@ nombre text,
 apellidos text,
 cedula text,
 direccion text,
-telefono text,
-correo text,
-
+telefono_trabajo text,
+telefono_casa text,
+celular text,
+correo_personal text,
+correo_empresarial text,
 constraint pkCliente primary key (cedula) 
 );
 
@@ -42,17 +44,17 @@ fechaInicio text,
 fechaFinaliza text,
 estado text,
 banco text,
--- Foraneas 
 cliente text,
-profResponsable text,
--- Path de archivos 
-archivos text,
-
+ruta text,
 constraint pkProyecto primary key (nombreProyecto),
-constraint fkEmpleado foreign key (profResponsable) references Empleado,
 constraint fkCliente foreign key (cliente) references Cliente
 );
 
+create table Carpeta(
+    nombre text,
+    ruta_padre text,
+    primary key (nombre, ruta_padre)
+)
 
 create table Archivos(
     nombre text,

@@ -6,6 +6,7 @@ var db = require('../queries');
 //Usuarios
 // ------------ GET CLIENTES
 router.get('/api/customers', db.getAllCustomers);
+router.post('/api/getdetailcustomer', db.getdetailcustomer);
 // ------------ SALVAR CLIENTE
 router.post('/api/customers', db.SaveCustomer);
 // ------------ EDITAR CLIENTE
@@ -41,7 +42,7 @@ router.get('/api/employeescna', db.getEmployeesCNA);
 //Proyectos
 
 // ------------ GET PROYECTOS 
-router.get('/api/getprojects', db.getAllProject);
+router.post('/api/getprojects', db.getAllProject);
 // ------------ SALVAR PROYECTOS
 router.post('/api/saveproject', db.saveProject);
 // ------------ EDITAR PROYECTOS
@@ -54,6 +55,7 @@ router.post('/api/deleteproject', db.deleteProject);
 router.post('/api/searchproject', db.searchProject);
 // ------------ GUARDAR ARCHIVOS
 router.post('/api/savefiles', db.savefiles);
+
 // ------------ BUSCAR ARCHIVOS
 router.post('/api/searchfiles', db.searchfiles);
 
@@ -66,5 +68,10 @@ router.post('/api/unlink', db.unlink);
 router.get('/api/getunlinkfiles', db.getunlinkfiles); 
 
 router.post('/api/recoveryfile', db.recoveryfile); 
+
+router.post('/api/searchfiles', db.searchfiles);
+
+
+router.post('/api/getfolders', db.getfolders);
 
 module.exports = router;

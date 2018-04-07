@@ -20,7 +20,18 @@ var db = pgp(connectionString);
 //  ******************************** CLIENTES ************************************
 
 function getAllCustomers(req, res, next) {
-  db.any('select * from Cliente')
+  db.any('select nombre, apellidos, cedula from Cliente')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function getdetailcustomer(req, res, next) {
+  db.any('select direccion, telefono_trabajo, telefono_casa, celular, correo_personal, correo_empresarial from Cliente where cedula = ${cedula}', req.body)
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -32,7 +43,7 @@ function getAllCustomers(req, res, next) {
 
 function SaveCustomer(req, res, next) {
   console.log(req.body);
-  db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono}, ${correo})',
+  db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono_trabajo}, ${telefono_casa}, ${celular}, ${correo_personal}, ${correo_empresarial})',
     req.body)
     .then(() => {
       res.status(200)
@@ -50,7 +61,7 @@ function SaveCustomer(req, res, next) {
 
 function EditCustomer(req, res, next) {
   console.log(req.body);
-  db.none('UPDATE Cliente SET nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, telefono = ${telefono}, correo = ${correo} where cedula = ${cedula}',
+  db.none('UPDATE Cliente SET nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, telefono_trabajo = ${telefono_trabajo}, telefono_casa = ${telefono_casa}, celular = ${celular}, correo_empresarial = ${correo_empresarial}, correo_personal = ${correo_personal} where cedula = ${cedula}',
     req.body)
     .then(() => {
       res.status(200)
@@ -257,7 +268,7 @@ function searchEmployee(req, res, next) {
 
 //  ********************************* PROYECTO ************************************
 function getAllProject(req, res, next) {
-  db.any('select * from Proyecto')
+  db.any('select * from Proyecto where cliente = ${cedula}', req.body)
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -291,14 +302,14 @@ function saveProject(req, res, next) {
   var mes = fecha.split(separador2).splice(0, 1).toString().split(separador1).pop();
   var anio = fecha.split(separador1).pop();
 
-  var path = 'E:\\Users\\User\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto + '\\archivos'
+  var path = 'C:\\Users\\Admin\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto + '\\archivos'
 
-  db.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente}, ${profesionalResponsable})',
+  db.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente})',
     req.body)
     .then(() => {
       //EJECUTAR EL COMANDO AQUI
       //CREAR DIRECTORIO
-      db.none('UPDATE Proyecto SET archivos = $1 WHERE nombreProyecto = $2', [path, req.body.nombreProyecto]);
+      db.none('UPDATE Proyecto SET ruta = $1 WHERE nombreProyecto = $2', [path, req.body.nombreProyecto]);
       execute('mkdir ' + path, function (output) {
         console.log(output);
 
@@ -309,6 +320,9 @@ function saveProject(req, res, next) {
         execute('mkdir ' + path + '\\privado', function (output) {
           console.log(output);
         });
+
+        db.none("insert into Carpeta values('publico', '"+path+"')")
+        db.none("insert into Carpeta values('privado', '"+path+"')")
 
       });
       res.status(200)
@@ -326,7 +340,7 @@ function saveProject(req, res, next) {
 
 function editProject(req, res, next) {
   console.log(req.body);
-  db.none('UPDATE Proyecto SET direccion = ${direccion}, tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}, cliente = ${cliente}, profresponsable = ${profesionalResponsable}  where nombreproyecto = ${nombreProyecto}',
+  db.none('UPDATE Proyecto SET direccion = ${direccion}, tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}, cliente = ${cliente}  where nombreproyecto = ${nombreProyecto}',
     req.body)
     .then(() => {
       res.status(200)
@@ -528,11 +542,29 @@ function recoveryfile(req, res, next) {
       });
   })
 }
+
+function getfolders(req, res, next){
+  db.any("select * from carpeta where ruta_padre = ${ruta}", req.body)
+  .then((data) => {
+    console.log(data);
+    res.status(200)
+      .json(data);
+  })
+  .catch(function (err) {
+    res.status(200)
+      .json({
+        success: false
+      });
+  });
+}
+
+
 //  ********************************* ARCHIVOS ************************************
 
 module.exports = {
   // CLIENTES
   getAllCustomers: getAllCustomers,
+  getdetailcustomer: getdetailcustomer,
   SaveCustomer: SaveCustomer,
   EditCustomer: EditCustomer,
   GetCustomer: GetCustomer,
@@ -561,5 +593,6 @@ module.exports = {
   deletefile: deletefile,
   unlink: unlink,
   getunlinkfiles: getunlinkfiles,
-  recoveryfile: recoveryfile
+  recoveryfile: recoveryfile,
+  getfolders: getfolders
 }

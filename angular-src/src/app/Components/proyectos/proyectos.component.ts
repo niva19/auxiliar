@@ -25,7 +25,7 @@ export class ProyectosComponent implements OnInit {
   estado: String
   banco: String
   switch: Boolean = true
-  detalles: any[] = []
+  detalles: any[]
   ax: any[]
   // pkProyecto: String
   // archivos: any[]
@@ -35,26 +35,10 @@ export class ProyectosComponent implements OnInit {
   RegOrArt: String = ""
   financiamento: String = ""
 
-  DetalleCliente: any
-  DetalleEmpleado: any
-
-  @ViewChild('dropdownEmpleadoss')
-  private dropdownEmpleadosss: ElementRef
-
-  @ViewChild('dropdownClientess')
-  private dropdownClientess: ElementRef
-
-  @ViewChild('dropdownEmpleados')
-  private dropdownEmpleados: ElementRef
-
-  @ViewChild('dropdownClientes')
-  private dropdownClientes: ElementRef
-
   @ViewChild('buscador')
   private buscador: ElementRef
 
-  @ViewChild('modal2Footer')
-  private modal2Footer: ElementRef
+  
 
   @ViewChild('LabelNombreProyecto')
   private LabelNombreProyecto: ElementRef
@@ -103,12 +87,7 @@ export class ProyectosComponent implements OnInit {
   ngOnInit() {
     // $('.dropdown-button').dropdown();
     $('.modal').modal();
-    $(".js-example-basic-single").select2();
-    $(".js1").select2();
     $('select').material_select();
-    $('#BuscaFecha').css("display", "none")
-    $('#bc1').css("display", "none")
-    $('#be1').css("display", "none")
     $('.datepicker').pickadate({
       selectMonths: true, // Creates a dropdown to control month
       selectYears: 15, // Creates a dropdown of 15 years to control year,
@@ -125,115 +104,22 @@ export class ProyectosComponent implements OnInit {
     
 
     this.getAll();
-    this.DropdownClientes();
-    this.DropdownClientes2();
-    this.DropdownEmpleados();
-    this.DropdownEmpleados2();
   }
 
   getAll() {
-    this.ProyService.getAll().subscribe(data => {
+    this.ProyService.getAll({cedula: localStorage.getItem("id_cliente")}).subscribe(data => {
       console.log(data)
       this.ax = data;
     });
   }
 
-  DropdownClientes() {
-    this.clientesService.getCNA().subscribe(listaCliente => {
-
-      //se crea la opcion por default, no se puede quemar en el html
-      let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option, this.renderer2.createText("Cliente asignado"))
-      this.renderer2.setProperty(option, "disabled", "true")
-      this.renderer2.setProperty(option, "selected", "true")
-      this.renderer.setElementProperty(option, "value", '')
-      this.renderer2.appendChild(this.dropdownClientes.nativeElement, option)
-      //se crea las opciones con los clientes en el dropdown
-      listaCliente.forEach(e => {
-        option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option, "value", e.cedula)
-        this.renderer2.appendChild(this.dropdownClientes.nativeElement, option)
-      });
-    })
-  }
-
-  DropdownClientes2() {
-    this.clientesService.getCNA().subscribe(listaCliente => {
-
-      //se crea la opcion por default, no se puede quemar en el html
-      let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option, this.renderer2.createText("Cliente asignado"))
-      this.renderer2.setProperty(option, "disabled", "true")
-      this.renderer2.setProperty(option, "selected", "true")
-      this.renderer.setElementProperty(option, "value", '')
-      this.renderer2.appendChild(this.dropdownClientess.nativeElement, option)
-      //se crea las opciones con los clientes en el dropdown
-      listaCliente.forEach(e => {
-        option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option, "value", e.cedula)
-        this.renderer2.appendChild(this.dropdownClientess.nativeElement, option)
-      });
-    })
-  }
-
-  DropdownEmpleados() {
-    this.empleadosService.getCNA().subscribe(listaEmpleados => {
-
-      //se crea la opcion por default, no se puede quemar en el html
-      let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option, this.renderer2.createText("Profesional Responsable"))
-      this.renderer2.setProperty(option, "disabled", "true")
-      this.renderer2.setProperty(option, "selected", "true")
-      this.renderer.setElementProperty(option, "value", '')
-      this.renderer2.appendChild(this.dropdownEmpleados.nativeElement, option)
-      //se crea las opciones con los clientes en el dropdown
-      listaEmpleados.forEach(e => {
-        option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option, "value", e.cedula)
-        this.renderer2.appendChild(this.dropdownEmpleados.nativeElement, option)
-      });
-    })
-  }
-
-  DropdownEmpleados2() {
-    this.empleadosService.getCNA().subscribe(listaEmpleados => {
-
-      //se crea la opcion por default, no se puede quemar en el html
-      let option = this.renderer2.createElement('option')
-      this.renderer2.appendChild(option, this.renderer2.createText("Profesional Responsable"))
-      this.renderer2.setProperty(option, "disabled", "true")
-      this.renderer2.setProperty(option, "selected", "true")
-      this.renderer.setElementProperty(option, "value", '')
-      this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement, option)
-      //se crea las opciones con los clientes en el dropdown
-      listaEmpleados.forEach(e => {
-        option = this.renderer2.createElement('option')
-        this.renderer2.appendChild(option, this.renderer2.createText(`${e.nombre} ${e.apellidos} ${e.cedula}`))
-        this.renderer.setElementProperty(option, "value", e.cedula)
-        this.renderer2.appendChild(this.dropdownEmpleadosss.nativeElement, option)
-      });
-    })
-  }
-
+  
   editClick(v: String) {
     alert(v)
   }
   // --------------------------------- LIMPIAR FORMULARIO ---------------------------------
   LimpiarGuardar() {
-    // this.renderer2.removeClass(this.LabelNombreProyecto.nativeElement,"active")
-    // this.nombreProyecto = ""
-
-    // this.renderer2.removeClass(this.Labeldescripcion.nativeElement,"active")
-    // this.descripcion = ""
-
-    // this.renderer2.removeClass(this.Labelbanco.nativeElement,"active")
-    // this.banco = ""
     $('#FormAgregar').trigger("reset");
-    $('#ddClientes').val('').trigger('change')
-    $('#ddEmpleados').val('').trigger('change')
   }
 
   modal1() {
@@ -260,19 +146,10 @@ export class ProyectosComponent implements OnInit {
       this.renderer2.setAttribute(this.Labelbanco.nativeElement, "class", "active")
       this.banco = data.banco
 
-      // console.log(data.tipoproyecto.split("/")[0])
-      // $("#ddTipoProyecto option[value='Subsidios']").prop('selected', true);
       this.tipoProyecto = data.tipoproyecto
-
-      // $(`#ddTipoObra option[value='${data.tipoobra}']`).prop('selected', true);
       this.tipoObra = data.tipoobra
-
-      // $(`#ddEstado option[value='${data.estado}']`).prop('selected', true);
       this.estado = data.estado
 
-      $('#ddClientes').val(data.cliente).trigger('change')
-
-      $('#ddEmpleados').val(data.profresponsable).trigger('change')
 
       this.renderer2.setAttribute(this.LabelFechaInicio.nativeElement, "class", "active")
       $('#fechaInicio').val(data.fechainicio)
@@ -303,27 +180,6 @@ export class ProyectosComponent implements OnInit {
     });
   }
 
-  Confirmar_Eliminar(id) {
-    let button = this.renderer2.createElement('a');
-    this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
-    // this.modal2Footer.nativeElement.innerHTML ='';
-
-    this.renderer2.setAttribute(button, "class", "modal-action")
-    this.renderer2.setAttribute(button, "class", "modal-close")
-    this.renderer2.setAttribute(button, "class", "waves-effect")
-    this.renderer2.setAttribute(button, "class", "waves-green")
-    this.renderer2.setAttribute(button, "class", "btn-flat")
-    let txt = this.renderer2.createText("Confirmar")
-    this.renderer2.appendChild(button, txt)
-    this.renderer2.listen(button, 'click', () => {
-      this.Eliminar(id)
-    })
-
-    this.renderer2.appendChild(this.modal2Footer.nativeElement, button);
-
-    console.log(id)
-    $('#modal2').modal('open');
-  }
   // --------------------------------- SUBMIT PROYECTO ---------------------------------
   ProyectoSubmit() {
 
@@ -339,8 +195,7 @@ export class ProyectosComponent implements OnInit {
         fechaFinaliza: $('#fechaFinaliza').val(),
         estado: this.estado,
         banco: this.banco,
-        cliente: $('select[name=state]').val(),
-        profesionalResponsable: $('select[name=state2]').val(),
+        cliente: localStorage.getItem("id_cliente")
       }
 
       if (this.RegOrArt != "" && this.financiamento != "") {
@@ -410,186 +265,25 @@ export class ProyectosComponent implements OnInit {
       return false
     if (this.inputbanco.nativeElement.value == '')
       return false
-    if ($('select[name=state]').val() == '')
-      return false
-    if ($('select[name=state2]').val() == '')
-      return false
-    // if(this.inputprofesionalResponsable.nativeElement.value == '')
-    //   return false
+
 
     return true
   }
-  // --------------------------------- BUSCAR PROYECTO ---------------------------------
-  buscar() {
-    this.parametro = ''
-    if (this.buscador.nativeElement.value == "todos")
-      this.getAll();
-    else {
-      this.filtro = this.buscador.nativeElement.value;
+  
 
-      (this.filtro == "fechaInicio" || this.filtro == "fechaFinaliza") ? $('#BuscaFecha').css("display", "block")
-        : $('#BuscaFecha').css("display", "none");
-
-
-      (this.filtro == "cliente") ? $('#bc1').css("display", "block")
-        : $('#bc1').css("display", "none");
-
-      (this.filtro == "profResponsable") ? $('#be1').css("display", "block")
-        : $('#be1').css("display", "none");
-
-      $('#modal3').modal('open');
-    }
-  }
-
-  BuscarPorFiltro() {
-    console.log($('select[name=state3]').val())
-    if ($("#Fecha").val() != "") {
-      this.parametro = $("#Fecha").val()
-      $("#Fecha").val("")
-    }
-
-    if ($('select[name=state3]').val() != null) {
-      this.parametro = $('select[name=state3]').val()
-      $('#ddClientes2').val('').trigger('change')
-    }
-
-    if ($('select[name=state4]').val() != null) {
-      this.parametro = $('select[name=state4]').val()
-      $('#ddEmpleados2').val('').trigger('change')
-    }
-
-    if (this.parametro != "") {
-      const FilPar = {
-        parametro: this.parametro,
-        filtro: this.filtro
-      }
-
-      // if(this.filtro == "fechaInicio" || this.filtro == "fechaFinaliza") FilPar.parametro = $("#Fecha").val()
-
-      this.ProyService.BuscarProyecto(FilPar).subscribe(data => {
-        this.ax = data
-        if (this.ax.length == 0)
-          Materialize.toast('Sin resultados', 3000, 'red rounded')
-        $('#modal3').modal('close');
-      });
-    }
-    else Materialize.toast('Complete el espacio para continuar', 3000, 'red rounded')
-  }
-
-  // Archivos(nombre){
-
-  //   function invertir(cadena) {
-  //     var x = cadena.length;
-  //     var cadenaInvertida = "";
-     
-  //     while (x>=0) {
-  //       cadenaInvertida += cadena.charAt(x);
-  //       x--;
-  //     }
-  //     return cadenaInvertida;
-  //   }
-
-
-  //   this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
-
-  //     files.forEach(val =>{
-  //       for(var f1 in val){
-  //         var extension = "";
-  //         for(var i=val[f1].length - 1; i > -1; i--){
-  //           if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
-  //           else break
-  //         }
-  //         val["extension"] = invertir(extension)  
-  //       }
-  //     })
- 
-  //     this.archivos = files
-  //     this.pkProyecto = nombre
-  //     $('#modal6').modal('open')
-  //   })
-  // }
-
-  // Enlazar_Archivos(){
-  //   if(this.abc.nativeElement.files[0]){
-  //     var realPath = this.abc.nativeElement.files[0].path;
-
-  //     let path = {
-  //       realPath: realPath,
-  //       name: $('#fl2').val(),
-  //       proyect: this.pkProyecto
-  //     }
-  //     console.log(path)
-  //     this.ProyService.GuardarArchivo(path).subscribe(res =>{
-  //       if(res.error){
-  //         Materialize.toast('El archivo ya esta enlazado al proyecto', 3000, 'red rounded')
-  //       }
-  //       else{
-  //         this.Archivos(this.pkProyecto)
-  //         Materialize.toast('El archivo se enlazo al proyecto exitosamente', 3000, 'green rounded')
-  //       }
-  //     })
-  //   }
-  //   else Materialize.toast('Debe elegir un archivo', 3000, 'red rounded')
-  // }
-
-  // Abrir_Archivo(file_name){
-
-  //   this.ProyService.AbrirArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
-  //     console.log(res)
-  //   })
-  // }
-
-  // Desenlazar_Archivo(file_name){
-  //   this.ProyService.DesenlazarArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
-  //     Materialize.toast('El archivo se elimino exitosamente', 3000, 'green rounded')
-  //     this.Archivos(this.pkProyecto)
-  //     console.log(res)
-  //   })
-  // }
-
-  // Eliminar_Archivo(file_name){
-  //   this.ProyService.EliminarArchivo({pkproyecto: this.pkProyecto, file: file_name}).subscribe(res =>{
-  //     Materialize.toast('El archivo se elimino exitosamente', 3000, 'green rounded')
-  //     this.Archivos(this.pkProyecto)
-  //     console.log(res)
-  //   })
-  // }
-
-  Ir_Archivos(nombre){
-    localStorage.setItem("nombre_proyecto", nombre)
+  Ir_Archivos(ruta){
+    localStorage.setItem("ruta_proyecto", ruta)
     this.router.navigate(["/archivos"], { relativeTo: this.route });
+  }
+
+  Ir_Empleados(nombre){
+    localStorage.setItem("nombre_proyecto", nombre)
   }
 
   Detalles(v) {
     console.log(v)
-    let detalle = {
-      direccion: v.direccion,
-      tipoobra: v.tipoobra,
-      tipoproyecto: v.tipoproyecto,
-      banco: v.banco,
-      fechainicio: v.fechainicio,
-      fechafinaliza: v.fechafinaliza,
-      estado: v.estado,
-      descripcion: v.descripcion
-    }
-
-    let cliente = {
-      cedula: v.cliente
-    }
-
-    let empleado = {
-      cedula: v.profresponsable
-    }
-
-    this.clientesService.getById(cliente).subscribe(DetalleCliente => {
-      this.DetalleCliente = [DetalleCliente]
-      this.empleadosService.getById(empleado).subscribe(DetalleEmpleado => {
-        this.DetalleEmpleado = [DetalleEmpleado]
-        this.detalles = [detalle]
-        $('#modal4').modal('open');
-      })
-    })
-
+    this.detalles = [v]
+    $('#modal4').modal('open')
   }
 
   TipoFinanciamiento() {
