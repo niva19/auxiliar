@@ -22,6 +22,7 @@ export class ProveedoresComponent implements OnInit {
   ax: any[];
   filtro: any
   parametro: String
+  detalles: any
 
   @ViewChild('buscador')
   private buscador: ElementRef
@@ -107,6 +108,7 @@ export class ProveedoresComponent implements OnInit {
     }
     this.ProveeService.getById(proveedor).subscribe(data => {
       this.renderer2.setAttribute(this.LabelEmpresa.nativeElement, "class", "active")
+      this.renderer2.setAttribute(this.inputEmpresa.nativeElement, 'disabled', 'true');
       this.empresa = data.empresa
 
       this.renderer2.setAttribute(this.LabelContacto.nativeElement, "class", "active")
@@ -196,7 +198,7 @@ export class ProveedoresComponent implements OnInit {
       }
     }
     else {
-      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+      Materialize.toast('Complete los espacios para continuar', 3000, 'red rounded')
     }
   }
 
@@ -223,5 +225,16 @@ export class ProveedoresComponent implements OnInit {
       return false
     return true
   }
+
+  Detalles(v) {
+    let proveedor = {
+      empresa: v.empresa
+    }
+    //this.detalles = this.ax;
+    this.ProveeService.getById(proveedor).subscribe(detalles => {
+      this.detalles = [detalles]
+      $('#modal4').modal('open');
+    })
+  }    
 
 }

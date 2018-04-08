@@ -45,47 +45,6 @@ export class ProyectosService {
     return this.http.post('http://localhost:3000/api/searchproject', FilPar, { headers: headers }).map(res => res.json())
   }
 
-  BuscarArchivos(proyecto){
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/searchfiles', proyecto, { headers: headers }).map(res => res.json())
-  }
-
-  GuardarArchivo(realPath){
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/savefiles', realPath, { headers: headers }).map(res => res.json())
-  }
-
-  AbrirArchivo(paths){
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/openfile', paths, { headers: headers }).map(res => res.json())
-  }
-
-  EliminarArchivo(paths){
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/deletefile', paths, { headers: headers }).map(res => res.json())
-  }
-
-  DesenlazarArchivo(paths){
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/unlink', paths, { headers: headers }).map(res => res.json())
-  }
-
-  GetUnlinkFiles(){
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.get('http://localhost:3000/api/getunlinkfiles', { headers: headers }).map(res => res.json())
-  }
-
-  RecuperarArchivo(file){
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/recoveryfile', file,{ headers: headers }).map(res => res.json())
-  }
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

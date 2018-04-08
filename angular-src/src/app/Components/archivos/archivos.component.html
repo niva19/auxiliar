@@ -1,30 +1,45 @@
 <div id="modal1" class="modal">
-  <div class="modal-content">
-    <div class="file-field input-field">
-      <div class="btn">
-        <span>Archivo</span>
-        <input type="file" id="fl1" #abc>
-      </div>
-      <div class="file-path-wrapper">
-        <input class="file-path validate" type="text" id="fl2">
+  <ul class="tabs tabs-fixed-width tab-demo z-depth-1 black-text">
+    <li class="tab">
+      <a class="black-text" href="#test1">Guardar Carpeta</a>
+    </li>
+    <li class="tab">
+      <a class="black-text" href="#test2">Guardar Archivo</a>
+    </li>
+  </ul>
+  <div id="test1" class="col s12">
+    <div class="modal-content">
+      <div class="input-field col s12">
+        <i class="material-icons prefix">folder</i>
+        <input id="nombre_carpeta" type="text" class="validate">
+        <label for="nombre_carpeta">Nombre de la carpeta</label>
       </div>
     </div>
-    <p>
-      <input name="group1" type="radio" id="Publico" value="publico" checked/>
-      <label for="Publico">Publico</label>
-    </p>
-    <p>
-      <input name="group1" type="radio" id="Privado" value="privado"/>
-      <label for="Privado">Privado</label>
-    </p>
+    <div class="modal-footer">
+      <a class="btn #0d47a1 blue darken-4 waves-effect waves-green " (click)="Enlazar_Carpeta()">Guardar</a>
+      <a class="btn #0d47a1 blue darken-4 modal-action modal-close waves-effect waves-red ">Cancelar</a>
+    </div>
   </div>
-  <div class="modal-footer">
-    <a class="btn #f44336 red modal-action modal-close waves-effect waves-red ">Cancelar</a>
-    <a class="btn #00b0ff #1565c0 blue darken-3 waves-effect waves-green " (click)="Enlazar_Archivos()">Guardar</a>
-  </div>
+  <div id="test2" class="col s12">
+      <div class="modal-content">
+        <div class="file-field input-field">
+          <div class="btn #b71c1c red darken-4">
+            <span>Archivo</span>
+            <input type="file" id="fl1" #abc>
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text" id="fl2">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn #0d47a1 blue darken-4 waves-effect waves-green " (click)="Enlazar_Archivos()">Guardar</a>
+        <a class="btn #0d47a1 blue darken-4 modal-action modal-close waves-effect waves-red ">Cancelar</a>
+      </div>
+    </div>
 </div>
 
-<div id="eliminar" class="modal">
+<div id="desenlazar" class="modal">
   <div class="modal-content">
     <h4>¿Realmente deseea desenlazar el archivo?</h4>
   </div>
@@ -42,7 +57,7 @@
         <div class="card-content ">
           <span class="card-title">Archivos del proyecto {{pkProyecto}}</span>
           <div class="input-field col m6 offset-m5 s8">
-            <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Agregar Archivo</button>
+            <button type="button" label="Click" (click)="modal1()" class="#0d47a1 blue darken-4 btn">Agregar Archivo</button>
           </div>
 
           <div class="container-fluid">
@@ -55,40 +70,54 @@
             </div>
           </div>
           <div class="row">
-            <!-- <ul class="collection" *ngFor="let i of archivos; let j = index " [style.overflow]="'visible'">
-              <li class="collection-item avatar">
-                <img [attr.src]="'assets/img/' + i.extension + '.png'" alt="" class="circle">
-                <span class="title">{{i.nombre}}</span>
-                <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'dd'+ j">
-                  <i class="material-icons">dehaze</i>
-                </a>
-                <ul [attr.id]="'dd'+ j" class='dropdown-content'>
-                  <li>
-                    <a (click)="Abrir_Archivo(i.nombre, i.publico)">Abrir</a>
-                  </li>
-                  <li>
-                    <a (click)="Confirmar_eliminar(i.nombre)">Desenlazar</a>
-                  </li>
-                </ul>
+            <ul class="tabs tabs-fixed-width tab-demo z-depth-1 black-text ">
+              <li class="tab">
+                <a class="active black-text" href="#tab_carpetas">Carpetas</a>
               </li>
-            </ul> -->
-            <ul class="collection" *ngFor="let i of carpetas; let j = index " [style.overflow]="'visible'">
-              <li class="collection-item avatar">
-                <img src="assets/img/folder.png" alt="" class="circle">
-                <span class="title">{{i.nombre}}</span>
-                <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'ddd'+ j">
-                  <i class="material-icons">dehaze</i>
-                </a>
-                <ul [attr.id]="'ddd'+ j" class='dropdown-content'>
-                  <li>
-                    <a (click)="Abrir_Carpeta(i.nombre, i.publico)">Ir</a>
-                  </li>
-                  <li>
-                    <a (click)="Confirmar_eliminar_Carpeta(i.nombre)">Eliminar</a>
-                  </li>
-                </ul>
+              <li class="tab">
+                <a class="black-text" href="#tab_archivos">Archivos</a>
               </li>
             </ul>
+
+            <div id="tab_carpetas">
+              <ul class="collection" *ngFor="let i of carpetas; let j = index " [style.overflow]="'visible'">
+                <li class="collection-item avatar">
+                  <img src="assets/img/folder.png" alt="" class="circle">
+                  <span class="title">{{i.nombre_carpeta}}</span>
+                  <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'ddd'+ j">
+                    <i class="material-icons">dehaze</i>
+                  </a>
+                  <ul [attr.id]="'ddd'+ j" class='dropdown-content'>
+                    <li>
+                      <a (click)="Abrir_Carpeta(i)">Ir</a>
+                    </li>
+                    <li>
+                      <a (click)="Confirmar_eliminar_Carpeta(i.nombre_carpeta)">Eliminar</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+
+            <div id="tab_archivos">
+              <ul class="collection" *ngFor="let i of archivos; let j = index " [style.overflow]="'visible'">
+                <li class="collection-item avatar">
+                  <img [attr.src]="'assets/img/' + i.extension + '.png'" alt="" class="circle">
+                  <span class="title">{{i.nombre_archivo}}</span>
+                  <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'dd'+ j">
+                    <i class="material-icons">dehaze</i>
+                  </a>
+                  <ul [attr.id]="'dd'+ j" class='dropdown-content'>
+                    <li>
+                      <a (click)="Abrir_Archivo(i)">Abrir</a>
+                    </li>
+                    <li>
+                      <a (click)="Confirmar_Desenlazar(i)">Desenlazar</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

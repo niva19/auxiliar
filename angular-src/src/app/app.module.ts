@@ -21,10 +21,10 @@ import { ProyectosService } from './services/proyectos.service'
 import { ProveedoresService } from './services/proveedores.service'
 import { PlanillaService } from './services/planilla.service'
 import { CarpetasService } from './services/carpetas.service'
+import { ArchivosService } from './services/archivos.service'
 
 import { AppComponent } from './app.component'
 import { NgxPaginationModule } from 'ngx-pagination'
-import { RegisterComponent } from './Components/register/register.component'
 import { MaterializeModule } from 'angular2-materialize'
 import { MainPageComponent } from './Components/main-page/main-page.component'
 import { ClienteComponent } from './Components/cliente/cliente.component'
@@ -40,6 +40,7 @@ import { PlanillaComponent } from './Components/planilla/planilla.component';
 import { ProveedoresComponent } from './Components/proveedores/proveedores.component'
 import { FilterClientePipe } from './Filters/filter-cliente.pipe'
 import { FilterProyectoPipe } from './Filters/filter-proyecto.pipe';
+import { FilterPapeleraPipe } from './Filters/filter-papelera.pipe';
 
 
 const appRoutes: Routes = [
@@ -49,7 +50,6 @@ const appRoutes: Routes = [
   { path: 'ingresar', component: IngresarComponent },
   { path: 'historial', component: HistorialComponent, canActivate: [AuthGuard, Level3Guard] },
   { path: 'archivos', component: ArchivosComponent },
-  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
   { path: 'empleado', component: EmpleadosComponent, canActivate: [AuthGuard, Level3Guard] },
   { path: 'proyecto', component: ProyectosComponent, canActivate: [AuthGuard, Level2Guard] },
   { path: 'google', component: GoogleComponent, canActivate: [AuthGuard, Level1Guard] },
@@ -60,7 +60,6 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    RegisterComponent,
     MainPageComponent,
     ClienteComponent,
     IngresarComponent,
@@ -74,7 +73,8 @@ const appRoutes: Routes = [
     PlanillaComponent,
     ProveedoresComponent,
     FilterProyectoPipe,
-    FilterClientePipe
+    FilterClientePipe,
+    FilterPapeleraPipe
   ],
   imports: [
     CommonModule,
@@ -89,7 +89,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
+  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, ArchivosService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 

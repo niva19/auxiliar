@@ -5,9 +5,7 @@
 <!-- ########################################## INGRESAR PROVEEDOR ############################## -->
 <div id="modal1" class="modal">
   <div class="modal-content">
-    <!-- ########################################## -->
     <form (submit)="ProveedoresSubmit()" class="col s12">
-      <!-- ########################################## -->
       <div class="row">
         <div class="input-field col s12">
           <input id="empresa" type="text" [(ngModel)]="empresa" name="empresa" class="validate" #inputEmpresa>
@@ -18,22 +16,22 @@
           <label for="contacto" #LabelContacto>Nombre del Contacto</label>
         </div>
         <div class="input-field col s12">
-            <input (keypress)="Only_Numbers($event)" id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate"
-              #inputTelefono>
-            <label for="telefono" #LabelTelefono>Teléfono</label>
-          </div>
+          <input (keypress)="Only_Numbers($event)" id="telefono" type="text" [(ngModel)]="telefono" name="telefono" class="validate"
+            #inputTelefono>
+          <label for="telefono" #LabelTelefono>Teléfono</label>
+        </div>
         <div class="input-field col s12">
           <input id="correo" type="email" [(ngModel)]="correo" name="correo" class="validate" #inputCorreo>
           <label for="correo" #LabelCorreo data-error="wrong" data-success="right">Correo</label>
-        </div>       
+        </div>
         <div class="input-field col s12">
           <!--<input id="producto" type="text" [(ngModel)]="producto" name="producto" class="validate" #inputProducto>-->
-          <textarea id="producto" name="producto"  [(ngModel)]="producto" class="materialize-textarea" data-length="120" #inputProducto></textarea>
-          <label for="producto"  #LabelProducto>Producto</label>
-        </div>        
-        <div class="input-field col s12">
-          <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
-          <input type="submit" class="#0277bd light-blue darken-3 btn" value="Guardar">
+          <textarea id="producto" name="producto" [(ngModel)]="producto" class="materialize-textarea" data-length="120" #inputProducto></textarea>
+          <label for="producto" #LabelProducto>Producto</label>
+        </div>
+        <div class="right">
+          <input type="submit" class="#0d47a1 blue darken-4 btn" value="Guardar">
+          <a class="modal-action modal-close waves-effect #0d47a1 blue darken-4 btn">Cancelar</a>
         </div>
       </div>
     </form>
@@ -49,10 +47,21 @@
   </div>
   <div class="modal-footer" #modal2Footer>
     <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
-    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
+    <a class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
   </div>
 </div>
 
+<!-- ########################################## DETALLES PLANILLA ################################# -->
+
+<div id="modal4" class="modal">
+  <div class="modal-content">
+    <blockquote>Detalle de los productos</blockquote>
+    <ul class="collection" *ngFor="let v of detalles">
+      <li class="collection-item">
+        <strong>Productos: </strong> {{v.producto}}</li>
+    </ul>
+  </div>
+</div>
 <!-- ########################################## BUSCAR PROVEEDOR ############################################ -->
 
 
@@ -66,10 +75,10 @@
         <div class="card-content ">
           <span class="card-title">Gestión de proveedores</span>
           <div class="input-field col m6 offset-m5 s8">
-            <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Agregar</button>
+            <button type="button" label="Click" (click)="modal1()" class="#0d47a1 blue darken-4 btn">Agregar</button>
           </div>
 
-          <!-- ########################################## BUSCAR  ################################# -->    
+          <!-- ########################################## BUSCAR  ################################# -->
 
           <table>
             <thead class="centered">
@@ -78,6 +87,7 @@
                 <td>Contacto</td>
                 <td>Telefono</td>
                 <td>Correo</td>
+                <td>Detalles</td>
                 <td>Editar</td>
                 <td>Eliminar</td>
               </tr>
@@ -88,6 +98,11 @@
                 <td>{{v.contacto}}</td>
                 <td>{{v.telefono}}</td>
                 <td>{{v.correo}}</td>
+                <td>
+                  <a class="waves-effect waves-light btn-flat" (click)="Detalles(v)">
+                    <i class="tiny material-icons left">visibility</i>
+                  </a>
+                </td>
                 <td>
                   <a class="waves-effect waves-light btn-flat" (click)="Editar(v.empresa)">
                     <i class="tiny material-icons left">create</i>

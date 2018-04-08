@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ProyectosService } from '../../services/proyectos.service'
 import { CarpetasService } from '../../services/carpetas.service'
+import { ArchivosService } from '../../services/archivos.service'
 import * as Materialize from 'angular2-materialize'
 
 declare var jQuery: any;
@@ -16,116 +16,138 @@ export class ArchivosComponent implements OnInit {
   pkProyecto: String
   archivos: any[]
   carpetas: any[]
-  file: String
+  carpeta_actual: any = { nombre_carpeta: "", ruta_padre: "", publico: false }
+  archivo_eliminar: any = { ruta_padre: "", nombre_carpeta: "", nombre_archivo: "" }
 
   @ViewChild('abc')
   private abc: ElementRef
 
-  constructor(private ProyService: ProyectosService,
-              private Carpetas_Service: CarpetasService) { }
+  constructor(private Archivos_Service: ArchivosService,
+    private Carpetas_Service: CarpetasService) { }
 
   ngOnInit() {
-    console.log("ruta_proyecto: ",localStorage.getItem("ruta_proyecto"));
+    console.log("ruta_proyecto: ", localStorage.getItem("ruta_proyecto"));
     $('.modal').modal();
+    $('.tabs').tabs();
     $('.dropdown-button').dropdown();
     this.Carpetas(localStorage.getItem("ruta_proyecto"));
-    // this.Archivos(localStorage.getItem("nombre_proyecto"));
   }
 
-  modal1(){
+  modal1() {
     $('#modal1').modal('open');
   }
 
-  Confirmar_eliminar(nombre){
-    $('#eliminar').modal('open');
-    this.file = nombre
+  Confirmar_Desenlazar(archivo) {
+    this.archivo_eliminar.ruta_padre = archivo.ruta_padre
+    this.archivo_eliminar.nombre_carpeta = archivo.nombre_carpeta
+    this.archivo_eliminar.nombre_archivo = archivo.nombre_archivo
+    $('#desenlazar').modal('open');
   }
 
-  Carpetas(ruta){
-    this.Carpetas_Service.Obtener_Carpetas({ruta: ruta}).subscribe(carpetas => {
-      console.log(carpetas)
-        this.carpetas = carpetas
+  Archivos(ruta_padre, nombre_carpeta) {
+    this.Archivos_Service.Obtener_Archivos({ ruta_padre: ruta_padre, nombre_carpeta: nombre_carpeta }).subscribe(archivos => {
+
+      archivos.forEach(archivo => {
+        var extension = ""
+        for (var i = archivo.nombre_archivo.length - 1; i > -1; i--) {
+          if (archivo.nombre_archivo.charAt(i) != '.') extension += archivo.nombre_archivo.charAt(i)
+          else break
+        }
+
+        archivo["extension"] = this.invertir(extension)
+      })
+      this.archivos = archivos
     })
   }
 
-  // Archivos(nombre){
-    
-  //       function invertir(cadena) {
-  //         var x = cadena.length;
-  //         var cadenaInvertida = "";
-         
-  //         while (x>=0) {
-  //           cadenaInvertida += cadena.charAt(x);
-  //           x--;
-  //         }
-  //         return cadenaInvertida;
-  //       }
-    
-    
-  //       this.ProyService.BuscarArchivos({nombre: nombre}).subscribe(files =>{
-  //         console.log(files)
-  //         files.forEach(val =>{
-  //           for(var f1 in val){
-  //             if(f1 != "publico"){
-  //               var extension = "";
-  //               for(var i=val[f1].length - 1; i > -1; i--){
-  //                 if(val[f1].charAt(i) != '.') extension += val[f1].charAt(i)
-  //                 else break
-  //               }
-  //               val["extension"] = invertir(extension)  
-  //             }
-  //           }
-  //         })
-     
-  //         this.archivos = files
-  //         this.pkProyecto = nombre
-  //         // console.log(files)
-  //       })
-  //     }
-    
-      Enlazar_Archivos(){
-        if(this.abc.nativeElement.files[0]){
-          var realPath = this.abc.nativeElement.files[0].path;
-          
-          let estado;
-          ($('input:radio[name=group1]:checked').val() == "publico") ? estado = true
-          : estado = false
-            
-          let path = {
-            realPath: realPath,
-            estado: estado,
-            name: $('#fl2').val(),
-            proyect: this.pkProyecto
+  Carpetas(ruta) {
+    this.Carpetas_Service.Obtener_Carpetas({ ruta: ruta }).subscribe(carpetas => {
+      console.log(carpetas)
+      this.carpetas = carpetas
+    })
+  }
 
-          }
-          
-          console.log(path)
-          this.ProyService.GuardarArchivo(path).subscribe(res =>{
-            if(res.error){
-              Materialize.toast('El archivo ya esta enlazado al proyecto', 3000, 'red rounded')
-            }
-            else{
-              // this.Archivos(this.pkProyecto)
-              Materialize.toast('El archivo se enlazo al proyecto exitosamente', 3000, 'green rounded')
-              $('#modal1').modal('close');
-            }
-          })
+  Abrir_Carpeta(carpeta) {
+    this.carpeta_actual.ruta_padre = carpeta.ruta_padre
+    this.carpeta_actual.nombre_carpeta = carpeta.nombre_carpeta
+    this.carpeta_actual.publico = carpeta.publico
+    console.log(this.carpeta_actual)
+
+    this.Carpetas(carpeta.ruta_padre + "\\" + carpeta.nombre_carpeta)
+    this.Archivos(carpeta.ruta_padre, carpeta.nombre_carpeta)
+  }
+
+  invertir(cadena) {
+    var x = cadena.length;
+    var cadenaInvertida = "";
+
+    while (x >= 0) {
+      cadenaInvertida += cadena.charAt(x);
+      x--;
+    }
+    return cadenaInvertida;
+  }
+
+
+  Enlazar_Carpeta() {
+    if ($('#nombre_carpeta').val() == "") {
+      Materialize.toast('Debe agregar un nombre', 3000, 'red rounded')
+    }
+    else {
+      let carpeta = {
+        nombre_carpeta: $('#nombre_carpeta').val(),
+        ruta_padre: `${this.carpeta_actual.ruta_padre}\\${this.carpeta_actual.nombre_carpeta}`,
+        publico: this.carpeta_actual.publico
+      }
+
+      this.Carpetas_Service.Guardar_Carpeta(carpeta).subscribe(res => {
+        if (res) {
+          $('#modal1').modal('close');
+          Materialize.toast('Carpeta Agregada', 3000, 'green rounded')
+          this.Carpetas(`${this.carpeta_actual.ruta_padre}\\${this.carpeta_actual.nombre_carpeta}`)
         }
-        else Materialize.toast('Debe elegir un archivo', 3000, 'red rounded')
-      }
-    
-      Abrir_Archivo(file_name, publico){
-        this.ProyService.AbrirArchivo({pkproyecto: this.pkProyecto, file: file_name, publico: publico}).subscribe(res =>{
-          Materialize.toast('Abriendo archivo', 3000, 'green rounded')
-        })
-      }
-    
-      Desenlazar_Archivo(){
-        this.ProyService.DesenlazarArchivo({pkproyecto: this.pkProyecto, file: this.file}).subscribe(res =>{
-          Materialize.toast('El archivo se desenlazo correctamente', 3000, 'green rounded')
-          // this.Archivos(this.pkProyecto)
-          console.log(res)
-        })
+        else Materialize.toast('Error en la base de datos', 3000, 'red rounded')
+      })
+    }
+  }
+
+  Enlazar_Archivos() {
+    if (this.abc.nativeElement.files[0]) {
+
+
+      let archivo = {
+        realPath: this.abc.nativeElement.files[0].path,
+        nombre_archivo: $('#fl2').val(),
+        nombre_carpeta: this.carpeta_actual.nombre_carpeta,
+        ruta_padre: this.carpeta_actual.ruta_padre,
+        publico: this.carpeta_actual.publico
       }
 
+      console.log(archivo)
+      this.Archivos_Service.Guardar_Archivo(archivo).subscribe(res => {
+        if (res.error) {
+          Materialize.toast('El archivo ya esta enlazado al proyecto', 3000, 'red rounded')
+        }
+        else {
+          this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+          Materialize.toast('El archivo se enlazo al proyecto exitosamente', 3000, 'green rounded')
+          $('#modal1').modal('close');
+        }
+      })
+    }
+    else Materialize.toast('Debe elegir un archivo', 3000, 'red rounded')
+  }
+
+  Abrir_Archivo(archivo) {
+    this.Archivos_Service.Abrir_Archivo({ ruta: `${archivo.ruta_padre}\\${archivo.nombre_carpeta}\\\"${archivo.nombre_archivo}\"` }).subscribe(res => {
+      Materialize.toast('Abriendo archivo', 3000, 'green rounded')
+    })
+  }
+
+  Desenlazar_Archivo() {
+    this.Archivos_Service.Desenlazar_Archivo(this.archivo_eliminar).subscribe(res => {
+      Materialize.toast('El archivo se desenlazo correctamente', 3000, 'green rounded')
+      this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+    })
+  }
 }

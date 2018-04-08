@@ -175,7 +175,7 @@ export class ProyectosComponent implements OnInit {
         Materialize.toast('El proyecto se borró exitosamente', 3000, 'green rounded')
       }
       else {
-        alert("algo salio mal")
+        alert("Error en el servidor")
       }
     });
   }
@@ -224,12 +224,12 @@ export class ProyectosComponent implements OnInit {
             $('#modal1').modal('close');
             Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
           }
-          else Materialize.toast('Error en el servidor, ', 3000, 'red rounded')
+          else Materialize.toast('Error en el servidor', 3000, 'red rounded')
         });
       }
     }
     else {
-      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+      Materialize.toast('Complete los espacios para continuar', 3000, 'red rounded')
     }
 
   }

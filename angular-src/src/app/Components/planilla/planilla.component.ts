@@ -22,11 +22,10 @@ export class PlanillaComponent implements OnInit {
   switch: Boolean = true
   borrar: String//variable auxiliar utilizada para guardar la cedula cuando se proceda a borrar
   ax: any[];
-  detalles: any[] = []
+  detalles: any
   filtro: any
   parametro: String
 
-  DetallePlanilla: any
 
   @ViewChild('buscador')
   private buscador: ElementRef
@@ -105,6 +104,9 @@ export class PlanillaComponent implements OnInit {
 
   LimpiarGuardar() {
     $('#FormAgregar').trigger("reset");
+    this.renderer2.removeClass(this.LabelDNI.nativeElement, "active")
+    this.renderer2.removeAttribute(this.inputDNI.nativeElement, 'disabled');
+    this.dni = ""
   }
 
   modal1() {
@@ -127,6 +129,7 @@ export class PlanillaComponent implements OnInit {
       this.apellidos = data.apellidos
 
       this.renderer2.setAttribute(this.LabelDNI.nativeElement, "class", "active")
+      this.renderer2.setAttribute(this.inputDNI.nativeElement, 'disabled', 'true');
       this.dni = data.dni
 
       this.puesto = data.puesto
@@ -158,10 +161,10 @@ export class PlanillaComponent implements OnInit {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
-        Materialize.toast('El Planilla se borró exitosamente', 3000, 'green rounded')
+        Materialize.toast('Los datos se eliminaron exitosamente', 3000, 'green rounded')
       }
       else {
-        alert("algo salio mal")
+        alert("Error al eliminar")
       }
     });
   }
@@ -206,7 +209,7 @@ export class PlanillaComponent implements OnInit {
           if (data.success) {
             this.getAll();
             $('#modal1').modal('close');
-            Materialize.toast('El Planilla se guardó exitosamente', 3000, 'green rounded')
+            Materialize.toast('Los datos se guardaron exitosamente', 3000, 'green rounded')
           }
           else {
             Materialize.toast('Error, DNI repetido', 3000, 'red rounded')
@@ -219,12 +222,12 @@ export class PlanillaComponent implements OnInit {
           this.getAll();
           this.switch = true;
           $('#modal1').modal('close');
-          Materialize.toast('El Planilla se guardó exitosamente', 3000, 'green rounded')
+          Materialize.toast('Los datos se editaron exitosamente', 3000, 'green rounded')
         });
       }
     }
     else {
-      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+      Materialize.toast('Complete los espacios para continuar', 3000, 'red rounded')
     }
   }
 
@@ -261,9 +264,15 @@ export class PlanillaComponent implements OnInit {
   }
 
   
-  Detalles() {
-    this.detalles = this.ax;
-    $('#modal4').modal('open');
-    }  
-  
+  Detalles(v) {
+    let planilla = {
+      dni: v.dni
+    }
+    //this.detalles = this.ax;
+    this.PlaniService.getById(planilla).subscribe(detalles => {
+      this.detalles = [detalles]
+      $('#modal4').modal('open');
+    })
+  }  
+ 
 }
