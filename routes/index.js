@@ -102,6 +102,8 @@ router.post('/api/searchfiles', db.searchfiles);
 
 router.post('/api/getfolders', db.getfolders);
 
-router.post('/api/savefolder', db.savefolder); 
+router.post('/api/savefolder', db.savefolder);
+
+router.post('/api/getpublicfolder', db.getpublicfolder);
 
 module.exports = router;

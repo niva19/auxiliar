@@ -1,5 +1,11 @@
+<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+    <a class="btn-floating btn-large red" (click)="atras()">
+      <i class="large material-icons">arrow_back</i>
+    </a>
+  </div>
+
 <div id="modal1" class="modal">
-  <ul class="tabs tabs-fixed-width tab-demo z-depth-1 black-text">
+  <ul class="tabs tabs-fixed-width tab-demo ">
     <li class="tab">
       <a class="black-text" href="#test1">Guardar Carpeta</a>
     </li>
@@ -11,7 +17,7 @@
     <div class="modal-content">
       <div class="input-field col s12">
         <i class="material-icons prefix">folder</i>
-        <input id="nombre_carpeta" type="text" class="validate">
+        <input id="nombre_carpeta" type="text" class="validate" (keypress)="Expresion_Regular($event)">
         <label for="nombre_carpeta">Nombre de la carpeta</label>
       </div>
     </div>
@@ -37,7 +43,9 @@
         <a class="btn #0d47a1 blue darken-4 modal-action modal-close waves-effect waves-red ">Cancelar</a>
       </div>
     </div>
-</div>
+  </div>
+
+
 
 <div id="desenlazar" class="modal">
   <div class="modal-content">
@@ -55,9 +63,18 @@
     <div class="col s12 m12">
       <div class="card #f5f5f5 grey lighten-4">
         <div class="card-content ">
-          <span class="card-title">Archivos del proyecto {{pkProyecto}}</span>
+          <nav class="flat">
+            <div class="nav-wrapper">
+              <div class="col s12">
+                <a href="#!" class="breadcrumb">Clientes</a>
+                <a href="#!" class="breadcrumb">Proyectos</a>
+                <a href="#!" class="breadcrumb">Documentos</a>
+              </div>
+            </div>
+          </nav>
+          <br>
           <div class="input-field col m6 offset-m5 s8">
-            <button type="button" label="Click" (click)="modal1()" class="#0d47a1 blue darken-4 btn">Agregar Archivo</button>
+            <button type="button" label="Click" (click)="modal1()" class="#0d47a1 blue darken-4 btn">Guardar</button>
           </div>
 
           <div class="container-fluid">

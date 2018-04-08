@@ -19,4 +19,10 @@ export class CarpetasService {
     return this.http.post('http://localhost:3000/api/savefolder', carpeta, { headers: headers }).map(res => res.json())
   }
 
+  Obtener_Carpeta_Publica(carpeta) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/getpublicfolder', carpeta, { headers: headers }).map(res => res.json())
+  }
+  
 }

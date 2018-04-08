@@ -22,6 +22,7 @@ import { ProveedoresService } from './services/proveedores.service'
 import { PlanillaService } from './services/planilla.service'
 import { CarpetasService } from './services/carpetas.service'
 import { ArchivosService } from './services/archivos.service'
+import { DataService } from './services/data.service'
 
 import { AppComponent } from './app.component'
 import { NgxPaginationModule } from 'ngx-pagination'
@@ -41,6 +42,7 @@ import { ProveedoresComponent } from './Components/proveedores/proveedores.compo
 import { FilterClientePipe } from './Filters/filter-cliente.pipe'
 import { FilterProyectoPipe } from './Filters/filter-proyecto.pipe';
 import { FilterPapeleraPipe } from './Filters/filter-papelera.pipe';
+import { GerenteBridgeComponent } from './Components/gerente-bridge/gerente-bridge.component';
 
 
 const appRoutes: Routes = [
@@ -50,6 +52,7 @@ const appRoutes: Routes = [
   { path: 'ingresar', component: IngresarComponent },
   { path: 'historial', component: HistorialComponent, canActivate: [AuthGuard, Level3Guard] },
   { path: 'archivos', component: ArchivosComponent },
+  { path: 'gerente_bridge', component: GerenteBridgeComponent },
   { path: 'empleado', component: EmpleadosComponent, canActivate: [AuthGuard, Level3Guard] },
   { path: 'proyecto', component: ProyectosComponent, canActivate: [AuthGuard, Level2Guard] },
   { path: 'google', component: GoogleComponent, canActivate: [AuthGuard, Level1Guard] },
@@ -74,7 +77,8 @@ const appRoutes: Routes = [
     ProveedoresComponent,
     FilterProyectoPipe,
     FilterClientePipe,
-    FilterPapeleraPipe
+    FilterPapeleraPipe,
+    GerenteBridgeComponent
   ],
   imports: [
     CommonModule,
@@ -89,7 +93,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, ArchivosService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
+  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, ArchivosService, DataService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 

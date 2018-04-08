@@ -3,12 +3,14 @@
 <!-- ############################################################################################ -->
 
 <!-- ########################################## INGRESAR CLIENTE ############################## -->
+
+
 <div id="modal1" class="modal">
   <div class="modal-content">
     <form (submit)="ClienteSubmit()" class="col s12">
       <div class="row">
         <div class="input-field col s12">
-          <input id="Nombre" type="text" class="validate" >
+          <input id="Nombre" type="text" class="validate">
           <label for="Nombre" #LabelNombre>Nombre</label>
         </div>
         <div class="input-field col s12">
@@ -20,9 +22,9 @@
           <label for="Cedula" #LabelCedula>Cedula</label>
         </div>
         <div class="input-field col s12">
-            <input id="Direccion" type="text" class="validate">
-            <label for="Direccion" #LabelDireccion>Dirección</label>
-         </div>
+          <input id="Direccion" type="text" class="validate">
+          <label for="Direccion" #LabelDireccion>Dirección</label>
+        </div>
 
         <div class="input-field col s12">
           <input (keypress)="Only_Numbers($event)" type="text" id="TelefonoTrabajo" class="validate">
@@ -89,15 +91,15 @@
           <div class="input-field col m6 offset-m5 s8">
             <button type="button" label="Click" (click)="modal1()" class="#0d47a1 blue darken-4 btn">Agregar</button>
           </div>
-          
+
           <form id="filter" class="col s12">
-              <div class="row">
-                <div class="input-field col m8 offset-m2 s8">
-                  <i class="material-icons prefix">search</i>
-                  <input id="inputfilter" type="text" class="validate" [(ngModel)]="term" name="term"/>
-                  <label for="inputfilter">Buscar</label>
-                </div>
+            <div class="row">
+              <div class="input-field col m8 offset-m2 s8">
+                <i class="material-icons prefix">search</i>
+                <input id="inputfilter" type="text" class="validate" [(ngModel)]="term" name="term" />
+                <label for="inputfilter">Buscar</label>
               </div>
+            </div>
           </form>
 
           <table>
