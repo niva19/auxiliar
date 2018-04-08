@@ -10,16 +10,16 @@
   </div>
   <nav>
     <div class="nav-wrapper" id="navegador">
-      <a [routerLink]="['/historial']" class="brand-logo">
-        <i class="material-icons">delete</i>Papelera</a>
+      <!-- <a [routerLink]="['/historial']" class="brand-logo">
+        <i class="material-icons">delete</i>Papelera</a> -->
       <a href="#" data-activates="mobile-demo" class="button-collapse">
         <i class="material-icons">menu</i>
       </a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <div *ngIf="ingresarService.loggedIn()">
-          <!--<li [routerLinkActive]="['active']">
+          <li [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Papelera</a>
-          </li>-->
+          </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
           </li>
@@ -55,9 +55,9 @@
             <a class="#2e7d32" id="User">
               <i class="tiny material-icons">account_circle</i>{{ingresarService.updateName()}}</a>
           </li>
-          <!--<li [routerLinkActive]="['active']">
+          <li [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Papelera</a>
-          </li>-->
+          </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
           </li>
