@@ -19,6 +19,7 @@ import { IngresarService } from './Services/ingresar.service'
 import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
 import { CarpetasService } from './services/carpetas.service'
+import { ArchivosService } from './services/archivos.service'
 
 import { AppComponent } from './app.component'
 import { NgxPaginationModule } from 'ngx-pagination'
@@ -36,6 +37,7 @@ import { HistorialComponent } from './Components/historial/historial.component';
 import { ArchivosComponent } from './Components/archivos/archivos.component';
 import { FilterClientePipe } from './Filters/filter-cliente.pipe'
 import { FilterProyectoPipe } from './Filters/filter-proyecto.pipe';
+import { FilterPapeleraPipe } from './Filters/filter-papelera.pipe';
 
 
 const appRoutes: Routes = [
@@ -66,7 +68,8 @@ const appRoutes: Routes = [
     HistorialComponent,
     ArchivosComponent,
     FilterProyectoPipe,
-    FilterClientePipe
+    FilterClientePipe,
+    FilterPapeleraPipe
   ],
   imports: [
     CommonModule,
@@ -81,7 +84,7 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
+  providers: [ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, ArchivosService ,AuthGuard, Level1Guard, Level2Guard, Level3Guard],
   bootstrap: [AppComponent]
 })
 

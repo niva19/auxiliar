@@ -321,8 +321,8 @@ function saveProject(req, res, next) {
           console.log(output);
         });
 
-        db.none("insert into Carpeta values('publico', '"+path+"')")
-        db.none("insert into Carpeta values('privado', '"+path+"')")
+        db.none("insert into Carpeta values('publico', '" + path + "', TRUE)")
+        db.none("insert into Carpeta values('privado', '" + path + "', FALSE)")
 
       });
       res.status(200)
@@ -407,24 +407,21 @@ function searchProject(req, res, next) {
 
 function savefiles(req, res, next) {
 
-  db.none('insert into Archivos values(${name}, ${proyect}, ${estado})',
+  db.none('insert into Archivos values(${nombre_archivo}, ${nombre_carpeta}, ${ruta_padre}, ${publico})',
     req.body)
     .then(() => {
-      db.any('select archivos from Proyecto where nombreproyecto = ${proyect}', req.body)
-        .then((data) => {
-          // console.log(`AQUI: copy \"${req.body.realPath}\" \" ${data[0].archivos} \"`);
 
-          let estado;
-          (req.body.estado) ? estado = "publico"
-          : estado = "privado";
+      // execute(`copy \"${req.body.realPath}\" \"${data[0].archivos}\\${estado}\"`, function (output) {
+      //   console.log(output);
+      // });
 
-          execute(`copy \"${req.body.realPath}\" \"${data[0].archivos}\\${estado}\"`, function (output) {
-            console.log(output);
-          });
-          res.status(200)
-            .json({
-              success: true
-            });
+      execute(`copy \"${req.body.realPath}\" \"${req.body.ruta_padre}\\${req.body.nombre_carpeta}\"`, function (output) {
+        console.log(output);
+      });
+
+      res.status(200)
+        .json({
+          success: true
         });
     })
     .catch((err) => {
@@ -438,59 +435,26 @@ function savefiles(req, res, next) {
 
 function openfile(req, res, next) {
 
-  db.any('select archivos from Proyecto where nombreproyecto = ${pkproyecto}', req.body)
-    .then((data) => {
-      let estado;
-      (req.body.publico == true) ? estado = "publico" : estado = "privado";
+  let path = `start ${req.body.ruta}`;
+  console.log(path);
 
-      let path = `start ${data[0].archivos}\\${estado}\\\"${req.body.file}\"`;
-      console.log(path);
+  execute(path, function (output) {
+    console.log(output);
+  });
 
-      execute(path, function (output) {
-        console.log(output);
-      });
-      res.status(200)
-        .json(data);
-    })
-    .catch((err) => {
-      res.status(200)
-        .json({
-          success: false
-        });
-    })
-}
-function unlink(req, res, next) {
-  db.any('update archivos set enlazado = FALSE where nombreproyecto = ${pkproyecto} and nombre = ${file}', req.body)
-  .then(() => {
-    res.status(200)
+  res.status(200)
     .json({
       success: true
     });
-  })
-  .catch((err) => {
-    res.status(200)
-      .json({
-        success: false
-      });
-  })
+
 }
-
-function deletefile(req, res, next) {
-  db.any('select archivos from Proyecto where nombreproyecto = ${pkproyecto}', req.body)
-    .then((data) => {
-      let path = `del ${data[0].archivos}\\\"${req.body.file}\"`;
-      console.log(path);
-
-      execute(path, function (output) {
-        console.log(output);
-      });
-      db.any('delete from archivos where nombreproyecto = ${pkproyecto} and nombre = ${file}', req.body)
-        .then(() => {
-          res.status(200)
-            .json({
-              success: true
-            });
-        })
+function unlink(req, res, next) {
+  db.any('update archivos set enlazado = FALSE where ruta_padre = ${ruta_padre} and nombre_carpeta = ${nombre_carpeta} and nombre_archivo = ${nombre_archivo}', req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
     })
     .catch((err) => {
       res.status(200)
@@ -498,11 +462,38 @@ function deletefile(req, res, next) {
           success: false
         });
     })
+}
+
+function deletefile(req, res, next) {
+
+  
+  db.any('delete from archivos where ruta_padre = ${ruta_padre} and nombre_carpeta = ${nombre_carpeta} and nombre_archivo = ${nombre_archivo}', req.body)
+    .then(() => {
+
+      let path = `del ${req.body.ruta_padre}\\${req.body.nombre_carpeta}\\\"${req.body.nombre_archivo}\"`;
+      console.log(path);
+    
+      execute(path, function (output) {
+        console.log(output);
+      });
+      
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+
 }
 
 function searchfiles(req, res, next) {
   console.log(req.body)
-  db.any('select nombre, publico from Archivos where nombreproyecto = ${nombre} and enlazado = TRUE', req.body)
+  db.any('select nombre_archivo, nombre_carpeta, ruta_padre from Archivos where ruta_padre = ${ruta_padre} and nombre_carpeta = ${nombre_carpeta} and enlazado = TRUE', req.body)
     .then((data) => {
       console.log(data);
       res.status(200)
@@ -515,7 +506,7 @@ function searchfiles(req, res, next) {
         });
     });
 }
- 
+
 function getunlinkfiles(req, res, next) {
   db.any('select * from archivos where enlazado = FALSE')
     .then(function (data) {
@@ -528,34 +519,58 @@ function getunlinkfiles(req, res, next) {
 }
 
 function recoveryfile(req, res, next) {
-  db.any('update archivos set enlazado = TRUE where nombreproyecto = ${pkproyecto} and nombre = ${file}', req.body)
-  .then(() => {
-    res.status(200)
-    .json({
-      success: true
-    });
-  })
-  .catch((err) => {
-    res.status(200)
-      .json({
-        success: false
-      });
-  })
+  db.any('update archivos set enlazado = TRUE where ruta_padre = ${ruta_padre} and nombre_carpeta = ${nombre_carpeta} and nombre_archivo = ${nombre_archivo}', req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
 }
 
-function getfolders(req, res, next){
+function getfolders(req, res, next) {
   db.any("select * from carpeta where ruta_padre = ${ruta}", req.body)
-  .then((data) => {
-    console.log(data);
-    res.status(200)
-      .json(data);
-  })
-  .catch(function (err) {
-    res.status(200)
-      .json({
-        success: false
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+function savefolder(req, res, next) {
+  db.none('insert into Carpeta values(${nombre_carpeta}, ${ruta_padre}, ${publico})', req.body)
+    .then(() => {
+
+      // execute('mkdir ' + path + '\\publico', function (output) {
+      //   console.log(output);
+      // });
+      execute(`mkdir ${req.body.ruta_padre}\\${req.body.nombre_carpeta}`, function (output) {
+        console.log(output);
       });
-  });
+
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
 }
 
 
@@ -594,5 +609,6 @@ module.exports = {
   unlink: unlink,
   getunlinkfiles: getunlinkfiles,
   recoveryfile: recoveryfile,
-  getfolders: getfolders
+  getfolders: getfolders,
+  savefolder: savefolder
 }

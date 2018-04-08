@@ -51,16 +51,18 @@ constraint fkCliente foreign key (cliente) references Cliente
 );
 
 create table Carpeta(
-    nombre text,
+    nombre_carpeta text,
     ruta_padre text,
-    primary key (nombre, ruta_padre)
+    publico boolean,
+    primary key (ruta_padre, nombre_carpeta)
 )
 
 create table Archivos(
-    nombre text,
-    nombreProyecto text,
-    publico boolean, 
+    nombre_archivo text,
+    nombre_carpeta text,
+    ruta_padre text,
+    publico boolean,
     enlazado boolean DEFAULT TRUE,
-    primary key (nombre, nombreProyecto),
-    constraint fkProyecto foreign key (nombreProyecto) references Proyecto
+    primary key (ruta_padre, nombre_carpeta, nombre_archivo),
+    constraint fkCarpeta foreign key (ruta_padre, nombre_carpeta) references Carpeta
 );
