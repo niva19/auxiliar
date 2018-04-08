@@ -15,20 +15,24 @@ constraint pkCliente primary key (cedula)
 );
 
 /* Tabla de Empleado */
-
-create table Empleado
+/* nombre, apellidos, dni, direccion, telefono, correo , usuario, contrasena, isGerente, fechaEntrada, fechaSalida, tipoSalario, montoSalario */
+create table Usuario
 ( 
 nombre text,
 apellidos text,
-cedula text,
+dni text,
 direccion text,
 telefono text,
 correo text,
 usuario text,
 contrasena text,
-privilegios int,
+isGerente boolean,
+fechaEntrada text, 
+fechaSalida text, 
+tipoSalario text, 
+montoSalario text,
 
-constraint pkEmpleado primary key (cedula) 
+constraint pkUsuario primary key (dni) 
 );
 
 /* Tabla de Proyecto */
@@ -54,7 +58,7 @@ create table Carpeta(
     nombre text,
     ruta_padre text,
     primary key (nombre, ruta_padre)
-)
+);
 
 create table Archivos(
     nombre text,

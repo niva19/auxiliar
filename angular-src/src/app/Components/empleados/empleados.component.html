@@ -17,9 +17,9 @@
           <label for="apellidos" #LabelApellidos>Apellidos</label>
         </div>
         <div class="input-field col s12">
-          <input (keypress)="Only_Numbers($event)" maxlength="9" id="cedula" type="text" [(ngModel)]="cedula" name="cedula" class="validate"
-            #inputcedula>
-          <label for="cedula" #LabelCedula>Cedula</label>
+          <input (keypress)="Only_Numbers($event)" maxlength="9" id="dni" type="text" [(ngModel)]="dni" name="dni" class="validate"
+            #inputDni>
+          <label for="dni" #LabelDni>Identificación</label>
         </div>
         <div class="input-field col s12">
           <input id="direccion" type="text" [(ngModel)]="direccion" name="direccion" class="validate" #inputdireccion>
@@ -42,6 +42,28 @@
           <input id="contrasena" type='password' [(ngModel)]="contrasena" name="contrasena" class="validate" #inputcontrasena>
           <label for="name" #LabelContrasena>Contraseña</label>
         </div>
+        <!--NEW ADDED-->
+        <div class="input-field col s12">
+          <input id="isGerente" type='text' [(ngModel)]="isGerente" name="isGerente" class="validate" #inputIsGerente>
+          <label for="name" #LabelIsGerente>Gerente</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="fechaEntrada" type='text' [(ngModel)]="fechaEntrada" name="fechaEntrada" class="validate" #inputFechaEntrada>
+          <label for="name" #LabelFechaEntrada>Contraseña</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="fechaSalida" type='text' [(ngModel)]="fechaSalida" name="fechaSalida" class="validate" #inputFechaSalida>
+          <label for="name" #LabelFechaSalida>Fecha salida</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="tipoSalario" type='text' [(ngModel)]="tipoSalario" name="tipoSalario" class="validate" #inputTipoSalario>
+          <label for="name" #LabelTipoSalario>Tipo salario</label>
+        </div>
+        <div class="input-field col s12">
+          <input id="montoSalario" type='text' [(ngModel)]="montoSalario" name="montoSalario" class="validate" #inputMontoSalario>
+          <label for="name" #LabelMontoSalario>Salario</label>
+        </div>
+        <!--END-->
         <div class="input-field col s12">
           <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
           <input type="submit" class="#0277bd light-blue darken-3 btn" value="Guardar">
@@ -148,7 +170,7 @@
             <select materialize="material_select" (change)="buscar()" #buscador>
               <option value="" disabled selected>Buscar por</option>
               <option value="nombre">Nombre</option>
-              <option value="cedula">Cedula</option>
+              <option value="dni">Identificación</option>
               <option value="telefono">Telefono</option>
               <option value="todos">Todos</option>
             </select>
@@ -159,7 +181,7 @@
               <tr>
                 <td>Nombre</td>
                 <td>Apellidos</td>
-                <td>Cedula</td>
+                <td>Identificación</td>
                 <td>Dirección</td>
                 <td>Telefono</td>
                 <td>Correo</td>
@@ -173,30 +195,20 @@
               <tr *ngFor="let v of ax | paginate: {itemsPerPage:5, currentPage: p}">
                 <td>{{v.nombre}}</td>
                 <td>{{v.apellidos}}</td>
-                <td>{{v.cedula}}</td>
+                <td>{{v.dni}}</td>
                 <td>{{v.direccion}}</td>
                 <td>{{v.telefono}}</td>
                 <td>{{v.correo}}</td>
                 <td>{{v.usuario}}</td>
                 <!-- #####################PRIVILEGIOS CON ICONOS DINAMICOS#####################-->
+                <!-- ####################################DELETED########################################-->
                 <td>
-                  <a class="waves-effect waves-light btn-flat" (click)="Cambio_Privilegios(v.cedula)">
-                    <div [ngSwitch]="v.privilegios">
-                      <i *ngSwitchCase="0" class="tiny material-icons left">error_outline</i>
-                      <i *ngSwitchCase="1" class="tiny material-icons left">star_border</i>
-                      <i *ngSwitchCase="2" class="tiny material-icons left">star_half</i>
-                      <i *ngSwitchCase="3" class="tiny material-icons left">star</i>
-                    </div>
-                  </a>
-                </td>
-                <!-- ############################################################################-->
-                <td>
-                  <a class="waves-effect waves-light btn-flat" (click)="Editar(v.cedula)">
+                  <a class="waves-effect waves-light btn-flat" (click)="Editar(v.dni)">
                     <i class="tiny material-icons left">create</i>
                   </a>
                 </td>
                 <td>
-                  <a class="waves-effect waves-light btn-flat" (click)="Confirmar_Eliminar(v.cedula)">
+                  <a class="waves-effect waves-light btn-flat" (click)="Confirmar_Eliminar(v.dni)">
                     <i class="tiny material-icons left">delete</i>
                   </a>
                 </td>

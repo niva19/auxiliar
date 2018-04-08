@@ -16,18 +16,24 @@ export class EmpleadosComponent implements OnInit {
 
   nombre: String
   apellidos: String
-  cedula: String
+  dni: String
   direccion: String
   telefono: String
   correo: String
+  usuario: String
+  contrasena: String
+  isGerente: boolean
+  fechaEntrada: String
+  fechaSalida: String
+  tipoSalario: String
+  montoSalario: String
   switch: Boolean = true
   borrar: String//variable auxiliar utilizada para guardar la cedula cuando se proceda a borrar
   ax: any[];
   filtro: any
   parametro: String
   privilegios: string
-  usuario: String
-  contrasena: String
+
 
   @ViewChild('empleadoSeleccionado')
   private empleadoSeleccionado: ElementRef
@@ -47,8 +53,8 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('LabelApellidos')
   private LabelApellidos: ElementRef
 
-  @ViewChild('LabelCedula')
-  private LabelCedula: ElementRef
+  @ViewChild('LabelDni')
+  private LabelDni: ElementRef
 
   @ViewChild('Labeldireccion')
   private Labeldireccion: ElementRef
@@ -68,6 +74,23 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('LabelContrasena')
   private LabelContrasena: ElementRef
 
+  //added
+  @ViewChild('LabelIsGerente')
+  private LabelIsGerente: ElementRef
+
+  @ViewChild('LabelFechaEntrada')
+  private LabelFechaEntrada: ElementRef
+
+  @ViewChild('LabelFechaSalida')
+  private LabelFechaSalida: ElementRef
+
+  @ViewChild('LabelTipoSalario')
+  private LabelTipoSalario: ElementRef
+
+  @ViewChild('LabelMontoSalario')
+  private LabelMontoSalario: ElementRef
+  //end
+
   @ViewChild('inputnombre')
   private inputnombre: ElementRef
 
@@ -77,8 +100,8 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('inputapellidos')
   private inputapellidos: ElementRef
 
-  @ViewChild('inputcedula')
-  private inputcedula: ElementRef
+  @ViewChild('inputDni')
+  private inputDni: ElementRef
 
   @ViewChild('inputdireccion')
   private inputdireccion: ElementRef
@@ -98,13 +121,28 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('inputcontrasena')
   private inputContrasena: ElementRef
 
+  //added input
+  @ViewChild('inputIsGerente')
+  private inputIsGerente: ElementRef
+
+  @ViewChild('inputFechaEntrada')
+  private inputFechaEntrada: ElementRef
+
+  @ViewChild('inputFechaSalida')
+  private inputFechaSalida: ElementRef
+
+  @ViewChild('inputTipoSalario')
+  private inputTipoSalario: ElementRef
+
+  @ViewChild('inputMontoSalario')
+  private inputMontoSalario: ElementRef
+
+  //end
+
   constructor(private EmpService: EmpleadosService, private router: Router, private renderer2: Renderer2) { }
 
   ngOnInit() {
     $('.modal').modal();
-    // $("#buscar").change(function() {
-    //   console.log("asd")
-    // });
     this.getAll();
   }
 
@@ -126,9 +164,9 @@ export class EmpleadosComponent implements OnInit {
     this.renderer2.removeClass(this.LabelApellidos.nativeElement, "active")
     this.apellidos = ""
 
-    this.renderer2.removeClass(this.LabelCedula.nativeElement, "active")
-    this.renderer2.removeAttribute(this.inputcedula.nativeElement, 'disabled');
-    this.cedula = ""
+    this.renderer2.removeClass(this.LabelDni.nativeElement, "active")
+    this.renderer2.removeAttribute(this.inputDni.nativeElement, 'disabled');
+    this.dni = ""
 
     this.renderer2.removeClass(this.Labeldireccion.nativeElement, "active")
     this.direccion = ""
@@ -145,6 +183,23 @@ export class EmpleadosComponent implements OnInit {
 
     this.renderer2.removeClass(this.LabelContrasena.nativeElement, "active")
     this.contrasena = ""
+
+    //new
+    this.renderer2.removeClass(this.LabelIsGerente.nativeElement, "active")
+    this.isGerente = false
+
+    this.renderer2.removeClass(this.LabelFechaEntrada.nativeElement, "active")
+    this.fechaEntrada = ""
+
+    this.renderer2.removeClass(this.LabelFechaSalida.nativeElement, "active")
+    this.fechaSalida = ""
+
+    this.renderer2.removeClass(this.LabelTipoSalario.nativeElement, "active")
+    this.tipoSalario = ""
+
+    this.renderer2.removeClass(this.LabelMontoSalario.nativeElement, "active")
+    this.montoSalario = ""
+    //end
   }
 
   modal1() {
@@ -170,9 +225,9 @@ export class EmpleadosComponent implements OnInit {
       this.renderer2.setAttribute(this.LabelApellidos.nativeElement, "class", "active")
       this.apellidos = data.apellidos
 
-      this.renderer2.setAttribute(this.LabelCedula.nativeElement, "class", "active")
-      this.renderer2.setAttribute(this.inputcedula.nativeElement, 'disabled', 'true');
-      this.cedula = data.cedula
+      this.renderer2.setAttribute(this.LabelDni.nativeElement, "class", "active")
+      this.renderer2.setAttribute(this.inputDni.nativeElement, 'disabled', 'true');
+      this.dni = data.cedula
 
       this.renderer2.setAttribute(this.Labeldireccion.nativeElement, "class", "active")
       this.direccion = data.direccion
@@ -287,7 +342,7 @@ export class EmpleadosComponent implements OnInit {
     const empleado = {
       nombre: this.nombre,
       apellidos: this.apellidos,
-      cedula: this.cedula,
+      cedula: this.dni,
       direccion: this.direccion,
       telefono: this.telefono,
       correo: this.correo,
@@ -338,7 +393,7 @@ export class EmpleadosComponent implements OnInit {
       return false
     if (this.inputapellidos.nativeElement.value == '')
       return false
-    if (this.inputcedula.nativeElement.value == '')
+    if (this.inputDni.nativeElement.value == '')
       return false
     if (this.inputdireccion.nativeElement.value == '')
       return false
@@ -349,6 +404,17 @@ export class EmpleadosComponent implements OnInit {
     if (this.inputUsuario.nativeElement.value == '')
       return false
     if (this.inputContrasena.nativeElement.value == '')
+      return false
+      //should be checked
+    if (this.inputIsGerente.nativeElement.value == false)
+      return false
+    if(this.inputFechaEntrada.nativeElement.value == '')
+      return false
+    if(this.inputFechaSalida.nativeElement.value == '')
+      return false
+    if(this.inputTipoSalario.nativeElement.value == '')
+      return false
+    if(this.inputMontoSalario.nativeElement.value == '')
       return false
     return true
   }
