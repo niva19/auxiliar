@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/co
 import { Router } from '@angular/router'
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import * as Materialize from 'angular2-materialize'
 
 declare var jQuery: any;
 declare var $: any;
@@ -36,32 +37,43 @@ export class GoogleComponent {
   constructor(private renderer2: Renderer2) { }
 
   ngOnInit() {
-    $('.modal').modal();
+    $('.modal').modal()
   }
 
   modal1() {
-    $('#modal1').modal('open');
+    this.LimpiarGuardar()
+    $('#modal1').modal('open')
+  }
+
+  ValidateForm() {
+    if (this.inputlatitud.nativeElement.value == '')
+      return false
+    if (this.inputlongitud.nativeElement.value == '')
+      return false
+    return true
+  }
+
+  LimpiarGuardar() {
+    $('#FormAgregar').trigger("reset")
+    console.log("Limpiar")
   }
 
   Submit() {
-    var lati;
-    var longi;
-    var map = this.inputmapa.nativeElement.value
-    if (this.inputlatitud.nativeElement.value == '')
-      lati = 9.9923673;
-    else
-      lati = Number(this.inputlatitud.nativeElement.value);
-    if (this.inputlongitud.nativeElement.value == '')
-      longi = -84.1241387;
-    else
-      longi = Number(this.inputlongitud.nativeElement.value);
 
-    this.lat = lati;
-    this.lng = longi;
-    this.tipo = map;
-
-    $('#modal1').modal('close');
+    if (this.ValidateForm()) {
+      this.lat = Number($('#latitud').val())
+      console.log(this.lat)
+      this.lng = Number($('#longitud').val())
+      console.log( this.lng)
+      $('#modal1').modal('close');
+    }
+    else {
+      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+    }
   }
-
+  proarinsa(){
+    this.lat = 9.9923673;
+    this.lng = -84.1241387;
+  }
 
 }
