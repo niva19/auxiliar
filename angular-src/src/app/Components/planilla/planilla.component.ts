@@ -227,7 +227,7 @@ export class PlanillaComponent implements OnInit {
       }
     }
     else {
-      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+      Materialize.toast('Complete los espacios para continuar', 3000, 'red rounded')
     }
   }
 

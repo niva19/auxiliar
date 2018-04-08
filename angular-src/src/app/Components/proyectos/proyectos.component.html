@@ -60,15 +60,16 @@
           <input id="banco" type="text" [(ngModel)]="banco" name="banco" class="validate" #inputbanco>
           <label for="banco" #Labelbanco>Nombre del banco</label>
         </div>
-        <div class="input-field col s12">
-          <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
-          <input type="submit" class="#0277bd light-blue darken-3 btn" value="Guardar">
+        <div class="right">
+          <input type="submit" class="#0d47a1 blue darken-4 btn" value="Guardar">
+          <a class="modal-action modal-close waves-effect waves-green #0d47a1 blue darken-4 btn">Cancelar</a>
         </div>
       </div>
     </form>
   </div>
 </div>
 
+<!-- ########################################## TIPO FINANCIAMIENTO PROYECTO ############################## -->
 
 <div id="modal5" class="modal">
   <div class="modal-content">
@@ -146,9 +147,11 @@
       </p>
     </form>
     <br>
-    <a class="modal-action modal-close waves-effect light-blue darken-3 btn">Listo</a>
+    <a class="modal-action modal-close waves-effect #0d47a1 blue darken-4 btn">Listo</a>
   </div>
 </div>
+
+<!-- ########################################## DETALLES PROYECTO ############################## -->
 
 <div id="modal4" class="modal">
   <div class="modal-content">
@@ -174,6 +177,8 @@
   </div>
 </div>
 
+<!-- ########################################## GESTION PROYECTO ############################## -->
+
 <div class="container">
 
   <div class="row">
@@ -190,17 +195,17 @@
           </nav>
           <br>
           <div class="input-field col m6 offset-m5 s8">
-            <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Agregar</button>
+            <button type="button" label="Click" (click)="modal1()" class="#0d47a1 blue darken-4 btn">Agregar</button>
           </div>
 
           <form id="filter" class="col s12">
-              <div class="row">
-                <div class="input-field col m8 offset-m2 s8">
-                  <i class="material-icons prefix">search</i>
-                  <input id="inputfilter" type="text" class="validate" [(ngModel)]="term" name="term"/>
-                  <label for="inputfilter">Buscar</label>
-                </div>
+            <div class="row">
+              <div class="input-field col m8 offset-m2 s8">
+                <i class="material-icons prefix">search</i>
+                <input id="inputfilter" type="text" class="validate" [(ngModel)]="term" name="term" />
+                <label for="inputfilter">Buscar</label>
               </div>
+            </div>
           </form>
 
           <table>
@@ -223,10 +228,10 @@
                   </a>
                 </td>
                 <td>
-                    <a class="waves-effect waves-light btn-flat" (click)="Ir_Empleados(v.nombreproyecto)">
-                      <i class="tiny material-icons left">group</i>
-                    </a>
-                  </td>
+                  <a class="waves-effect waves-light btn-flat" (click)="Ir_Empleados(v.nombreproyecto)">
+                    <i class="tiny material-icons left">group</i>
+                  </a>
+                </td>
                 <td>
                   <a class="waves-effect waves-light btn-flat" (click)="Ir_Archivos(v.ruta)">
                     <i class="tiny material-icons left">insert_drive_file</i>

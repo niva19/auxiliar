@@ -47,9 +47,9 @@
           <input id="CorreoEmpresarial" type="email" class="validate">
           <label for="CorreoEmpresarial" #LabelCorreoEmpresarial data-error="wrong" data-success="right">Correo Empresarial</label>
         </div>
-        <div class="input-field col s12">
-          <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
-          <input type="submit" class="#0277bd light-blue darken-3 btn" value="Guardar">
+        <div class="right">
+          <input type="submit" class="#0d47a1 blue darken-4 btn" value="Guardar">
+          <a class="modal-action modal-close waves-effect #0d47a1 blue darken-4 btn">Cancelar</a>
         </div>
       </div>
     </form>
@@ -89,7 +89,7 @@
         <div class="card-content ">
           <span class="card-title">Gestión de clientes</span>
           <div class="input-field col m6 offset-m5 s8">
-            <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Agregar</button>
+            <button type="button" label="Click" (click)="modal1()" class="#0d47a1 blue darken-4 btn">Agregar</button>
           </div>
 
           <form id="filter" class="col s12">
@@ -136,7 +136,7 @@
               </tr>
             </tbody>
           </table>
-          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+          <pagination-controls  (pageChange)="p = $event"></pagination-controls>
         </div>
       </div>
     </div>
