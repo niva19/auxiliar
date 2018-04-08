@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router'
 import { ProyectosService } from '../../services/proyectos.service'
 import { ClientesService } from '../../services/clientes.service'
 import { EmpleadosService } from '../../services/empleados.service'
+import { DataService } from '../../services/data.service'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
@@ -82,7 +83,8 @@ export class ProyectosComponent implements OnInit {
     private router: Router,
     private renderer2: Renderer2,
     private renderer: Renderer,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private data: DataService) { }
 
   ngOnInit() {
     // $('.dropdown-button').dropdown();
@@ -272,8 +274,12 @@ export class ProyectosComponent implements OnInit {
   
 
   Ir_Archivos(ruta){
-    localStorage.setItem("ruta_proyecto", ruta)
-    this.router.navigate(["/archivos"], { relativeTo: this.route });
+    let gerente = true;
+    localStorage.setItem("ruta_proyecto", ruta);
+    // this.data.Set_Ruta_Proyecto(ruta);
+    (gerente) 
+    ? this.router.navigate(["/gerente_bridge"], { relativeTo: this.route })
+    : this.router.navigate(["/archivos"], { relativeTo: this.route })
   }
 
   Ir_Empleados(nombre){
@@ -324,6 +330,9 @@ export class ProyectosComponent implements OnInit {
     return (this.filtro == "profResponsable") ? true : false
   }
   
+  atras(){
+    this.router.navigate(["/cliente"], { relativeTo: this.route })
+  }
 
 }
 

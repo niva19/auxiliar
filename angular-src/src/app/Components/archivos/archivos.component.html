@@ -1,5 +1,11 @@
+<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+    <a class="btn-floating btn-large red" (click)="atras()">
+      <i class="large material-icons">arrow_back</i>
+    </a>
+  </div>
+
 <div id="modal1" class="modal">
-  <ul class="tabs tabs-fixed-width tab-demo z-depth-1 black-text">
+  <ul class="tabs tabs-fixed-width tab-demo ">
     <li class="tab">
       <a class="black-text" href="#test1">Guardar Carpeta</a>
     </li>
@@ -11,7 +17,7 @@
     <div class="modal-content">
       <div class="input-field col s12">
         <i class="material-icons prefix">folder</i>
-        <input id="nombre_carpeta" type="text" class="validate">
+        <input id="nombre_carpeta" type="text" class="validate" (keypress)="Expresion_Regular($event)">
         <label for="nombre_carpeta">Nombre de la carpeta</label>
       </div>
     </div>
@@ -21,23 +27,25 @@
     </div>
   </div>
   <div id="test2" class="col s12">
-      <div class="modal-content">
-        <div class="file-field input-field">
-          <div class="btn">
-            <span>Archivo</span>
-            <input type="file" id="fl1" #abc>
-          </div>
-          <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" id="fl2">
-          </div>
+    <div class="modal-content">
+      <div class="file-field input-field">
+        <div class="btn">
+          <span>Archivo</span>
+          <input type="file" id="fl1" #abc>
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text" id="fl2">
         </div>
       </div>
-      <div class="modal-footer">
-        <a class="btn #f44336 red modal-action modal-close waves-effect waves-red ">Cancelar</a>
-        <a class="btn #00b0ff #1565c0 blue darken-3 waves-effect waves-green " (click)="Enlazar_Archivos()">Guardar</a>
-      </div>
     </div>
+    <div class="modal-footer">
+      <a class="btn #f44336 red modal-action modal-close waves-effect waves-red ">Cancelar</a>
+      <a class="btn #00b0ff #1565c0 blue darken-3 waves-effect waves-green " (click)="Enlazar_Archivos()">Guardar</a>
+    </div>
+  </div>
 </div>
+
+
 
 <div id="desenlazar" class="modal">
   <div class="modal-content">
@@ -55,9 +63,18 @@
     <div class="col s12 m12">
       <div class="card #f5f5f5 grey lighten-4">
         <div class="card-content ">
-          <span class="card-title">Archivos del proyecto {{pkProyecto}}</span>
+          <nav class="flat">
+            <div class="nav-wrapper">
+              <div class="col s12">
+                <a href="#!" class="breadcrumb">Clientes</a>
+                <a href="#!" class="breadcrumb">Proyectos</a>
+                <a href="#!" class="breadcrumb">Documentos</a>
+              </div>
+            </div>
+          </nav>
+          <br>
           <div class="input-field col m6 offset-m5 s8">
-            <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Agregar Archivo</button>
+            <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Guardar</button>
           </div>
 
           <div class="container-fluid">

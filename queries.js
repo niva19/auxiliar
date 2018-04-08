@@ -663,17 +663,17 @@ function unlink(req, res, next) {
 
 function deletefile(req, res, next) {
 
-  
+
   db.any('delete from archivos where ruta_padre = ${ruta_padre} and nombre_carpeta = ${nombre_carpeta} and nombre_archivo = ${nombre_archivo}', req.body)
     .then(() => {
 
       let path = `del ${req.body.ruta_padre}\\${req.body.nombre_carpeta}\\\"${req.body.nombre_archivo}\"`;
       console.log(path);
-    
+
       execute(path, function (output) {
         console.log(output);
       });
-      
+
       res.status(200)
         .json({
           success: true
@@ -733,6 +733,21 @@ function recoveryfile(req, res, next) {
 
 function getfolders(req, res, next) {
   db.any("select * from carpeta where ruta_padre = ${ruta}", req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+function getpublicfolder(req, res, next) {
+  db.any("select * from carpeta where ruta_padre = ${ruta} and nombre_carpeta = 'publico'", req.body)
     .then((data) => {
       console.log(data);
       res.status(200)
@@ -821,5 +836,6 @@ module.exports = {
   getunlinkfiles: getunlinkfiles,
   recoveryfile: recoveryfile,
   getfolders: getfolders,
-  savefolder: savefolder
+  savefolder: savefolder,
+  getpublicfolder: getpublicfolder
 }

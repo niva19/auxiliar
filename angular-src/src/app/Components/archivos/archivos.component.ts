@@ -30,10 +30,34 @@ export class ArchivosComponent implements OnInit {
     $('.modal').modal();
     $('.tabs').tabs();
     $('.dropdown-button').dropdown();
-    this.Carpetas(localStorage.getItem("ruta_proyecto"));
+    (localStorage.getItem("carpeta_actual")) ? this.call_from_gerente_bridge() : this.call_from_proyectos()
+  }
+
+  call_from_gerente_bridge(){
+    let carpeta_actual = JSON.parse(localStorage.getItem("carpeta_actual"))
+    this.carpeta_actual.nombre_carpeta = carpeta_actual.nombre_carpeta
+    this.carpeta_actual.ruta_padre = carpeta_actual.ruta_padre
+    this.carpeta_actual.publico = carpeta_actual.publico
+    this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
+    this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+  }
+
+  call_from_proyectos(){
+    this.Carpetas_Service.Obtener_Carpeta_Publica({ ruta: localStorage.getItem("ruta_proyecto")}).subscribe(carpeta => {
+      this.carpeta_actual.nombre_carpeta = carpeta[0].nombre_carpeta
+      this.carpeta_actual.ruta_padre = carpeta[0].ruta_padre
+      this.carpeta_actual.publico = carpeta[0].publico
+      this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
+      this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+    })
   }
 
   modal1() {
+    $('#modal1').modal({
+      ready:function(){
+        $('ul.tabs').tabs();
+      }
+      })
     $('#modal1').modal('open');
   }
 
@@ -149,5 +173,19 @@ export class ArchivosComponent implements OnInit {
       Materialize.toast('El archivo se desenlazo correctamente', 3000, 'green rounded')
       this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
     })
+  }
+
+  Expresion_Regular(event: any) {
+    const pattern = /[a-zA-Z0-9]/;
+    let inputChar = String.fromCharCode(event.charCode);
+
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
+  }
+
+  atras(){
+    
   }
 }
