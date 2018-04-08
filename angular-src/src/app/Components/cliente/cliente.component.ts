@@ -170,7 +170,7 @@ export class ClienteComponent implements OnInit {
           if (data.success) {
             this.getAll();
             $('#modal1').modal('close');
-            Materialize.toast('El cliente se guardó exitosamente', 3000, 'green rounded')
+            Materialize.toast('Los datos se guardaron exitosamente', 3000, 'green rounded')
           }
           else {
             Materialize.toast('Error, cedula repetida', 3000, 'red rounded')
@@ -183,7 +183,7 @@ export class ClienteComponent implements OnInit {
           this.getAll();
           this.switch = true;
           $('#modal1').modal('close');
-          Materialize.toast('El cliente se guardó exitosamente', 3000, 'green rounded')
+          Materialize.toast('Los datos se editaron exitosamente', 3000, 'green rounded')
         });
       }
     }

@@ -10,12 +10,209 @@ var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 //var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
-// METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARA !!!!!!!!!!!!!!!!!!!!!!!!!
+// METER CADA QUERIE DE CADA TABLA EN UNA .JS POR SEPARADO !!!!!!!!!!!!!!!!!!!!!!!!!
 
 /*********************************************************************************
 ***************************** TRANSACCIONES DE LA BASE ***************************
 ************************************* DE DATOS ***********************************
 **********************************************************************************/
+
+//  ******************************** PLANILLA ************************************
+
+function getAllWorkers(req, res, next) {
+  db.any('select * from Planilla')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function saveWorker(req, res, next) {
+  console.log(req.body);
+  db.none('insert into Planilla values(${nombre}, ${apellidos}, ${dni}, ${puesto}, ${telefono}, ${fechaEntrada}, ${fechaSalida}, ${tipoSalario}, ${montoSalario})',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function editWorker(req, res, next) {
+  console.log(req.body);
+  db.none('update Planilla set nombre = ${nombre}, apellidos = ${apellidos}, puesto = ${puesto}, telefono = ${telefono}, fechaEntrada = ${fechaEntrada}, fechaSalida = ${fechaSalida}, tipoSalario = ${tipoSalario}, montoSalario=${montoSalario} where dni = ${dni}',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function getWorker(req, res, next) {
+  console.log(req.body);
+  db.any('select * from Planilla where dni=${dni}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data[0]);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+function deleteWorker(req, res, next) {
+  console.log(req.body);
+  db.none('DELETE FROM Planilla WHERE dni = ${dni}', req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function searchWorkers(req, res, next) {
+  console.log(req.body)
+  db.any('select * from Planilla where ' + req.body.filtro + ' = ${parametro}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+//  ******************************** PROVEEDORES ************************************
+
+function getAllProviders(req, res, next) {
+  db.any('select * from Proveedor')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function SaveProvider(req, res, next) {
+  console.log(req.body);
+  db.none('insert into Proveedor values(${empresa}, ${contacto}, ${telefono}, ${correo} , ${producto})',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function EditProvider(req, res, next) {
+  console.log(req.body);
+  db.none('UPDATE Proveedor SET  contacto = ${contacto}, telefono = ${telefono}, correo = ${correo}, producto = ${producto} where empresa = ${empresa}',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function GetProvider(req, res, next) {
+  console.log(req.body);
+  db.any('select * from Proveedor where empresa=${empresa}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data[0]);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+function DeleteProvider(req, res, next) {
+  console.log(req.body);
+  db.none('DELETE FROM Proveedor WHERE empresa = ${empresa}', req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function SearchProviders(req, res, next) {
+  console.log(req.body)
+  db.any('select * from Proveedor where ' + req.body.filtro + ' = ${parametro}', req.body)
+    .then((data) => {
+      console.log(data);
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
 
 //  ******************************** CLIENTES ************************************
 
@@ -577,6 +774,20 @@ function savefolder(req, res, next) {
 //  ********************************* ARCHIVOS ************************************
 
 module.exports = {
+  // PLANILLA 
+  getAllWorkers: getAllWorkers,
+  SaveWorker: saveWorker,
+  EditWorker: editWorker,
+  GetWorker: getWorker,
+  DeleteWorker: deleteWorker,
+  SearchWorkers: searchWorkers,
+  // PROVEEDORES 
+  getAllProviders: getAllProviders,
+  SaveProvider: SaveProvider,
+  EditProvider: EditProvider,
+  GetProvider: GetProvider,
+  DeleteProvider: DeleteProvider,
+  SearchProviders: SearchProviders,
   // CLIENTES
   getAllCustomers: getAllCustomers,
   getdetailcustomer: getdetailcustomer,

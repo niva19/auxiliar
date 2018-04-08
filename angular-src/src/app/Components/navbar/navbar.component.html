@@ -10,21 +10,27 @@
   </div>
   <nav>
     <div class="nav-wrapper" id="navegador">
-      <a [routerLink]="['/inicio']" class="brand-logo">
-        <i class="material-icons">home</i>Inicio</a>
+      <a [routerLink]="['/historial']" class="brand-logo">
+        <i class="material-icons">delete</i>Papelera</a>
       <a href="#" data-activates="mobile-demo" class="button-collapse">
         <i class="material-icons">menu</i>
       </a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <div *ngIf="ingresarService.loggedIn()">
-          <li [routerLinkActive]="['active']">
+          <!--<li [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Papelera</a>
-          </li>
+          </li>-->
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
           </li>
           <li *ngIf="ingresarService.isLevel1()" [routerLinkActive]="['active']">
             <a [routerLink]="['/cliente']">Clientes</a>
+          </li>
+          <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/proveedores']">Proveedores</a>
+          </li>
+          <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/planilla']">Planilla</a>
           </li>
           <li *ngIf="ingresarService.isLevel3()" [routerLinkActive]="['active']">
             <a [routerLink]="['/empleado']">Empleados</a>
@@ -49,14 +55,20 @@
             <a class="#2e7d32" id="User">
               <i class="tiny material-icons">account_circle</i>{{ingresarService.updateName()}}</a>
           </li>
-          <li [routerLinkActive]="['active']">
+          <!--<li [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Papelera</a>
-          </li>
+          </li>-->
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/google']">Google Maps</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/cliente']">Clientes</a>
+          </li>
+          <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/Proveedores']">Proveedores</a>
+          </li>
+          <li [routerLinkActive]="['active']">
+            <a [routerLink]="['/planilla']">Planilla</a>
           </li>
           <li [routerLinkActive]="['active']">
             <a [routerLink]="['/empleado']">Empleados</a>

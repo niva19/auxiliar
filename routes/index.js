@@ -3,7 +3,35 @@ var router = express.Router();
 
 var db = require('../queries');
 
-//Usuarios
+//Planilla
+// ------------ GET PLANILLA
+router.get('/api/workers', db.getAllWorkers);
+// ------------ SALVAR PLANILLA
+router.post('/api/workers', db.SaveWorker);
+// ------------ EDITAR PLANILLA
+router.put('/api/workers', db.EditWorker);
+// ------------ GET PLANILLA
+router.post('/api/getworker', db.GetWorker);
+// ------------ EDITAR PLANILLA
+router.post('/api/deleteworkers', db.DeleteWorker);
+// ------------ BUSCAR PLANILLA
+router.post('/api/searchworkers', db.SearchWorkers);
+
+//Proveedores
+// ------------ GET PROVEEDORES
+router.get('/api/providers', db.getAllProviders);
+// ------------ SALVAR PROVEEDOR
+router.post('/api/providers', db.SaveProvider);
+// ------------ EDITAR PROVEEDOR
+router.put('/api/providers', db.EditProvider);
+// ------------ GET PROVEEDOR
+router.post('/api/getprovider', db.GetProvider);
+// ------------ EDITAR PROVEEDOR
+router.post('/api/deleteproviders', db.DeleteProvider);
+// ------------ BUSCAR PROVEEDORES
+router.post('/api/searchproviders', db.SearchProviders);
+
+//Clientes
 // ------------ GET CLIENTES
 router.get('/api/customers', db.getAllCustomers);
 router.post('/api/getdetailcustomer', db.getdetailcustomer);

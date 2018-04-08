@@ -66,3 +66,33 @@ create table Archivos(
     primary key (ruta_padre, nombre_carpeta, nombre_archivo),
     constraint fkCarpeta foreign key (ruta_padre, nombre_carpeta) references Carpeta
 );
+
+/* Tabla de Proveedor */
+
+create table Proveedor
+( 
+empresa text,
+contacto text,
+telefono text,
+correo text,
+producto text,
+
+constraint pkProveedor primary key (empresa) 
+);
+
+/* Tabla de Planilla */
+
+create table Planilla
+( 
+nombre text,
+apellidos text,
+dni text,
+puesto text,
+telefono text,
+fechaEntrada text,
+fechaSalida text,
+tipoSalario text,
+montoSalario text,
+
+constraint pkPlanilla primary key (dni) 
+);
