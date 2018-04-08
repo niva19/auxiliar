@@ -57,7 +57,7 @@ export class IngresarComponent implements OnInit {
             else
               localStorage.setItem('privilegio', this.ingresarService.store('cero'))
 
-        this.router.navigate(['/inicio'])
+        this.router.navigate(['/cliente'])
         Materialize.toast('Bienvenido', 4000, 'green rounded')
       } else {
         //logeado incorrecto
