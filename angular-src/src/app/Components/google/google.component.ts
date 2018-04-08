@@ -68,7 +68,7 @@ export class GoogleComponent {
       $('#modal1').modal('close');
     }
     else {
-      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
+      Materialize.toast('Complete los espacios para continuar', 3000, 'red rounded')
     }
   }
   proarinsa(){
