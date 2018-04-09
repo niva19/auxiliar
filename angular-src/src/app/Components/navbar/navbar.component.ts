@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
-import { IngresarService } from '../../Services/ingresar.service'
+import { IngresarService } from '../../services/ingresar.service'
 import * as Materialize from 'angular2-materialize'
 
 
