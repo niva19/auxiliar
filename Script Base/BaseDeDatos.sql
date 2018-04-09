@@ -59,7 +59,7 @@ create table Carpeta(
     ruta_padre text,
     publico boolean,
     primary key (ruta_padre, nombre_carpeta)
-)
+);
 
 create table Archivos(
     nombre_archivo text,
@@ -100,3 +100,11 @@ montoSalario text,
 
 constraint pkPlanilla primary key (dni) 
 );
+
+drop table Cliente cascade;
+drop table Usuario cascade;
+drop table Proyecto cascade;
+drop table Carpeta cascade;
+drop table Archivos cascade;
+drop table Proveedor cascade;
+drop table Planilla cascade;
