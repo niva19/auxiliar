@@ -39,25 +39,14 @@ export class IngresarComponent implements OnInit {
 
     this.ingresarService.logear(empleado).subscribe(data => {
       if (data.success) {
-        var access = 'uno'
+        console.log(data);
         //logeado correctamente
-        localStorage.setItem('cedula', data.data.cedula)
+        localStorage.setItem('dni', data.data.dni)
         localStorage.setItem('nombre', data.data.nombre)
 
-        //PRIVILEGIOS
-        if (data.data.privilegios == 1) {
-          localStorage.setItem('privilegio', this.ingresarService.store('uno'))
-        }
-        else
-          if (data.data.privilegios == 2)
-            localStorage.setItem('privilegio', this.ingresarService.store('dos'))
-          else
-            if (data.data.privilegios == 3)
-              localStorage.setItem('privilegio', this.ingresarService.store('tres'))
-            else
-              localStorage.setItem('privilegio', this.ingresarService.store('cero'))
-
+        localStorage.setItem('privilegio', this.ingresarService.store(data.data.isgerente + ''))
         this.router.navigate(['/cliente'])
+
         Materialize.toast('Bienvenido', 4000, 'green rounded')
       } else {
         //logeado incorrecto

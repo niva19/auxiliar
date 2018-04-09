@@ -254,8 +254,6 @@ export class PlanillaComponent implements OnInit {
       return false
     if ($('#fechaEntrada').val() == '')
       return false
-    if ($('#fechaSalida').val() == '')
-      return false
     if (this.tipoSalario == '')
       return false
     if (this.inputMontoSalario.nativeElement.value == '')

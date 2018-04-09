@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router'
 import { ProyectosService } from '../../services/proyectos.service'
 import { ClientesService } from '../../services/clientes.service'
 import { EmpleadosService } from '../../services/empleados.service'
+import { IngresarService} from '../../services/ingresar.service'
 import { DataService } from '../../services/data.service'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
@@ -80,6 +81,7 @@ export class ProyectosComponent implements OnInit {
   constructor(private ProyService: ProyectosService,
     private clientesService: ClientesService,
     private empleadosService: EmpleadosService,
+    private ingresarService: IngresarService,
     private router: Router,
     private renderer2: Renderer2,
     private renderer: Renderer,
@@ -274,7 +276,7 @@ export class ProyectosComponent implements OnInit {
   
 
   Ir_Archivos(ruta){
-    let gerente = true;
+    let gerente = this.ingresarService.isGerente();
     localStorage.setItem("ruta_proyecto", ruta);
     // this.data.Set_Ruta_Proyecto(ruta);
     (gerente) 

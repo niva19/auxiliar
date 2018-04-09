@@ -6,8 +6,8 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
-//var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
+//var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
+var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
 //var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
@@ -339,14 +339,13 @@ function getCNA(req, res, next) {
 //  ******************************** EMPLEADOS ************************************
 
 function login(req, res, next) {
-  // console.log(req.body);
-  db.any('select * from empleado where usuario=${user} and contrasena=${password}',
+  db.any('select * from Usuario where usuario=${user} and contrasena=${password}',
     req.body)
     .then((data) => {
       console.log(data);
       res.status(200)
         .json({
-          success: true, data: { nombre: data[0].nombre, cedula: data[0].cedula, privilegios: data[0].privilegios }
+          success: true, data: { nombre: data[0].nombre, dni: data[0].dni, isgerente: data[0].isgerente }
         });
     })
     .catch(function (err) {
@@ -358,8 +357,10 @@ function login(req, res, next) {
 }
 
 function getAllEmployees(req, res, next) {
-  db.any('select * from Empleado')
+  console.log('Req: ',req)
+  db.any('select * from Usuario')
     .then(function (data) {
+      console.log(data)
       res.status(200)
         .json(data);
     })
@@ -381,7 +382,7 @@ function getEmployeesCNA(req, res, next) {
 
 function saveEmployee(req, res, next) {
   console.log(req.body);
-  db.none('insert into Empleado values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono}, ${correo}, ${usuario}, ${contrasena}, 0)',
+  db.none('insert into Usuario values(${nombre}, ${apellidos}, ${dni}, ${direccion}, ${telefono}, ${correo}, ${usuario}, ${contrasena}, ${isgerente}, ${fechaentrada}, ${fechasalida}, ${tiposalario}, ${montosalario})',
     req.body)
     .then(() => {
       res.status(200)
@@ -399,7 +400,7 @@ function saveEmployee(req, res, next) {
 
 function editEmployee(req, res, next) {
   console.log(req.body);
-  db.none('update empleado set nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena}, privilegios=${privilegios} where cedula = ${cedula}',
+  db.none('update Usuario set nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena}, isgerente = ${isgerente}, fechaentrada = ${fechaentrada}, fechasalida = ${fechasalida}, tiposalario = ${tiposalario}, montosalario = ${montosalario} where dni = ${dni}',
     req.body)
     .then(() => {
       res.status(200)
@@ -417,7 +418,7 @@ function editEmployee(req, res, next) {
 
 function getEmployee(req, res, next) {
   console.log(req.body);
-  db.any('select * from Empleado where cedula=${cedula}', req.body)
+  db.any('select * from Usuario where dni=${dni}', req.body)
     .then((data) => {
       console.log(data);
       res.status(200)
@@ -433,7 +434,7 @@ function getEmployee(req, res, next) {
 
 function deleteEmployee(req, res, next) {
   console.log(req.body);
-  db.none('DELETE FROM Empleado WHERE cedula = ${cedula}', req.body)
+  db.none('DELETE FROM Usuario WHERE dni = ${dni}', req.body)
     .then(() => {
       res.status(200)
         .json({

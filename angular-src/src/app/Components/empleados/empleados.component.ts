@@ -22,7 +22,7 @@ export class EmpleadosComponent implements OnInit {
   correo: String
   usuario: String
   contrasena: String
-  isGerente: boolean
+  isGerente: String
   fechaEntrada: String
   fechaSalida: String
   tipoSalario: String
@@ -32,7 +32,6 @@ export class EmpleadosComponent implements OnInit {
   ax: any[];
   filtro: any
   parametro: String
-  privilegios: string
 
 
   @ViewChild('empleadoSeleccionado')
@@ -74,7 +73,6 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('LabelContrasena')
   private LabelContrasena: ElementRef
 
-  //added
   @ViewChild('LabelIsGerente')
   private LabelIsGerente: ElementRef
 
@@ -84,12 +82,8 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('LabelFechaSalida')
   private LabelFechaSalida: ElementRef
 
-  @ViewChild('LabelTipoSalario')
-  private LabelTipoSalario: ElementRef
-
   @ViewChild('LabelMontoSalario')
   private LabelMontoSalario: ElementRef
-  //end
 
   @ViewChild('inputnombre')
   private inputnombre: ElementRef
@@ -121,7 +115,6 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('inputcontrasena')
   private inputContrasena: ElementRef
 
-  //added input
   @ViewChild('inputIsGerente')
   private inputIsGerente: ElementRef
 
@@ -137,12 +130,23 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('inputMontoSalario')
   private inputMontoSalario: ElementRef
 
-  //end
-
   constructor(private EmpService: EmpleadosService, private router: Router, private renderer2: Renderer2) { }
 
   ngOnInit() {
     $('.modal').modal();
+    $('.datepicker').pickadate({
+      selectMonths: true, // Creates a dropdown to control month
+      selectYears: 15, // Creates a dropdown of 15 years to control year,
+      today: 'Today',
+      clear: 'Clear',
+      close: 'Ok',
+      container: 'body',
+      monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Augosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+      weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+      closeOnSelect: false // Close upon selecting a date,
+    });
     this.getAll();
   }
 
@@ -184,22 +188,19 @@ export class EmpleadosComponent implements OnInit {
     this.renderer2.removeClass(this.LabelContrasena.nativeElement, "active")
     this.contrasena = ""
 
-    //new
-    this.renderer2.removeClass(this.LabelIsGerente.nativeElement, "active")
-    this.isGerente = false
+    //this.renderer2.removeClass(this.LabelIsGerente.nativeElement, "active")
+    this.isGerente = "no"
 
     this.renderer2.removeClass(this.LabelFechaEntrada.nativeElement, "active")
-    this.fechaEntrada = ""
+    $('#fechaEntrada').val("")
 
     this.renderer2.removeClass(this.LabelFechaSalida.nativeElement, "active")
-    this.fechaSalida = ""
+    $('#fechaSalida').val("")
 
-    this.renderer2.removeClass(this.LabelTipoSalario.nativeElement, "active")
     this.tipoSalario = ""
 
     this.renderer2.removeClass(this.LabelMontoSalario.nativeElement, "active")
     this.montoSalario = ""
-    //end
   }
 
   modal1() {
@@ -211,14 +212,14 @@ export class EmpleadosComponent implements OnInit {
   Limpiar() {
     this.renderer2.removeClass(this.LabelNombre.nativeElement, "active")
     this.empleadoSeleccionado.nativeElement.innerHTML = ""
-    this.privilegios = ""
   }
 
   Editar(id) {
     const empleado = {
-      cedula: id
+      dni: id
     }
     this.EmpService.getById(empleado).subscribe(data => {
+      console.log(data)
       this.renderer2.setAttribute(this.LabelNombre.nativeElement, "class", "active")
       this.nombre = data.nombre
 
@@ -227,7 +228,7 @@ export class EmpleadosComponent implements OnInit {
 
       this.renderer2.setAttribute(this.LabelDni.nativeElement, "class", "active")
       this.renderer2.setAttribute(this.inputDni.nativeElement, 'disabled', 'true');
-      this.dni = data.cedula
+      this.dni = data.dni
 
       this.renderer2.setAttribute(this.Labeldireccion.nativeElement, "class", "active")
       this.direccion = data.direccion
@@ -245,6 +246,25 @@ export class EmpleadosComponent implements OnInit {
       this.renderer2.setAttribute(this.LabelContrasena.nativeElement, "class", "active")
       this.contrasena = data.contrasena
 
+      this.renderer2.setAttribute(this.LabelIsGerente.nativeElement, "class", "active")
+      if (data.isgerente) {
+        this.isGerente = 'si'
+      }
+      else {
+        this.isGerente = 'no'
+      }
+
+      this.renderer2.setAttribute(this.LabelFechaEntrada.nativeElement, "class", "active")
+      $('#fechaEntrada').val(data.fechaentrada)
+
+      this.renderer2.setAttribute(this.LabelFechaSalida.nativeElement, "class", "active")
+      $('#fechaSalida').val(data.fechasalida)
+
+      this.tipoSalario = data.tiposalario
+
+      this.renderer2.setAttribute(this.LabelMontoSalario.nativeElement, "class", "active")
+      this.montoSalario = data.montosalario
+
       this.switch = false
       $('#modal1').modal('open');
     });
@@ -252,7 +272,7 @@ export class EmpleadosComponent implements OnInit {
 
   Eliminar(id) {
     const empleado = {
-      cedula: id
+      dni: id
     }
     this.EmpService.EliminarEmpleado(empleado).subscribe(data => {
       if (data.success) {
@@ -286,68 +306,27 @@ export class EmpleadosComponent implements OnInit {
     $('#modal2').modal('open');
   }
 
-  Cambio_Privilegios(id) {
-    //clean
-    this.Limpiar()
-    const empleado = {
-      cedula: id
-    }
-    this.EmpService.getById(empleado).subscribe(data => {
-      //init
-      let button = this.renderer2.createElement('a')
-      this.renderer2.removeChild(this.modal4Footer.nativeElement, this.modal4Footer.nativeElement.children[1])
-      this.renderer2.setAttribute(button, "class", "modal-action")
-      this.renderer2.setAttribute(button, "class", "modal-close")
-      this.renderer2.setAttribute(button, "class", "waves-effect")
-      this.renderer2.setAttribute(button, "class", "waves-green")
-      this.renderer2.setAttribute(button, "class", "btn-flat")
-      let txt = this.renderer2.createText("Confirmar")
-
-      this.renderer2.appendChild(button, txt)
-      this.renderer2.appendChild(this.modal4Footer.nativeElement, button);
-
-      this.renderer2.setAttribute(this.LabelNombre.nativeElement, "class", "active")
-      this.empleadoSeleccionado.nativeElement.innerHTML = data.nombre + " " + data.apellidos
-      //event
-      this.renderer2.listen(button, 'click', () => {
-        this.Actualiza_Privilegio(data)
-      })
-      $('#modal4').modal('open');
-    });
-  }
-
-  Actualiza_Privilegio(data) {
-    console.log(data)
-    if (this.ValidateFormPrivilegios()) {
-      data.privilegios = this.privilegios
-      this.EmpService.EditarEmpleado(data).subscribe(data => {
-        console.log(data);
-        if (data.success) {
-          this.getAll();
-          this.switch = true;
-          $('#modal4').modal('close');
-          Materialize.toast('Se aplicaron los privilegios exitosamente', 3000, 'green rounded')
-        }
-        else {
-          Materialize.toast('Error, algo ha ocurrido', 3000, 'red rounded')
-        }
-      });
-    }
-    else {
-      Materialize.toast('Complete los espacios, para continuar', 3000, 'red rounded')
-    }
-  }
-
   EmpleadoSubmit() {
+    var x
+    if (this.isGerente == 'si') {
+      x = true
+    } else {
+      x = false
+    }
     const empleado = {
       nombre: this.nombre,
       apellidos: this.apellidos,
-      cedula: this.dni,
+      dni: this.dni,
       direccion: this.direccion,
       telefono: this.telefono,
       correo: this.correo,
       usuario: this.usuario,
-      contrasena: this.contrasena
+      contrasena: this.contrasena,
+      isgerente: x,
+      fechaentrada: $('#fechaEntrada').val(),
+      fechasalida: $('#fechaSalida').val(),
+      tiposalario: this.tipoSalario,
+      montosalario: this.montoSalario
     }
     if (this.ValidateForm()) {
       if (this.switch) {//si el switch esta en true guarda
@@ -405,22 +384,13 @@ export class EmpleadosComponent implements OnInit {
       return false
     if (this.inputContrasena.nativeElement.value == '')
       return false
-      //should be checked
-    if (this.inputIsGerente.nativeElement.value == false)
+    if (this.inputIsGerente.nativeElement.value == '')
       return false
-    if(this.inputFechaEntrada.nativeElement.value == '')
+    if ($('#fechaEntrada').val() == '')
       return false
-    if(this.inputFechaSalida.nativeElement.value == '')
+    if (this.inputTipoSalario.nativeElement.value == '')
       return false
-    if(this.inputTipoSalario.nativeElement.value == '')
-      return false
-    if(this.inputMontoSalario.nativeElement.value == '')
-      return false
-    return true
-  }
-
-  ValidateFormPrivilegios() {
-    if (this.inputPrivilegios.nativeElement.value == '')
+    if (this.inputMontoSalario.nativeElement.value == '')
       return false
     return true
   }
@@ -446,11 +416,6 @@ export class EmpleadosComponent implements OnInit {
         Materialize.toast('Sin resultados', 3000, 'red rounded')
       $('#modal3').modal('close');
     });
-  }
-
-  //init
-  ngAfterViewInit() {
-    $('.collapsible').collapsible();
   }
 
 }

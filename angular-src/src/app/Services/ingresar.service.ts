@@ -29,18 +29,16 @@ export class IngresarService {
   }
 
   loggedIn() {
-    return (localStorage.getItem('cedula') && localStorage.getItem('privilegio')) ? true : false
+    return (localStorage.getItem('dni') && localStorage.getItem('privilegio')) ? true : false
   }
 
   updateName() {
-    if (localStorage.getItem('cedula')) {
+    if (localStorage.getItem('dni')) {
       return localStorage.getItem('nombre');
     } else {
       return '';
     }
   }
-
-
 
   get(key) {
     var encryptedData = window.localStorage.getItem(key)
@@ -52,6 +50,14 @@ export class IngresarService {
     return null;
   }
 
+  isGerente() {
+    var isGer = this.get('privilegio')
+    if (isGer == 'true')
+      return true
+    return false
+  }
+
+  //should be removed
   isLevel1() {
     var priv = this.get('privilegio')
     if (priv == "dos" || priv == "uno" || priv == "tres")
@@ -66,8 +72,6 @@ export class IngresarService {
     else
       return false
   }
-
-
   isLevel3() {
     var priv = this.get('privilegio')
     if (priv == "tres")

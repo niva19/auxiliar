@@ -6,7 +6,7 @@
 
 <div id="modal1" class="modal">
   <div class="modal-content">
-    <form (submit)="EmpleadoSubmit()" class="col s12">
+    <form (submit)="EmpleadoSubmit()" class="col s12" id="FormAgregar">
       <div class="row">
         <div class="input-field col s12">
           <input id="name" type="text" [(ngModel)]="nombre" name="nombre" class="validate" #inputnombre>
@@ -17,7 +17,7 @@
           <label for="apellidos" #LabelApellidos>Apellidos</label>
         </div>
         <div class="input-field col s12">
-          <input (keypress)="Only_Numbers($event)" maxlength="9" id="dni" type="text" [(ngModel)]="dni" name="dni" class="validate"
+          <input maxlength="12" id="dni" type="text" [(ngModel)]="dni" name="dni" class="validate"
             #inputDni>
           <label for="dni" #LabelDni>Identificación</label>
         </div>
@@ -36,34 +36,38 @@
         </div>
         <div class="input-field col s12">
           <input id="usuario" type="text" [(ngModel)]="usuario" name="usuario" class="validate" #inputusuario>
-          <label for="name" #LabelUsuario>Usuario</label>
+          <label for="usuario" #LabelUsuario>Usuario</label>
         </div>
         <div class="input-field col s12">
           <input id="contrasena" type='password' [(ngModel)]="contrasena" name="contrasena" class="validate" #inputcontrasena>
-          <label for="name" #LabelContrasena>Contraseña</label>
-        </div>
-        <!--NEW ADDED-->
-        <div class="input-field col s12">
-          <input id="isGerente" type='text' [(ngModel)]="isGerente" name="isGerente" class="validate" #inputIsGerente>
-          <label for="name" #LabelIsGerente>Gerente</label>
+          <label for="contrasena" #LabelContrasena>Contraseña</label>
         </div>
         <div class="input-field col s12">
-          <input id="fechaEntrada" type='text' [(ngModel)]="fechaEntrada" name="fechaEntrada" class="validate" #inputFechaEntrada>
-          <label for="name" #LabelFechaEntrada>Contraseña</label>
+          <input id="isGerente" type='text' [(ngModel)]="isGerente" disabled=true name="isGerente" class="validate" #inputIsGerente>
+          <label for="isGerente" #LabelIsGerente>Es gerente</label>
+        </div>
+        <!--DATEPICKERS-->
+        <div class="input-field col s12">
+          <input id="fechaEntrada" type='text' [(ngModel)]="fechaEntrada" name="fechaEntrada" class="datepicker" #inputFechaEntrada>
+          <label for="fechaEntrada" #LabelFechaEntrada>Fecha entrada</label>
         </div>
         <div class="input-field col s12">
-          <input id="fechaSalida" type='text' [(ngModel)]="fechaSalida" name="fechaSalida" class="validate" #inputFechaSalida>
-          <label for="name" #LabelFechaSalida>Fecha salida</label>
-        </div>
-        <div class="input-field col s12">
-          <input id="tipoSalario" type='text' [(ngModel)]="tipoSalario" name="tipoSalario" class="validate" #inputTipoSalario>
-          <label for="name" #LabelTipoSalario>Tipo salario</label>
-        </div>
-        <div class="input-field col s12">
-          <input id="montoSalario" type='text' [(ngModel)]="montoSalario" name="montoSalario" class="validate" #inputMontoSalario>
-          <label for="name" #LabelMontoSalario>Salario</label>
+          <input id="fechaSalida" type='text' [(ngModel)]="fechaSalida" name="fechaSalida" class="datepicker" #inputFechaSalida>
+          <label for="fechaSalida" #LabelFechaSalida>Fecha salida</label>
         </div>
         <!--END-->
+        <div class="input-field col s12">
+          <select materialize="material_select" [(ngModel)]="tipoSalario" name="tipoSalario" id="tipoSalario" #inputTipoSalario>
+            <option value="" disabled selected>Tipo de salario</option>
+            <option value="Salario Mensual">Salario Mensual</option>
+            <option value="Salario Quincenal">Salario Quincenal</option>
+            <option value="Salario Semanal">Salario Semanal</option>
+          </select>
+        </div>
+        <div class="input-field col s12">
+          <input (keypress)="Only_Numbers($event)" id="montoSalario" type='text' [(ngModel)]="montoSalario" name="montoSalario" class="validate" #inputMontoSalario>
+          <label for="montoSalario" #LabelMontoSalario>Salario</label>
+        </div>
         <div class="input-field col s12">
           <a class="modal-action modal-close waves-effect waves-green btn">Cancelar</a>
           <input type="submit" class="#0277bd light-blue darken-3 btn" value="Guardar">
@@ -105,53 +109,6 @@
   </div>
 </div>
 
-<!-- ################################### CAMBIO PRIVILEGIOS ########################################-->
-
-<div id="modal4" class="modal">
-  <div class="modal-content">
-    <h4>Privilegios</h4>
-    <h6 name="empleadoSeleccionado" id="empleadoSeleccionado" #empleadoSeleccionado></h6>
-    <!--###################################SELECT-->
-    <select materialize="material_select" id="privilegios" type="text" [(ngModel)]="privilegios" name="privilegios" #inputprivilegios
-      class="modal-content">
-      <option value="" disabled selected>Seleccione su opción</option>
-      <option value="1">Nivel 1</option>
-      <option value="2">Nivel 2</option>
-      <option value="3">Nivel 3</option>
-    </select>
-    <!--###################################SELECT-->
-    <h5>Información:</h5>
-    <ul class="collapsible" data-collapsible="accordion">
-      <li>
-        <div class="collapsible-header active">
-          <i class="material-icons">star_border</i>Nivel 1</div>
-        <div class="collapsible-body">
-          <span>Permite al usuario consultar, modificar y eliminar datos básicos como la información de clientes.</span>
-        </div>
-      </li>
-      <li>
-        <div class="collapsible-header">
-          <i class="material-icons">star_half</i>Nivel 2</div>
-        <div class="collapsible-body">
-          <span>Permite al usuario consultar, modificar y eliminar datos de proyectos y clientes. No tiene acceso a datos financieros
-            de los proyectos.</span>
-        </div>
-      </li>
-      <li>
-        <div class="collapsible-header">
-          <i class="material-icons">star</i>Nivel 3</div>
-        <div class="collapsible-body">
-          <span>Permite al usuario consultar, modificar y eliminar datos de empleados, proyectos, clientes sin limitaciones.</span>
-        </div>
-      </li>
-    </ul>
-  </div>
-  <div class="modal-footer" #modal4Footer>
-    <a class="modal-action modal-close waves-effect waves-red btn-flat">Cancelar</a>
-    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Confirmar</a>
-  </div>
-</div>
-
 <!-- ############################################### TABLA ######################################### -->
 
 <div class="container">
@@ -160,7 +117,7 @@
     <div class="col s12 m12">
       <div class="card #f5f5f5 grey lighten-4">
         <div class="card-content ">
-          <span class="card-title">Gestión de empleados</span>
+          <span class="card-title">Gestión de usuarios</span>
           <div class="input-field col m6 offset-m5 s8">
             <button type="button" label="Click" (click)="modal1()" class="#039be5 light-blue darken-1 btn">Agregar</button>
           </div>
@@ -186,7 +143,6 @@
                 <td>Telefono</td>
                 <td>Correo</td>
                 <td>Usuario</td>
-                <td>Privilegios</td>
                 <td>Editar</td>
                 <td>Eliminar</td>
               </tr>

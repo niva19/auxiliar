@@ -7,9 +7,7 @@ import { HttpModule } from '@angular/http'
 
 //guards
 import { AuthGuard } from './Guards/auth.guard'
-import { Level1Guard } from './Guards/level1.guard'
-import { Level2Guard } from './Guards/level2.guard'
-import { Level3Guard } from './Guards/level3.guard'
+import { GerenteGuard } from './Guards/gerente.guard'
 
 import { AgmCoreModule } from '@agm/core';
 
@@ -47,16 +45,16 @@ import { GerenteBridgeComponent } from './Components/gerente-bridge/gerente-brid
 
 const appRoutes: Routes = [
   { path: '', component: MainPageComponent },
-  { path: 'cliente', component: ClienteComponent, canActivate: [AuthGuard, Level1Guard] },
+  { path: 'cliente', component: ClienteComponent, canActivate: [AuthGuard] },
   { path: 'inicio', component: MainPageComponent },
   { path: 'ingresar', component: IngresarComponent },
-  { path: 'historial', component: HistorialComponent, canActivate: [AuthGuard, Level3Guard] },
+  { path: 'historial', component: HistorialComponent, canActivate: [AuthGuard, GerenteGuard] },
   { path: 'archivos', component: ArchivosComponent },
   { path: 'gerente_bridge', component: GerenteBridgeComponent },
-  { path: 'empleado', component: EmpleadosComponent, canActivate: [AuthGuard, Level3Guard] },
-  { path: 'proyecto', component: ProyectosComponent, canActivate: [AuthGuard, Level2Guard] },
-  { path: 'google', component: GoogleComponent, canActivate: [AuthGuard, Level1Guard] },
-  { path: 'planilla', component: PlanillaComponent },  
+  { path: 'empleado', component: EmpleadosComponent, canActivate: [AuthGuard, GerenteGuard] },
+  { path: 'proyecto', component: ProyectosComponent, canActivate: [AuthGuard] },
+  { path: 'google', component: GoogleComponent, canActivate: [AuthGuard] },
+  { path: 'planilla', component: PlanillaComponent },
   { path: 'proveedores', component: ProveedoresComponent },
 ]
 
@@ -93,7 +91,8 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, ArchivosService, DataService, AuthGuard, Level1Guard, Level2Guard, Level3Guard],
+  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, 
+    ProyectosService, CarpetasService, ArchivosService, DataService, AuthGuard, GerenteGuard],
   bootstrap: [AppComponent]
 })
 
