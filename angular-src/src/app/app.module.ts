@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core'
+import { NgModule, OnInit } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { HttpModule } from '@angular/http'
@@ -91,9 +91,10 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, 
+  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService,
     ProyectosService, CarpetasService, ArchivosService, DataService, AuthGuard, GerenteGuard],
   bootstrap: [AppComponent]
 })
 
-export class AppModule { }
+export class AppModule {
+}

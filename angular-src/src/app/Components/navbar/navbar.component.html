@@ -17,6 +17,7 @@
           <!-- ################### NOMBRE DE USUARIO ################## -->
           <li>
             <a class="dropdown-button right" id="User" data-activates="dropdown" data-beloworigin="true">{{ingresarService.updateName()}}
+              <!--<a class="dropdown-button right" data-activates="dropdown" data-beloworigin="true" [(ngModel)]="usernameNav" id="usernameNav">-->
               <i class="material-icons left">account_circle</i>
               <i class="material-icons right">arrow_drop_down</i>
             </a>
@@ -55,18 +56,7 @@
           </li>
           <!-- ################### DROP DOWN TRIGGER ################## -->
           <!-- ################### NOMBRE DE USUARIO ################## -->
-          <!--<li>
-            <a class="dropdown-button right" id="User" data-activates="dropdown" data-beloworigin="true">{{ingresarService.updateName()}}
-              <i class="material-icons right">arrow_drop_down</i>
-            </a>
-          </li>
-          -->
         </div>
-        <!--
-        <li *ngIf="!ingresarService.loggedIn()" [routerLinkActive]="['active']">
-          <a [routerLink]="['/ingresar']">Ingresar</a>
-        </li>
-        -->
       </ul>
       <!-- #################################### FIN DE LA VERSION DESKTOP ######################################### -->
       <!-- #################################### NAVIGATION BAR MOVIL ######################################### -->
