@@ -261,8 +261,6 @@ export class ProyectosComponent implements OnInit {
       return false
     if ($('#fechaInicio').val() == '')
       return false
-    if ($('#fechaFinaliza').val() == '')
-      return false
     if (this.estado == '')
       return false
     if (this.inputbanco.nativeElement.value == '')

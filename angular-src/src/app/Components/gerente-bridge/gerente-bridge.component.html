@@ -1,5 +1,5 @@
 <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-    <a class="btn-floating btn-large red" (click)="atras()">
+    <a class="btn-floating btn-large #b71c1c red darken-4" (click)="atras()">
       <i class="large material-icons">arrow_back</i>
     </a>
   </div>
@@ -12,10 +12,10 @@
         <div class="card-content ">
           <nav class="flat">
             <div class="nav-wrapper">
-              <div class="col s12">
-                <a href="#!" class="breadcrumb">Clientes</a>
-                <a href="#!" class="breadcrumb">Proyectos</a>
-                <a href="#!" class="breadcrumb">Documentos</a>
+              <div class="col s12 #455a64 blue-grey darken-2">
+                <a [routerLink]="['/cliente']" class="breadcrumb">Clientes</a>
+                <a [routerLink]="['/proyecto']" class="breadcrumb">Proyectos</a>
+                <a [routerLink]="['/gerente_bridge']" class="breadcrumb">Documentos</a>
               </div>
             </div>
           </nav>

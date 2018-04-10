@@ -5,7 +5,7 @@
 <!-- ########################################## INGRESAR PROYECTO ############################## -->
 
 <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-    <a class="btn-floating btn-large red" (click)="atras()">
+    <a class="btn-floating btn-large #b71c1c red darken-4" (click)="atras()">
       <i class="large material-icons">arrow_back</i>
     </a>
   </div>
@@ -42,11 +42,11 @@
         </div>
         <div class="input-field col s12">
           <input id="fechaInicio" type="text" [(ngModel)]="fechaInicio" name="fechaInicio" class="datepicker">
-          <label for="fechaInicio" class="active" #LabelFechaInicio>Fecha de Inicio</label>
+          <label for="fechaInicio" class="active" #LabelFechaInicio>Fecha Inicio</label>
         </div>
         <div class="input-field col s12">
           <input id="fechaFinaliza" type="text" [(ngModel)]="fechaFinaliza" name="fechaFinaliza" class="datepicker">
-          <label for="fechaFinaliza" class="active" #LabelFechaFinaliza>Fecha de Finalizacion</label>
+          <label for="fechaFinaliza" class="active" #LabelFechaFinaliza>Fecha Finalizacion (opcional)</label>
         </div>
         <div class="input-field col s12">
           <select materialize="material_select" [(ngModel)]="estado" name="estado" id="ddEstado">
@@ -187,9 +187,9 @@
         <div class="card-content ">
           <nav class="flat">
             <div class="nav-wrapper">
-              <div class="col s12">
-                <a href="#!" class="breadcrumb">Clientes</a>
-                <a href="#!" class="breadcrumb"><strong>Proyectos</strong></a>
+              <div class="col s12 #455a64 blue-grey darken-2 ">
+                <a [routerLink]="['/cliente']" class="breadcrumb">Clientes</a>
+                <a [routerLink]="['/proyecto']" class="breadcrumb"><strong>Proyectos</strong></a>
               </div>
             </div>
           </nav>
