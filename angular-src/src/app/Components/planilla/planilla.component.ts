@@ -161,7 +161,7 @@ export class PlanillaComponent implements OnInit {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
-        Materialize.toast('Los datos se eliminaron exitosamente', 3000, 'green rounded')
+        Materialize.toast('El empleado se elimino exitosamente', 3000, 'green rounded')
       }
       else {
         alert("Error al eliminar")
@@ -209,7 +209,7 @@ export class PlanillaComponent implements OnInit {
           if (data.success) {
             this.getAll();
             $('#modal1').modal('close');
-            Materialize.toast('Los datos se guardaron exitosamente', 3000, 'green rounded')
+            Materialize.toast('El empleado se guardo exitosamente', 3000, 'green rounded')
           }
           else {
             Materialize.toast('Error, DNI repetido', 3000, 'red rounded')
@@ -222,7 +222,7 @@ export class PlanillaComponent implements OnInit {
           this.getAll();
           this.switch = true;
           $('#modal1').modal('close');
-          Materialize.toast('Los datos se editaron exitosamente', 3000, 'green rounded')
+          Materialize.toast('El empleado se guardo exitosamente', 3000, 'green rounded')
         });
       }
     }

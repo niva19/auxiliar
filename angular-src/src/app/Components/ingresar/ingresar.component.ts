@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { IngresarService } from '../../Services/ingresar.service'
+import { IngresarService } from '../../services/ingresar.service'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
@@ -46,8 +46,8 @@ export class IngresarComponent implements OnInit {
 
         localStorage.setItem('privilegio', this.ingresarService.store(data.data.isgerente + ''))
         this.router.navigate(['/cliente'])
-
         Materialize.toast('Bienvenido', 4000, 'green rounded')
+        window.location.reload()   //it's bug from angular working on for version 3.0.0
       } else {
         //logeado incorrecto
         Materialize.toast('Usuario o contraseña incorrecto, intente de nuevo', 4000, 'red rounded')

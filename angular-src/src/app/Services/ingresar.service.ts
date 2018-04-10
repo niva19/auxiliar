@@ -57,27 +57,4 @@ export class IngresarService {
     return false
   }
 
-  //should be removed
-  isLevel1() {
-    var priv = this.get('privilegio')
-    if (priv == "dos" || priv == "uno" || priv == "tres")
-      return true
-    else
-      return false
-  }
-  isLevel2() {
-    var priv = this.get('privilegio')
-    if (priv == "dos" || priv == "tres")
-      return true
-    else
-      return false
-  }
-  isLevel3() {
-    var priv = this.get('privilegio')
-    if (priv == "tres")
-      return true
-    else
-      return false
-  }
-
 }

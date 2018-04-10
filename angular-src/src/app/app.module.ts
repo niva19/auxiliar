@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core'
+import { NgModule, OnInit } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { HttpModule } from '@angular/http'
@@ -13,7 +13,7 @@ import { AgmCoreModule } from '@agm/core';
 
 //services
 import { ClientesService } from './services/clientes.service'
-import { IngresarService } from './Services/ingresar.service'
+import { IngresarService } from './services/ingresar.service'
 import { EmpleadosService } from './services/empleados.service'
 import { ProyectosService } from './services/proyectos.service'
 import { ProveedoresService } from './services/proveedores.service'
@@ -91,8 +91,10 @@ const appRoutes: Routes = [
     })
 
   ],
-  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService, ProyectosService, CarpetasService, ArchivosService, DataService, AuthGuard, GerenteGuard],
+  providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService,
+    ProyectosService, CarpetasService, ArchivosService, DataService, AuthGuard, GerenteGuard],
   bootstrap: [AppComponent]
 })
 
-export class AppModule { }
+export class AppModule {
+}

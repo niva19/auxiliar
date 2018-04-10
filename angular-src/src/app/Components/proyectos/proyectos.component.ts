@@ -41,8 +41,6 @@ export class ProyectosComponent implements OnInit {
   @ViewChild('buscador')
   private buscador: ElementRef
 
-  
-
   @ViewChild('LabelNombreProyecto')
   private LabelNombreProyecto: ElementRef
 
