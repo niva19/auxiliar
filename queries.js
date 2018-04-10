@@ -7,7 +7,7 @@ var options = {
 
 var pgp = require('pg-promise')(options);
 //var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
-var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
+var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
 //var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 var db = pgp(connectionString);
 
@@ -501,7 +501,7 @@ function saveProject(req, res, next) {
   var mes = fecha.split(separador2).splice(0, 1).toString().split(separador1).pop();
   var anio = fecha.split(separador1).pop();
 
-  var path = 'C:\\Users\\Admin\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto + '\\archivos'
+  var path = 'C:\\Users\\nivy\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto + '\\archivos'
 
   db.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente})',
     req.body)

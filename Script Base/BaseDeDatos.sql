@@ -100,3 +100,5 @@ montoSalario text,
 
 constraint pkPlanilla primary key (dni) 
 );
+
+insert into usuario values('Jerry','Ramirez','116745996','Heredia','22564738','JerryPROARINSA@gmail.com','JerryAdm','1234',true,'12/5/1997','','Mensual','');
