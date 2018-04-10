@@ -228,12 +228,8 @@ export class ClienteComponent implements OnInit {
       return false 
     if ($('#TelefonoTrabajo').val() == '')
       return false 
-    if ($('#TelefonoCasa').val() == '')
-      return false
     if ($('#Celular').val() == '')
       return false  
-    if ($('#CorreoPersonal').val() == '')
-      return false 
     if ($('#CorreoEmpresarial').val() == '')
       return false 
       

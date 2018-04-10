@@ -41,6 +41,7 @@ import { FilterClientePipe } from './Filters/filter-cliente.pipe'
 import { FilterProyectoPipe } from './Filters/filter-proyecto.pipe';
 import { FilterPapeleraPipe } from './Filters/filter-papelera.pipe';
 import { GerenteBridgeComponent } from './Components/gerente-bridge/gerente-bridge.component';
+import { FilterEmpleadoPipe } from './Filters/filter-empleado.pipe';
 
 
 const appRoutes: Routes = [
@@ -76,7 +77,8 @@ const appRoutes: Routes = [
     FilterProyectoPipe,
     FilterClientePipe,
     FilterPapeleraPipe,
-    GerenteBridgeComponent
+    GerenteBridgeComponent,
+    FilterEmpleadoPipe
   ],
   imports: [
     CommonModule,

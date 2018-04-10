@@ -41,18 +41,18 @@
           <input id="contrasena" type='password' [(ngModel)]="contrasena" name="contrasena" class="validate" #inputcontrasena>
           <label for="contrasena" #LabelContrasena>Contraseña</label>
         </div>
-        <div class="input-field col s12">
-          <input id="isGerente" type='text' [(ngModel)]="isGerente" disabled=true name="isGerente" class="validate" #inputIsGerente>
+        <div class="input-field col s12 hide">
+          <input id="isGerente" type='text' [(ngModel)]="isGerente" active=true disabled=true name="isGerente" class="validate" #inputIsGerente>
           <label for="isGerente" #LabelIsGerente>Es gerente</label>
         </div>
         <!--DATEPICKERS-->
         <div class="input-field col s12">
           <input id="fechaEntrada" type='text' [(ngModel)]="fechaEntrada" name="fechaEntrada" class="datepicker" #inputFechaEntrada>
-          <label for="fechaEntrada" #LabelFechaEntrada>Fecha entrada</label>
+          <label for="fechaEntrada" #LabelFechaEntrada>Fecha Entrada</label>
         </div>
         <div class="input-field col s12">
           <input id="fechaSalida" type='text' [(ngModel)]="fechaSalida" name="fechaSalida" class="datepicker" #inputFechaSalida>
-          <label for="fechaSalida" #LabelFechaSalida>Fecha salida</label>
+          <label for="fechaSalida" #LabelFechaSalida>Fecha Salida (Opcional)</label>
         </div>
         <!--END-->
         <div class="input-field col s12">
@@ -64,7 +64,7 @@
           </select>
         </div>
         <div class="input-field col s12">
-          <input (keypress)="Only_Numbers($event)" id="montoSalario" type='text' [(ngModel)]="montoSalario" name="montoSalario" class="validate"
+          <input  id="montoSalario" type='text' [(ngModel)]="montoSalario" name="montoSalario" class="validate"
             #inputMontoSalario>
           <label for="montoSalario" #LabelMontoSalario>Salario</label>
         </div>
@@ -147,7 +147,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let v of ax | paginate: {itemsPerPage:5, currentPage: p}">
+              <tr *ngFor="let v of ax | paginate: {itemsPerPage:5, currentPage: p} | filterEmpleado:term">
                 <td>{{v.nombre}}</td>
                 <td>{{v.apellidos}}</td>
                 <td>{{v.dni}}</td>
