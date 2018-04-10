@@ -41,8 +41,8 @@
           <input id="contrasena" type='password' [(ngModel)]="contrasena" name="contrasena" class="validate" #inputcontrasena>
           <label for="contrasena" #LabelContrasena>Contraseña</label>
         </div>
-        <div class="input-field col s12">
-          <input id="isGerente" type='text' [(ngModel)]="isGerente" disabled=true name="isGerente" class="validate" #inputIsGerente>
+        <div class="input-field col s12 hide">
+          <input id="isGerente" type='text' [(ngModel)]="isGerente" active=true disabled=true name="isGerente" class="validate" #inputIsGerente>
           <label for="isGerente" #LabelIsGerente>Es gerente</label>
         </div>
         <!--DATEPICKERS-->
@@ -147,7 +147,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let v of ax | paginate: {itemsPerPage:5, currentPage: p}">
+              <tr *ngFor="let v of ax | paginate: {itemsPerPage:5, currentPage: p} | filterEmpleado:term">
                 <td>{{v.nombre}}</td>
                 <td>{{v.apellidos}}</td>
                 <td>{{v.dni}}</td>

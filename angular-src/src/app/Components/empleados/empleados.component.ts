@@ -347,7 +347,7 @@ export class EmpleadosComponent implements OnInit {
           this.getAll();
           this.switch = true;
           $('#modal1').modal('close');
-          Materialize.toast('El empleado se guardó exitosamente', 3000, 'green rounded')
+          Materialize.toast('El empleado se editó exitosamente', 3000, 'green rounded')
         });
       }
     }
