@@ -15,7 +15,8 @@ declare var $: any;
 @Component({
   selector: 'app-proyectos',
   templateUrl: './proyectos.component.html',
-  styleUrls: ['./proyectos.component.css']
+  styleUrls: ['./proyectos.component.css'],
+  providers: [IngresarService]
 })
 export class ProyectosComponent implements OnInit {
   // ################################## ATRIBUTOS ##################################
