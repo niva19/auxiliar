@@ -106,9 +106,10 @@ export class ProveedoresComponent implements OnInit {
     const proveedor = {
       empresa: id
     }
+    
     this.ProveeService.getById(proveedor).subscribe(data => {
+      console.log(data);
       this.renderer2.setAttribute(this.LabelEmpresa.nativeElement, "class", "active")
-      this.renderer2.setAttribute(this.inputEmpresa.nativeElement, 'disabled', 'true');
       this.empresa = data.empresa
 
       this.renderer2.setAttribute(this.LabelContacto.nativeElement, "class", "active")
@@ -183,11 +184,12 @@ export class ProveedoresComponent implements OnInit {
             Materialize.toast('El proveedor se guardó exitosamente', 3000, 'green rounded')
           }
           else {
-            Materialize.toast('Error, cedula repetida', 3000, 'red rounded')
+            Materialize.toast('Error', 3000, 'red rounded')
           }
         });
       }
       else {//si el switch esta en false edita
+        console.log(proveedor);
         this.ProveeService.EditarProveedor(proveedor).subscribe(data => {
           console.log(data);
           this.getAll();

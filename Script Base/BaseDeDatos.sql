@@ -75,6 +75,7 @@ create table Archivos(
 
 create table Proveedor
 ( 
+codigo serial,
 empresa text,
 contacto text,
 telefono text,

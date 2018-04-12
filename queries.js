@@ -131,7 +131,7 @@ function getAllProviders(req, res, next) {
 
 function SaveProvider(req, res, next) {
   console.log(req.body);
-  db.none('insert into Proveedor values(${empresa}, ${contacto}, ${telefono}, ${correo} , ${producto})',
+  db.none('insert into Proveedor values(DEFAULT, ${empresa}, ${contacto}, ${telefono}, ${correo} , ${producto})',
     req.body)
     .then(() => {
       res.status(200)
