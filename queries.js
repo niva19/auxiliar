@@ -34,7 +34,7 @@ function getAllWorkers(req, res, next) {
 }
 
 function saveWorker(req, res, next) {
-  console.log(req.body);
+  
   db.none('insert into Planilla values(${nombre}, ${apellidos}, ${dni}, ${puesto}, ${telefono}, ${fechaEntrada}, ${fechaSalida}, ${tipoSalario}, ${montoSalario})',
     req.body)
     .then(() => {
@@ -52,7 +52,7 @@ function saveWorker(req, res, next) {
 }
 
 function editWorker(req, res, next) {
-  console.log(req.body);
+  
   db.none('update Planilla set nombre = ${nombre}, apellidos = ${apellidos}, puesto = ${puesto}, telefono = ${telefono}, fechaEntrada = ${fechaEntrada}, fechaSalida = ${fechaSalida}, tipoSalario = ${tipoSalario}, montoSalario=${montoSalario} where dni = ${dni}',
     req.body)
     .then(() => {
@@ -70,7 +70,7 @@ function editWorker(req, res, next) {
 }
 
 function getWorker(req, res, next) {
-  console.log(req.body);
+  
   db.any('select * from Planilla where dni=${dni}', req.body)
     .then((data) => {
       console.log(data);
@@ -86,7 +86,7 @@ function getWorker(req, res, next) {
 }
 
 function deleteWorker(req, res, next) {
-  console.log(req.body);
+  
   db.none('DELETE FROM Planilla WHERE dni = ${dni}', req.body)
     .then(() => {
       res.status(200)
@@ -103,7 +103,7 @@ function deleteWorker(req, res, next) {
 }
 
 function searchWorkers(req, res, next) {
-  console.log(req.body)
+  
   db.any('select * from Planilla where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -132,7 +132,7 @@ function getAllProviders(req, res, next) {
 }
 
 function SaveProvider(req, res, next) {
-  console.log(req.body);
+  
   db.none('insert into Proveedor values(${empresa}, ${contacto}, ${telefono}, ${correo} , ${producto})',
     req.body)
     .then(() => {
@@ -150,9 +150,8 @@ function SaveProvider(req, res, next) {
 }
 
 function EditProvider(req, res, next) {
-  console.log(req.body);
   
-  db.none('UPDATE Proveedor SET empresa = ${empresa}, contacto = ${contacto}, telefono = ${telefono}, correo = ${correo}, producto = ${producto} where empresa = ${empresa}',
+  db.none('UPDATE Proveedor SET empresa = ${empresa}, contacto = ${contacto}, telefono = ${telefono}, correo = ${correo}, producto = ${producto} where empresa = ${pk}',
     req.body)
     .then(() => {
       res.status(200)
@@ -169,7 +168,7 @@ function EditProvider(req, res, next) {
 }
 
 function GetProvider(req, res, next) {
-  console.log(req.body);
+  
   db.any('select * from Proveedor where empresa=${empresa}', req.body)
     .then((data) => {
       console.log(data);
@@ -185,7 +184,7 @@ function GetProvider(req, res, next) {
 }
 
 function DeleteProvider(req, res, next) {
-  console.log(req.body);
+  
   db.none('DELETE FROM Proveedor WHERE empresa = ${empresa}', req.body)
     .then(() => {
       res.status(200)
@@ -202,7 +201,7 @@ function DeleteProvider(req, res, next) {
 }
 
 function SearchProviders(req, res, next) {
-  console.log(req.body)
+  
   db.any('select * from Proveedor where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -243,7 +242,7 @@ function getdetailcustomer(req, res, next) {
 }
 
 function SaveCustomer(req, res, next) {
-  console.log(req.body);
+  
   db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono_trabajo}, ${telefono_casa}, ${celular}, ${correo_personal}, ${correo_empresarial})',
     req.body)
     .then(() => {
@@ -261,7 +260,7 @@ function SaveCustomer(req, res, next) {
 }
 
 function EditCustomer(req, res, next) {
-  console.log(req.body);
+  
   db.none('UPDATE Cliente SET nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, telefono_trabajo = ${telefono_trabajo}, telefono_casa = ${telefono_casa}, celular = ${celular}, correo_empresarial = ${correo_empresarial}, correo_personal = ${correo_personal} where cedula = ${cedula}',
     req.body)
     .then(() => {
@@ -279,7 +278,7 @@ function EditCustomer(req, res, next) {
 }
 
 function GetCustomer(req, res, next) {
-  console.log(req.body);
+  
   db.any('select * from Cliente where cedula=${cedula}', req.body)
     .then((data) => {
       console.log(data);
@@ -295,7 +294,7 @@ function GetCustomer(req, res, next) {
 }
 
 function DeleteCustomer(req, res, next) {
-  console.log(req.body);
+  
   db.none('DELETE FROM cliente WHERE cedula = ${cedula}', req.body)
     .then(() => {
       res.status(200)
@@ -312,7 +311,7 @@ function DeleteCustomer(req, res, next) {
 }
 
 function SearchCustomers(req, res, next) {
-  console.log(req.body)
+  
   db.any('select * from Cliente where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -384,7 +383,7 @@ function getEmployeesCNA(req, res, next) {
 }
 
 function saveEmployee(req, res, next) {
-  console.log(req.body);
+  
   db.none('insert into Usuario values(${nombre}, ${apellidos}, ${dni}, ${direccion}, ${telefono}, ${correo}, ${usuario}, ${contrasena}, ${isgerente}, ${fechaentrada}, ${fechasalida}, ${tiposalario}, ${montosalario})',
     req.body)
     .then(() => {
@@ -402,7 +401,7 @@ function saveEmployee(req, res, next) {
 }
 
 function editEmployee(req, res, next) {
-  console.log(req.body);
+  
   db.none('update Usuario set nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena}, isgerente = ${isgerente}, fechaentrada = ${fechaentrada}, fechasalida = ${fechasalida}, tiposalario = ${tiposalario}, montosalario = ${montosalario} where dni = ${dni}',
     req.body)
     .then(() => {
@@ -420,7 +419,7 @@ function editEmployee(req, res, next) {
 }
 
 function getEmployee(req, res, next) {
-  console.log(req.body);
+  
   db.any('select * from Usuario where dni=${dni}', req.body)
     .then((data) => {
       console.log(data);
@@ -436,7 +435,7 @@ function getEmployee(req, res, next) {
 }
 
 function deleteEmployee(req, res, next) {
-  console.log(req.body);
+  
   db.none('DELETE FROM Usuario WHERE dni = ${dni}', req.body)
     .then(() => {
       res.status(200)
@@ -453,7 +452,7 @@ function deleteEmployee(req, res, next) {
 }
 
 function searchEmployee(req, res, next) {
-  console.log(req.body)
+  
   db.any('select * from Empleado where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -487,7 +486,7 @@ function execute(command, callback) {
 };
 
 function saveProject(req, res, next) {
-  console.log(req.body);
+  
 
   //EL NOMBRE SE JUNTA EN UNA SOLA CADENA
   var nomProy = req.body.nombreProyecto;
@@ -541,7 +540,7 @@ function saveProject(req, res, next) {
 }
 
 function editProject(req, res, next) {
-  console.log(req.body);
+  
   db.none('UPDATE Proyecto SET direccion = ${direccion}, tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}, cliente = ${cliente}  where nombreproyecto = ${nombreProyecto}',
     req.body)
     .then(() => {
@@ -559,7 +558,7 @@ function editProject(req, res, next) {
 }
 
 function getProject(req, res, next) {
-  console.log(req.body);
+  
   db.any('select * from Proyecto where nombreproyecto=${nombreProyecto}', req.body)
     .then((data) => {
       console.log(data);
@@ -575,7 +574,7 @@ function getProject(req, res, next) {
 }
 
 function deleteProject(req, res, next) {
-  console.log(req.body);
+  
   db.none('DELETE FROM Proyecto WHERE nombreproyecto = ${nombreProyecto}', req.body)
     .then(() => {
       res.status(200)
@@ -592,7 +591,7 @@ function deleteProject(req, res, next) {
 }
 
 function searchProject(req, res, next) {
-  console.log(req.body)
+  
   db.any('select * from Proyecto where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -694,7 +693,7 @@ function deletefile(req, res, next) {
 }
 
 function searchfiles(req, res, next) {
-  console.log(req.body)
+  
   db.any('select nombre_archivo, nombre_carpeta, ruta_padre from Archivos where ruta_padre = ${ruta_padre} and nombre_carpeta = ${nombre_carpeta} and enlazado = TRUE', req.body)
     .then((data) => {
       console.log(data);

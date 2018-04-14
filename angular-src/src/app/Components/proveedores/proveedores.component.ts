@@ -12,6 +12,7 @@ declare var $: any;
   styleUrls: ['./proveedores.component.css']
 })
 export class ProveedoresComponent implements OnInit {
+  pk:String
   empresa: String
   contacto: String
   telefono: String
@@ -71,7 +72,7 @@ export class ProveedoresComponent implements OnInit {
   getAll() {
     this.ProveeService.getAll().subscribe(data => {
       console.log(data)
-      this.ax = data;
+      this.ax = data;      
     });
   }
 
@@ -111,6 +112,7 @@ export class ProveedoresComponent implements OnInit {
       console.log(data);
       this.renderer2.setAttribute(this.LabelEmpresa.nativeElement, "class", "active")
       this.empresa = data.empresa
+      this.pk = this.empresa
 
       this.renderer2.setAttribute(this.LabelContacto.nativeElement, "class", "active")
       this.contacto = data.contacto
@@ -169,6 +171,7 @@ export class ProveedoresComponent implements OnInit {
  
   ProveedoresSubmit() {
     const proveedor = {
+      pk:this.pk,
       empresa: this.empresa,
       contacto: this.contacto,
       telefono: this.telefono,
@@ -184,7 +187,7 @@ export class ProveedoresComponent implements OnInit {
             Materialize.toast('El proveedor se guardó exitosamente', 3000, 'green rounded')
           }
           else {
-            Materialize.toast('Error', 3000, 'red rounded')
+            Materialize.toast('Error, la empresa ya esta registrada!', 3000, 'red rounded')
           }
         });
       }
