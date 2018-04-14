@@ -6,10 +6,10 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-//var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
+var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
 //var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
 //var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
-var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
+//var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
 
 var db = pgp(connectionString);
 
@@ -133,7 +133,7 @@ function getAllProviders(req, res, next) {
 
 function SaveProvider(req, res, next) {
   console.log(req.body);
-  db.none('insert into Proveedor values(DEFAULT, ${empresa}, ${contacto}, ${telefono}, ${correo} , ${producto})',
+  db.none('insert into Proveedor values(${empresa}, ${contacto}, ${telefono}, ${correo} , ${producto})',
     req.body)
     .then(() => {
       res.status(200)
@@ -151,7 +151,8 @@ function SaveProvider(req, res, next) {
 
 function EditProvider(req, res, next) {
   console.log(req.body);
-  db.none('UPDATE Proveedor SET  contacto = ${contacto}, telefono = ${telefono}, correo = ${correo}, producto = ${producto} where empresa = ${empresa}',
+  
+  db.none('UPDATE Proveedor SET empresa = ${empresa}, contacto = ${contacto}, telefono = ${telefono}, correo = ${correo}, producto = ${producto} where empresa = ${empresa}',
     req.body)
     .then(() => {
       res.status(200)

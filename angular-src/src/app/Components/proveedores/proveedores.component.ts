@@ -166,7 +166,7 @@ export class ProveedoresComponent implements OnInit {
     console.log(id)
     $('#modal2').modal('open');
   }
-
+ 
   ProveedoresSubmit() {
     const proveedor = {
       empresa: this.empresa,
