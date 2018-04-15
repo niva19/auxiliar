@@ -45,7 +45,7 @@ import { FilterEmpleadoPipe } from './Filters/filter-empleado.pipe';
 
 
 const appRoutes: Routes = [
-  { path: '', component: MainPageComponent },
+  { path: '', component: IngresarComponent },
   { path: 'cliente', component: ClienteComponent, canActivate: [AuthGuard] },
   { path: 'inicio', component: MainPageComponent },
   { path: 'ingresar', component: IngresarComponent },
