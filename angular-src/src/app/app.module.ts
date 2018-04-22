@@ -47,7 +47,7 @@ import { FilterPlanillaPipe } from './Filters/filter-planilla.pipe';
 
 
 const appRoutes: Routes = [
-  { path: '', component: MainPageComponent },
+  { path: '', component: IngresarComponent },
   { path: 'cliente', component: ClienteComponent, canActivate: [AuthGuard] },
   { path: 'inicio', component: MainPageComponent },
   { path: 'ingresar', component: IngresarComponent },

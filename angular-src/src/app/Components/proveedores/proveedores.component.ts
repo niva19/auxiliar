@@ -12,6 +12,7 @@ declare var $: any;
   styleUrls: ['./proveedores.component.css']
 })
 export class ProveedoresComponent implements OnInit {
+  pk:String
   empresa: String
   contacto: String
   telefono: String
@@ -71,7 +72,7 @@ export class ProveedoresComponent implements OnInit {
   getAll() {
     this.ProveeService.getAll().subscribe(data => {
       console.log(data)
-      this.ax = data;
+      this.ax = data;      
     });
   }
 
@@ -106,10 +107,12 @@ export class ProveedoresComponent implements OnInit {
     const proveedor = {
       empresa: id
     }
+    
     this.ProveeService.getById(proveedor).subscribe(data => {
+      console.log(data);
       this.renderer2.setAttribute(this.LabelEmpresa.nativeElement, "class", "active")
-      this.renderer2.setAttribute(this.inputEmpresa.nativeElement, 'disabled', 'true');
       this.empresa = data.empresa
+      this.pk = this.empresa
 
       this.renderer2.setAttribute(this.LabelContacto.nativeElement, "class", "active")
       this.contacto = data.contacto
@@ -165,9 +168,10 @@ export class ProveedoresComponent implements OnInit {
     console.log(id)
     $('#modal2').modal('open');
   }
-
+ 
   ProveedoresSubmit() {
     const proveedor = {
+      pk:this.pk,
       empresa: this.empresa,
       contacto: this.contacto,
       telefono: this.telefono,
@@ -183,11 +187,12 @@ export class ProveedoresComponent implements OnInit {
             Materialize.toast('El proveedor se guardó exitosamente', 3000, 'green rounded')
           }
           else {
-            Materialize.toast('Error, cedula repetida', 3000, 'red rounded')
+            Materialize.toast('Error, la empresa ya esta registrada!', 3000, 'red rounded')
           }
         });
       }
       else {//si el switch esta en false edita
+        console.log(proveedor);
         this.ProveeService.EditarProveedor(proveedor).subscribe(data => {
           console.log(data);
           this.getAll();

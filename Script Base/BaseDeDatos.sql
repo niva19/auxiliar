@@ -87,8 +87,8 @@ telefono text,
 correo text,
 producto text,
 
-constraint pkProveedor primary key (empresa) 
-);
+constraint pkProveedor primary key (empresa) DEFERRABLE
+);  
 
 /* Tabla de Planilla */
 
