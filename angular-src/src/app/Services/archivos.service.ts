@@ -48,4 +48,17 @@ export class ArchivosService {
     headers.append('Content-Type', 'application/json');
     return this.http.post('http://localhost:3000/api/deletefile', file, { headers: headers }).map(res => res.json())
   }
+
+  Verificar_Archivo_Repetidos(files){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/verifyduplicatefiles', files, { headers: headers }).map(res => res.json())
+  }
+
+  Cambiar_Nombre_Archivo(file){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/changefilename', file, { headers: headers }).map(res => res.json())
+  }
+
 }

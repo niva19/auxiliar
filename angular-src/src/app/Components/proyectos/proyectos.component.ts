@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2, Renderer } from '@angular/core';
-import { Route } from '@angular/router'
 import { ActivatedRoute } from '@angular/router'
 import { ProyectosService } from '../../services/proyectos.service'
 import { ClientesService } from '../../services/clientes.service'
@@ -37,6 +36,8 @@ export class ProyectosComponent implements OnInit {
   parametro: String
   RegOrArt: String = ""
   financiamento: String = ""
+
+  pk_proyecto: String
 
   @ViewChild('buscador')
   private buscador: ElementRef
@@ -136,9 +137,11 @@ export class ProyectosComponent implements OnInit {
     const proyecto = {
       nombreProyecto: nom
     }
+    this.pk_proyecto = nom
     this.ProyService.getById(proyecto).subscribe(data => {
       this.renderer2.setAttribute(this.LabelNombreProyecto.nativeElement, "class", "active")
       this.nombreProyecto = data.nombreproyecto
+      
 
       this.renderer2.setAttribute(this.Labeldireccion.nativeElement, "class", "active")
       this.direccion = data.direccion
@@ -220,8 +223,10 @@ export class ProyectosComponent implements OnInit {
         });
       }
       else {//si el switch esta en false edita
+        proyecto["key"] = this.pk_proyecto
         this.ProyService.EditarProyecto(proyecto).subscribe(data => {
-          if (data) {
+          console.log(data)
+          if (data.success) {
             this.getAll();
             this.switch = true;
             $('#modal1').modal('close');

@@ -99,11 +99,20 @@ router.post('/api/recoveryfile', db.recoveryfile);
 
 router.post('/api/searchfiles', db.searchfiles);
 
+router.post('/api/verifyduplicatefiles', db.verifyduplicatefiles);
+
+router.post('/api/changefilename', db.changefilename);
 
 router.post('/api/getfolders', db.getfolders);
 
 router.post('/api/savefolder', db.savefolder);
 
 router.post('/api/getpublicfolder', db.getpublicfolder);
+
+router.post('/api/deletefolder', db.deletefolder);
+
+router.post('/api/getfoldertree', db.getfoldertree);
+
+router.post('/api/movefiles', db.movefiles);
 
 module.exports = router;

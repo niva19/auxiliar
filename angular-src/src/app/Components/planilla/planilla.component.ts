@@ -266,7 +266,6 @@ export class PlanillaComponent implements OnInit {
     let planilla = {
       dni: v.dni
     }
-    //this.detalles = this.ax;
     this.PlaniService.getById(planilla).subscribe(detalles => {
       this.detalles = [detalles]
       $('#modal4').modal('open');

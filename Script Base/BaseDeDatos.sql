@@ -15,7 +15,6 @@ constraint pkCliente primary key (cedula)
 );
 
 /* Tabla de Empleado */
-/* nombre, apellidos, dni, direccion, telefono, correo , usuario, contrasena, isGerente, fechaEntrada, fechaSalida, tipoSalario, montoSalario */
 create table Usuario
 ( 
 nombre text,
@@ -51,13 +50,12 @@ banco text,
 cliente text,
 ruta text,
 constraint pkProyecto primary key (nombreProyecto),
-constraint fkCliente foreign key (cliente) references Cliente
+constraint fkCliente foreign key (cliente) references Cliente on update cascade
 );
 
 create table Carpeta(
     nombre_carpeta text,
     ruta_padre text,
-    publico boolean,
     primary key (ruta_padre, nombre_carpeta)
 );
 
@@ -65,11 +63,19 @@ create table Archivos(
     nombre_archivo text,
     nombre_carpeta text,
     ruta_padre text,
-    publico boolean,
-    enlazado boolean DEFAULT TRUE,
     primary key (ruta_padre, nombre_carpeta, nombre_archivo),
-    constraint fkCarpeta foreign key (ruta_padre, nombre_carpeta) references Carpeta
+    constraint fkCarpeta foreign key (ruta_padre, nombre_carpeta) references Carpeta on update cascade
 );
+
+create table Archivos_Papelera(
+    nombre_archivo text,
+    nombre_carpeta text,
+    ruta_padre text,
+    id serial,
+    constraint pk_archivos_papelera primary key (id)
+);
+
+
 
 /* Tabla de Proveedor */
 
@@ -101,6 +107,9 @@ montoSalario text,
 constraint pkPlanilla primary key (dni) 
 );
 
+
+insert into usuario values('Jerry','Ramirez','11567478','Heredia','112233','asd@gmail.com','jerry','1234',true,'12','12','mensual','111');
+
 drop table Cliente cascade;
 drop table Usuario cascade;
 drop table Proyecto cascade;
@@ -108,3 +117,7 @@ drop table Carpeta cascade;
 drop table Archivos cascade;
 drop table Proveedor cascade;
 drop table Planilla cascade;
+
+
+-- comando borrar carpetas
+-- rd /s /q "C:\Users\Admin\Desktop\a1"

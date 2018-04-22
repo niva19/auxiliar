@@ -25,4 +25,22 @@ export class CarpetasService {
     return this.http.post('http://localhost:3000/api/getpublicfolder', carpeta, { headers: headers }).map(res => res.json())
   }
   
+  Eliminar_Carpeta(carpeta){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/deletefolder', carpeta, { headers: headers }).map(res => res.json())
+  }
+
+  Obtener_Arbol(carpeta){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/getfoldertree', carpeta, { headers: headers }).map(res => res.json())
+  }
+
+  Mover_Archivos(values){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/movefiles', values, { headers: headers }).map(res => res.json())
+  }
+
 }
