@@ -49,7 +49,7 @@ import { ReporteComponent } from './Components/reporte/reporte.component';
 
 
 const appRoutes: Routes = [
-  { path: '', component: IngresarComponent },
+  { path: '', component: ClienteComponent, canActivate: [AuthGuard]},
   { path: 'cliente', component: ClienteComponent, canActivate: [AuthGuard] },
   { path: 'inicio', component: MainPageComponent },
   { path: 'ingresar', component: IngresarComponent },
