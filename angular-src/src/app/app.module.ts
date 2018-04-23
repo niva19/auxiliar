@@ -21,6 +21,7 @@ import { PlanillaService } from './services/planilla.service'
 import { CarpetasService } from './services/carpetas.service'
 import { ArchivosService } from './services/archivos.service'
 import { DataService } from './services/data.service'
+import { ReporteService } from './services/reporte.service'
 
 import { AppComponent } from './app.component'
 import { NgxPaginationModule } from 'ngx-pagination'
@@ -44,6 +45,7 @@ import { GerenteBridgeComponent } from './Components/gerente-bridge/gerente-brid
 import { FilterEmpleadoPipe } from './Filters/filter-empleado.pipe';
 import { FilterProveedorPipe } from './Filters/filter-proveedor.pipe';
 import { FilterPlanillaPipe } from './Filters/filter-planilla.pipe';
+import { ReporteComponent } from './Components/reporte/reporte.component';
 
 
 const appRoutes: Routes = [
@@ -59,6 +61,7 @@ const appRoutes: Routes = [
   { path: 'google', component: GoogleComponent, canActivate: [AuthGuard] },
   { path: 'planilla', component: PlanillaComponent },
   { path: 'proveedores', component: ProveedoresComponent },
+  { path: 'reporte', component: ReporteComponent }
 ]
 
 @NgModule({
@@ -82,7 +85,8 @@ const appRoutes: Routes = [
     GerenteBridgeComponent,
     FilterEmpleadoPipe,
     FilterProveedorPipe,
-    FilterPlanillaPipe
+    FilterPlanillaPipe,
+    ReporteComponent
   ],
   imports: [
     CommonModule,
@@ -98,7 +102,7 @@ const appRoutes: Routes = [
 
   ],
   providers: [ProveedoresService, PlanillaService, ClientesService, IngresarService, EmpleadosService,
-    ProyectosService, CarpetasService, ArchivosService, DataService, AuthGuard, GerenteGuard],
+    ProyectosService, ReporteService, CarpetasService, ArchivosService, DataService, AuthGuard, GerenteGuard],
   bootstrap: [AppComponent]
 })
 

@@ -84,6 +84,9 @@ router.post('/api/searchproject', db.searchProject);
 // ------------ GUARDAR ARCHIVOS
 router.post('/api/savefiles', db.savefiles);
 
+//------------- GET REPORTES
+router.get('/api/getreportes', db.getAllReportes);
+
 // ------------ BUSCAR ARCHIVOS
 router.post('/api/searchfiles', db.searchfiles);
 

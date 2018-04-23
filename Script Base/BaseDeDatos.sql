@@ -107,16 +107,24 @@ montoSalario text,
 constraint pkPlanilla primary key (dni) 
 );
 
+create table Historial
+(
+fecha timestamp,
+nombre text,
+accion text,
+modulo text,
+);
 
+insert into usuario values('Luis','Carrillo','40232014','Heredia','222222','asd@gmail.com','admin','admin',true,'12/03/2015','12/03/2015','mensual','25000');
 insert into usuario values('Jerry','Ramirez','11567478','Heredia','112233','asd@gmail.com','jerry','1234',true,'12','12','mensual','111');
 
-drop table Cliente cascade;
-drop table Usuario cascade;
-drop table Proyecto cascade;
-drop table Carpeta cascade;
-drop table Archivos cascade;
-drop table Proveedor cascade;
-drop table Planilla cascade;
+drop table Cliente CASCADE;
+drop table Usuario CASCADE;
+drop table Proyecto CASCADE;
+drop table Carpeta CASCADE;
+drop table Archivos CASCADE;
+drop table Proveedor CASCADE;
+drop table Planilla CASCADE;
 
 
 -- comando borrar carpetas

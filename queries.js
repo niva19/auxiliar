@@ -7,8 +7,8 @@ var options = {
 
 var pgp = require('pg-promise')(options);
 // var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
-// var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
-var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
+ var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
+//var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 // var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
 
 var db = pgp(connectionString);
@@ -20,6 +20,17 @@ var db = pgp(connectionString);
 ************************************* DE DATOS ***********************************
 **********************************************************************************/
 
+//  ******************************** REPORTES ************************************
+function getAllReportes(req, res, next) {
+  db.any('select  to_char(fecha, \'yyyy/mm/dd\') as fecha, to_char(fecha, \'hh:mi:ss\') as hora, nombre, accion, modulo from historial')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
 //  ******************************** PLANILLA ************************************
 
 function getAllWorkers(req, res, next) {
@@ -1114,6 +1125,8 @@ function get_folder_name(path) {
 //  ********************************* ARCHIVOS ************************************
 
 module.exports = {
+  // REPORTES
+  getAllReportes: getAllReportes,
   // PLANILLA 
   getAllWorkers: getAllWorkers,
   SaveWorker: saveWorker,
