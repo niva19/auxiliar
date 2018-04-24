@@ -6,8 +6,8 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
-// var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
+//var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
+ var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
 //var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
 // var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
 
@@ -22,7 +22,7 @@ var db = pgp(connectionString);
 
 //  ******************************** REPORTES ************************************
 function getAllReportes(req, res, next) {
-  db.any('select  to_char(fecha, \'yyyy/mm/dd\') as fecha, to_char(fecha, \'hh:mi:ss\') as hora, nombre, accion, modulo from historial')
+  db.any('select  to_char(fecha, \'yyyy/mm/dd\') as fecha, to_char(fecha, \'hh:mi:ss am\') as hora, nombre, accion, modulo, alterado from historial')
     .then(function (data) {
       res.status(200)
         .json(data);
@@ -30,6 +30,23 @@ function getAllReportes(req, res, next) {
     .catch(function (err) {
       return next(err);
     });
+}
+
+function saveReporte(req, res, next){
+  db.none('insert into historial values(now(), ${nombre}, ${accion},${modulo},${alterado})',
+    req.body)
+    .then(() => {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch((err) => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
 }
 //  ******************************** PLANILLA ************************************
 
@@ -1127,6 +1144,7 @@ function get_folder_name(path) {
 module.exports = {
   // REPORTES
   getAllReportes: getAllReportes,
+  saveReporte: saveReporte,
   // PLANILLA 
   getAllWorkers: getAllWorkers,
   SaveWorker: saveWorker,

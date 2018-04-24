@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { EmpleadosService } from '../../services/empleados.service'
+import { ReporteService } from '../../services/reporte.service'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
 declare var jQuery: any;
 declare var $: any;
 
-
+ 
 @Component({
   selector: 'app-empleados',
   templateUrl: './empleados.component.html',
@@ -130,7 +131,7 @@ export class EmpleadosComponent implements OnInit {
   @ViewChild('inputMontoSalario')
   private inputMontoSalario: ElementRef
 
-  constructor(private EmpService: EmpleadosService, private router: Router, private renderer2: Renderer2) { }
+  constructor(private EmpService: EmpleadosService, private router: Router, private reporteService: ReporteService, private renderer2: Renderer2) { }
 
   ngOnInit() {
     $('.modal').modal();
@@ -274,11 +275,24 @@ export class EmpleadosComponent implements OnInit {
     const empleado = {
       dni: id
     }
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Eliminar',
+      modulo: 'Usuarios',
+      alterado: id
+    }
     this.EmpService.EliminarEmpleado(empleado).subscribe(data => {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
         Materialize.toast('El empleado se borró exitosamente', 3000, 'green rounded')
+        //NOW ADDING TO HISTORY
+        this.reporteService.addReport(reporte).subscribe(data => {
+          if (!data.success) {
+            Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+          }
+        })
+        //END OF history
       }
       else {
         Materialize.toast('Algo salio mal', 3000, 'red rounded')
@@ -328,6 +342,12 @@ export class EmpleadosComponent implements OnInit {
       tiposalario: this.tipoSalario,
       montosalario: this.montoSalario
     }
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'NONE',
+      modulo: 'Usuarios',
+      alterado: this.dni
+    }
     if (this.ValidateForm()) {
       if (this.switch) {//si el switch esta en true guarda
         this.EmpService.GuardarEmpleado(empleado).subscribe(data => {
@@ -335,6 +355,14 @@ export class EmpleadosComponent implements OnInit {
             this.getAll();
             $('#modal1').modal('close');
             Materialize.toast('El empleado se guardó exitosamente', 3000, 'green rounded')
+            //NOW ADDING TO HISTORY
+            reporte.accion = 'Agregar';
+            this.reporteService.addReport(reporte).subscribe(data => {
+              if (!data.success) {
+                Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+              }
+            })
+            //END OF history
           }
           else {
             Materialize.toast('Error, cedula repetida', 3000, 'red rounded')
@@ -348,6 +376,14 @@ export class EmpleadosComponent implements OnInit {
           this.switch = true;
           $('#modal1').modal('close');
           Materialize.toast('El empleado se editó exitosamente', 3000, 'green rounded')
+          //NOW ADDING TO HISTORY
+          reporte.accion = 'Editar';
+          this.reporteService.addReport(reporte).subscribe(data => {
+            if (!data.success) {
+              Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+            }
+          })
+          //END OF history
         });
       }
     }
