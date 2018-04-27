@@ -540,8 +540,7 @@ function saveProject(req, res, next) {
 }
 
 function editProject(req, res, next) {
-  
-  db.none('UPDATE Proyecto SET direccion = ${direccion}, tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}, cliente = ${cliente}  where nombreproyecto = ${nombreProyecto}',
+  db.none('UPDATE proyecto SET nombreProyecto = ${nombreProyecto}, direccion = ${direccion}, tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}  where nombreproyecto = ${key}',
     req.body)
     .then(() => {
       res.status(200)
@@ -549,26 +548,12 @@ function editProject(req, res, next) {
           success: true
         });
     })
-    .catch(error => {
+    .catch((err) => {
       res.status(200)
         .json({
           success: false, err: err
         });
-    });
-  // db.none('UPDATE proyecto SET nombreProyecto = ${nombreProyecto}, direccion = ${direccion}, tipoproyecto = ${tipoProyecto}, tipoobra = ${tipoObra}, descripcion = ${descripcion}, fechainicio = ${fechaInicio}, fechafinaliza = ${fechaFinaliza}, estado = ${estado}, banco = ${banco}  where nombreproyecto = ${nombreProyecto}',
-  //   req.body)
-  //   .then(() => {
-  //     res.status(200)
-  //       .json({
-  //         success: true
-  //       });
-  //   })
-  //   .catch((err) => {
-  //     res.status(200)
-  //       .json({
-  //         success: false, err: err
-  //       });
-  //   })
+    })
 }
 
 function getProject(req, res, next) {
@@ -628,6 +613,9 @@ function savefiles(req, res, next) {
       var file = req.body[i];
       let query_res = yield t.none('insert into Archivos values(${nombre_archivo}, ${nombre_carpeta}, ${ruta_padre})',
         file).then(val => {
+
+          //aqui se guarda los archivos
+
           execute(`copy \"${file.realPath}\" \"${file.ruta_padre}\\${file.nombre_carpeta}\"`, function (output) {
             console.log(output);
           });
@@ -664,19 +652,11 @@ function unlink(req, res, next) {//VALIDAR PARA POSIBLES ROLLBACKS
 
   db.task(function* (t) {
     var arr = []
-    // let path = `move C:\\Users\\Admin\\Desktop\\qk1\\asd.txt C:\\Users\\Admin\\Desktop\\qk2`
-    // let ax = yield execute(path, output =>{
-    //   return output  
-    // });
-    // let bx = yield execute(`move C:\\Users\\Admin\\Desktop\\qk2\\asd.txt C:\\Users\\Admin\\Desktop\\qk3`, output2 =>{
-    //   return output2  
-    // });
-    // console.log("!!!!!!!!: ", ax)
-    // console.log("????????: ", bx)
     for (let i = 0; i < req.body.length; i++) {
       var file = req.body[i];
       let id = yield t.one("insert into archivos_papelera values (${nombre_archivo}, ${nombre_carpeta}, ${ruta_padre}) RETURNING id", file)
         .then(data => {
+          //aqui se desenlaza
           return data
         })
         .catch(err => {
@@ -847,6 +827,7 @@ function recoveryfile(req, res, next) {
         file = req.body[i];
         let insert = yield t.none('insert into Archivos values(${nombre_archivo}, ${nombre_carpeta}, ${ruta_padre})',
           file).then(val => {
+            //aca se recupera el archivo 
             return { success: true }
           }).catch(err => {
             return { success: false, file: file }

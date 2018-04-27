@@ -26,7 +26,10 @@ export class HistorialComponent implements OnInit {
   constructor(private Archivos_Service: ArchivosService) { }
 
   ngOnInit() {
-    $('.modal').modal();
+    $('.modal').modal(); 
+    $('#remplazar_omitir').modal({
+      dismissible: false
+    })
     this.getAll();
   }
 
