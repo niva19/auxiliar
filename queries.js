@@ -643,7 +643,6 @@ function savefiles(req, res, next) {
         file).then(val => {
 
           //aqui se guarda los archivos
-
           execute(`copy \"${file.realPath}\" \"${file.ruta_padre}\\${file.nombre_carpeta}\"`, function (output) {
             console.log(output);
           });
