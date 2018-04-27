@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { PlanillaService } from '../../services/planilla.service'
+import { ReporteService } from '../../services/reporte.service'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
@@ -69,7 +70,9 @@ export class PlanillaComponent implements OnInit {
   @ViewChild('inputMontoSalario')
   private inputMontoSalario: ElementRef
 
-  constructor(private PlaniService: PlanillaService, private router: Router, private renderer2: Renderer2) { }
+  constructor(private PlaniService: PlanillaService,
+    private reporteService: ReporteService,
+    private router: Router, private renderer2: Renderer2) { }
 
   ngOnInit() {
     $('.modal').modal();
@@ -121,7 +124,7 @@ export class PlanillaComponent implements OnInit {
     }
     this.PlaniService.getById(Planilla).subscribe(data => {
       console.log(data)
-      
+
       this.renderer2.setAttribute(this.LabelNombre.nativeElement, "class", "active")
       this.nombre = data.nombre
 
@@ -157,11 +160,24 @@ export class PlanillaComponent implements OnInit {
     const Planilla = {
       dni: id
     }
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Eliminar',
+      modulo: 'Planilla',
+      alterado: id
+    }
     this.PlaniService.EliminarPlanilla(Planilla).subscribe(data => {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
         Materialize.toast('El empleado se elimino exitosamente', 3000, 'green rounded')
+        //NOW ADDING TO HISTORY
+        this.reporteService.addReport(reporte).subscribe(data => {
+          if (!data.success) {
+            Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+          }
+        })
+        //END OF history
       }
       else {
         alert("Error al eliminar")
@@ -203,6 +219,12 @@ export class PlanillaComponent implements OnInit {
       tipoSalario: this.tipoSalario,
       montoSalario: this.montoSalario,
     }
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'NONE',
+      modulo: 'Planilla',
+      alterado: this.dni
+    }
     if (this.ValidateForm()) {
       if (this.switch) {//si el switch esta en true guarda
         this.PlaniService.GuardarPlanilla(Planilla).subscribe(data => {
@@ -210,6 +232,14 @@ export class PlanillaComponent implements OnInit {
             this.getAll();
             $('#modal1').modal('close');
             Materialize.toast('El empleado se guardo exitosamente', 3000, 'green rounded')
+            //NOW ADDING TO HISTORY
+            reporte.accion = 'Agregar';
+            this.reporteService.addReport(reporte).subscribe(data => {
+              if (!data.success) {
+                Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+              }
+            })
+            //END OF history
           }
           else {
             Materialize.toast('Error, DNI repetido', 3000, 'red rounded')
@@ -223,6 +253,14 @@ export class PlanillaComponent implements OnInit {
           this.switch = true;
           $('#modal1').modal('close');
           Materialize.toast('El empleado se guardo exitosamente', 3000, 'green rounded')
+          //NOW ADDING TO HISTORY
+          reporte.accion = 'Editar';
+          this.reporteService.addReport(reporte).subscribe(data => {
+            if (!data.success) {
+              Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+            }
+          })
+          //END OF history
         });
       }
     }
@@ -261,7 +299,7 @@ export class PlanillaComponent implements OnInit {
     return true
   }
 
-  
+
   Detalles(v) {
     let planilla = {
       dni: v.dni
@@ -270,6 +308,6 @@ export class PlanillaComponent implements OnInit {
       this.detalles = [detalles]
       $('#modal4').modal('open');
     })
-  }  
- 
+  }
+
 }

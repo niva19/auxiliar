@@ -54,6 +54,9 @@
           <li *ngIf="ingresarService.isGerente()" [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Papelera</a>
           </li>
+          <li *ngIf="ingresarService.isGerente()" [routerLinkActive]="['active']">
+            <a [routerLink]="['/reporte']">Historial</a>
+          </li>
           <!-- ################### DROP DOWN TRIGGER ################## -->
           <!-- ################### NOMBRE DE USUARIO ################## -->
         </div>
@@ -85,6 +88,9 @@
           </li>
           <li *ngIf="ingresarService.isGerente()" [routerLinkActive]="['active']">
             <a [routerLink]="['/historial']">Papelera</a>
+          </li>
+          <li *ngIf="ingresarService.isGerente()" [routerLinkActive]="['active']">
+            <a [routerLink]="['/reporte']">Historial</a>
           </li>
 
           <!-- ######################################################## -->

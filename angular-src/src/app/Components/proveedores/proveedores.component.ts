@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { ProveedoresService } from '../../services/proveedores.service'
+import { ReporteService } from '../../services/reporte.service'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
@@ -61,7 +62,10 @@ export class ProveedoresComponent implements OnInit {
   @ViewChild('inputProducto')
   private inputProducto: ElementRef
 
-  constructor(private ProveeService: ProveedoresService, private router: Router, private renderer2: Renderer2) { }
+  constructor(private ProveeService: ProveedoresService, 
+    private reporteService: ReporteService,
+    private router: Router, 
+    private renderer2: Renderer2) { }
 
   ngOnInit() {
     $('.modal').modal();
@@ -135,11 +139,24 @@ export class ProveedoresComponent implements OnInit {
     const proveedor = {
       empresa: id
     }
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Eliminar',
+      modulo: 'Proveedores',
+      alterado: id
+    }
     this.ProveeService.EliminarProveedor(proveedor).subscribe(data => {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
         Materialize.toast('El proveedor se borró exitosamente', 3000, 'green rounded')
+        //NOW ADDING TO HISTORY
+        this.reporteService.addReport(reporte).subscribe(data => {
+          if (!data.success) {
+            Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+          }
+        })
+        //END OF history
       }
       else {
         alert("algo salio mal")
@@ -178,6 +195,12 @@ export class ProveedoresComponent implements OnInit {
       correo: this.correo,
       producto: this.producto
     }
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'NONE',
+      modulo: 'Proveedores',
+      alterado: this.pk
+    }
     if (this.ValidateForm()) {
       if (this.switch) {//si el switch esta en true guarda
         this.ProveeService.GuardarProveedor(proveedor).subscribe(data => {
@@ -185,6 +208,14 @@ export class ProveedoresComponent implements OnInit {
             this.getAll();
             $('#modal1').modal('close');
             Materialize.toast('El proveedor se guardó exitosamente', 3000, 'green rounded')
+            //NOW ADDING TO HISTORY
+            reporte.accion = 'Agregar';
+            this.reporteService.addReport(reporte).subscribe(data => {
+              if (!data.success) {
+                Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+              }
+            })
+            //END OF history
           }
           else {
             Materialize.toast('Error, la empresa ya esta registrada!', 3000, 'red rounded')
@@ -199,6 +230,14 @@ export class ProveedoresComponent implements OnInit {
           this.switch = true;
           $('#modal1').modal('close');
           Materialize.toast('El proveedor se guardó exitosamente', 3000, 'green rounded')
+          //NOW ADDING TO HISTORY
+          reporte.accion = 'Editar';
+          this.reporteService.addReport(reporte).subscribe(data => {
+            if (!data.success) {
+              Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+            }
+          })
+          //END OF history
         });
       }
     }

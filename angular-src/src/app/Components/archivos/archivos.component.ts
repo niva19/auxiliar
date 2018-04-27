@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CarpetasService } from '../../services/carpetas.service'
 import { ArchivosService } from '../../services/archivos.service'
+import { ReporteService } from '../../services/reporte.service'
 import { Router } from '@angular/router'
 import { IngresarService } from '../../services/ingresar.service'
 import { ActivatedRoute } from '@angular/router'
@@ -29,6 +30,7 @@ export class ArchivosComponent implements OnInit {
 
 
   constructor(private Archivos_Service: ArchivosService,
+    private reporteService: ReporteService,
     private Carpetas_Service: CarpetasService,
     private ingresarService: IngresarService,
     private router: Router,
@@ -37,7 +39,7 @@ export class ArchivosComponent implements OnInit {
 
   ngOnInit() {
     $('.modal').modal();
-    
+
     $('#archivo_repetido').modal({
       dismissible: false
     })
@@ -102,9 +104,12 @@ export class ArchivosComponent implements OnInit {
 
   Confirmar_eliminar_Carpeta(carpeta) {
     this.Carpetas_Service.Eliminar_Carpeta(carpeta).subscribe(res => {
-      (res.success)
-        ? this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
-        : Materialize.toast('ERROR, primero debe borrar el contenido de esta carpeta', 5000, 'red rounded')
+      if (res.success) {
+        this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
+        
+      }
+      else
+        Materialize.toast('ERROR, primero debe borrar el contenido de esta carpeta', 5000, 'red rounded')
 
     })
   }
@@ -370,13 +375,13 @@ export class ArchivosComponent implements OnInit {
 
           if (node.children.length == 0) {
             (this.carpeta_actual.nombre_carpeta == node.nombre_carpeta)
-            ? html = `<div class="collapsible-header blue-text"><i class="material-icons">folder</i>${node.nombre_carpeta}</div>`
-            : html = `<div class="collapsible-header"><i class="material-icons">folder</i>${node.nombre_carpeta}</div>`
+              ? html = `<div class="collapsible-header blue-text"><i class="material-icons">folder</i>${node.nombre_carpeta}</div>`
+              : html = `<div class="collapsible-header"><i class="material-icons">folder</i>${node.nombre_carpeta}</div>`
           }
           else {
             (this.carpeta_actual.nombre_carpeta == node.nombre_carpeta)
-            ? html = `<div class="collapsible-header blue-text"><i class="material-icons">folder</i>${node.nombre_carpeta}</div><div class="collapsible-body"><ul class="collapsible" id="${node.nombre_carpeta}x"></ul></div>`
-            : html = `<div class="collapsible-header"><i class="material-icons">folder</i>${node.nombre_carpeta}</div><div class="collapsible-body"><ul class="collapsible" id="${node.nombre_carpeta}x"></ul></div>`
+              ? html = `<div class="collapsible-header blue-text"><i class="material-icons">folder</i>${node.nombre_carpeta}</div><div class="collapsible-body"><ul class="collapsible" id="${node.nombre_carpeta}x"></ul></div>`
+              : html = `<div class="collapsible-header"><i class="material-icons">folder</i>${node.nombre_carpeta}</div><div class="collapsible-body"><ul class="collapsible" id="${node.nombre_carpeta}x"></ul></div>`
           }
           li.attr('id', `btnn${cont}`)
           li.append(html)
@@ -396,19 +401,19 @@ export class ArchivosComponent implements OnInit {
       $(".expand-toggle").toggleClass("expanded");
 
       for (let i = 0; i < arr.length; i++) {
-        if(this.carpeta_actual.nombre_carpeta != arr[i].nombre_carpeta){
+        if (this.carpeta_actual.nombre_carpeta != arr[i].nombre_carpeta) {
           document.getElementById(`btnn${i + 1}`)
-          .addEventListener("click", function (e) {
-            e.stopPropagation()
-            $('#carpeta_destino').val(arr[i].nombre_carpeta)
-            $('#carpeta_oculta').val(JSON.stringify(arr[i]))
-          });
+            .addEventListener("click", function (e) {
+              e.stopPropagation()
+              $('#carpeta_destino').val(arr[i].nombre_carpeta)
+              $('#carpeta_oculta').val(JSON.stringify(arr[i]))
+            });
         }
-        else{
+        else {
           document.getElementById(`btnn${i + 1}`)
-          .addEventListener("click", function (e) {
-            e.stopPropagation()
-          });
+            .addEventListener("click", function (e) {
+              e.stopPropagation()
+            });
         }
       }
 
@@ -439,10 +444,10 @@ export class ArchivosComponent implements OnInit {
         $("#mensaje_archivo_repetido").text(`el destino ya tiene un archivo llamado "${res.nombre_archivo}"`)
         $('#archivo_repetido').modal('open');
       }
-      else{
+      else {
         this.flag = true
         this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
-      } 
+      }
     })
   }
 
@@ -471,13 +476,11 @@ export class ArchivosComponent implements OnInit {
         }
       })
     }
-    else{
+    else {
       $('#archivo_repetido').modal('close');
       this.flag = true
       this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
     }
 
   }
-
-
 }

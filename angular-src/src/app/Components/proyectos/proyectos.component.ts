@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router'
 import { ProyectosService } from '../../services/proyectos.service'
 import { ClientesService } from '../../services/clientes.service'
 import { EmpleadosService } from '../../services/empleados.service'
-import { IngresarService} from '../../services/ingresar.service'
+import { ReporteService } from '../../services/reporte.service'
+import { IngresarService } from '../../services/ingresar.service'
 import { DataService } from '../../services/data.service'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
@@ -80,6 +81,7 @@ export class ProyectosComponent implements OnInit {
   // --------------------------------- CONSTRUCTOR ---------------------------------
   constructor(private ProyService: ProyectosService,
     private clientesService: ClientesService,
+    private reporteService: ReporteService,
     private empleadosService: EmpleadosService,
     private ingresarService: IngresarService,
     private router: Router,
@@ -105,19 +107,19 @@ export class ProyectosComponent implements OnInit {
       weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
       closeOnSelect: false // Close upon selecting a date,
     });
-    
+
 
     this.getAll();
   }
 
   getAll() {
-    this.ProyService.getAll({cedula: localStorage.getItem("id_cliente")}).subscribe(data => {
+    this.ProyService.getAll({ cedula: localStorage.getItem("id_cliente") }).subscribe(data => {
       console.log(data)
       this.ax = data;
     });
   }
 
-  
+
   editClick(v: String) {
     alert(v)
   }
@@ -141,7 +143,7 @@ export class ProyectosComponent implements OnInit {
     this.ProyService.getById(proyecto).subscribe(data => {
       this.renderer2.setAttribute(this.LabelNombreProyecto.nativeElement, "class", "active")
       this.nombreProyecto = data.nombreproyecto
-      
+
 
       this.renderer2.setAttribute(this.Labeldireccion.nativeElement, "class", "active")
       this.direccion = data.direccion
@@ -174,11 +176,24 @@ export class ProyectosComponent implements OnInit {
     const proyecto = {
       nombreProyecto: nom
     }
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Eliminar',
+      modulo: 'Proyectos',
+      alterado: nom
+    }
     this.ProyService.EliminarProyecto(proyecto).subscribe(data => {
       if (data.success) {
         this.getAll();
         $('#modal2').modal('close');
         Materialize.toast('El proyecto se borró exitosamente', 3000, 'green rounded')
+        //NOW ADDING TO HISTORY
+        this.reporteService.addReport(reporte).subscribe(data => {
+          if (!data.success) {
+            Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+          }
+        })
+        //END OF history
       }
       else {
         alert("Error en el servidor")
@@ -188,9 +203,7 @@ export class ProyectosComponent implements OnInit {
 
   // --------------------------------- SUBMIT PROYECTO ---------------------------------
   ProyectoSubmit() {
-
     if (this.ValidateForm()) {
-
       const proyecto = {
         nombreProyecto: this.nombreProyecto,
         direccion: this.direccion,
@@ -203,7 +216,12 @@ export class ProyectosComponent implements OnInit {
         banco: this.banco,
         cliente: localStorage.getItem("id_cliente")
       }
-
+      const reporte = {
+        nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+        accion: 'NONE',
+        modulo: 'Proyectos',
+        alterado: this.nombreProyecto
+      }
       if (this.RegOrArt != "" && this.financiamento != "") {
         proyecto.tipoProyecto =
           `${this.tipoProyecto}/${this.RegOrArt}/${this.financiamento}`
@@ -216,6 +234,14 @@ export class ProyectosComponent implements OnInit {
             this.getAll();
             $('#modal1').modal('close');
             Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
+            //NOW ADDING TO HISTORY
+            reporte.accion = 'Agregar';
+            this.reporteService.addReport(reporte).subscribe(data => {
+              if (!data.success) {
+                Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+              }
+            })
+            //END OF history
           }
           else {
             Materialize.toast('Error, nombre repetido', 3000, 'red rounded')
@@ -231,6 +257,14 @@ export class ProyectosComponent implements OnInit {
             this.switch = true;
             $('#modal1').modal('close');
             Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
+            //NOW ADDING TO HISTORY
+            reporte.accion = 'Editar';
+            this.reporteService.addReport(reporte).subscribe(data => {
+              if (!data.success) {
+                Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+              }
+            })
+            //END OF history
           }
           else Materialize.toast('Error en el servidor', 3000, 'red rounded')
         });
@@ -275,18 +309,18 @@ export class ProyectosComponent implements OnInit {
 
     return true
   }
-  
 
-  Ir_Archivos(ruta){
+
+  Ir_Archivos(ruta) {
     let gerente = this.ingresarService.isGerente();
     localStorage.setItem("ruta_proyecto", ruta);
     // this.data.Set_Ruta_Proyecto(ruta);
-    (gerente) 
-    ? this.router.navigate(["/gerente_bridge"], { relativeTo: this.route })
-    : this.router.navigate(["/archivos"], { relativeTo: this.route })
+    (gerente)
+      ? this.router.navigate(["/gerente_bridge"], { relativeTo: this.route })
+      : this.router.navigate(["/archivos"], { relativeTo: this.route })
   }
 
-  Ir_Empleados(nombre){
+  Ir_Empleados(nombre) {
     localStorage.setItem("nombre_proyecto", nombre)
   }
 
@@ -333,8 +367,8 @@ export class ProyectosComponent implements OnInit {
   isProfResponsable() {
     return (this.filtro == "profResponsable") ? true : false
   }
-  
-  atras(){
+
+  atras() {
     this.router.navigate(["/cliente"], { relativeTo: this.route })
   }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProyectosService } from '../../services/proyectos.service'
 import { ArchivosService } from '../../services/archivos.service'
+import { ReporteService } from '../../services/reporte.service'
 import * as Materialize from 'angular2-materialize'
 
 declare var jQuery: any;
@@ -23,7 +24,7 @@ export class HistorialComponent implements OnInit {
 
 
 
-  constructor(private Archivos_Service: ArchivosService) { }
+  constructor(private Archivos_Service: ArchivosService, private reporteService: ReporteService) { }
 
   ngOnInit() {
     $('.modal').modal(); 
@@ -88,17 +89,31 @@ export class HistorialComponent implements OnInit {
       this.files_arr.push(this.FindObject(id))
     }
 
-    // console.log(this.files_arr)
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Recuperar',
+      modulo: 'Papelera',
+      alterado: 'NONE'
+    }
 
     this.Archivos_Service.Recuperar_Archivo(this.files_arr).subscribe(res => {
       console.log(res)
-      if(!res.success){
+      if (!res.success) {
         this.duplicate_file = res
         $('#mensaje_remplazar_omitir').text(`El destino ya posee un archivo llamado \"${res.file.nombre_archivo}\"`);
         $('#remplazar_omitir').modal('open');
       }
-      else this.getAll()
-
+      else {
+        this.getAll()
+        //recuperado
+        reporte.alterado = 'no name'; //##########################################UNKNOWN NAME//##########################################
+        this.reporteService.addReport(reporte).subscribe(data => {
+          if (!data.success) {
+            Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+          }
+        })
+        //END OF history
+      }
     });
   }
 
@@ -150,16 +165,31 @@ export class HistorialComponent implements OnInit {
       let id = checkboxes[i].attributes[4].nodeValue
       this.files_arr.push(this.FindObject(id))
     }
-
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Eliminar',
+      modulo: 'Papelera',
+      alterado: 'NONE'
+    }
     console.log(this.files_arr)
 
     this.Archivos_Service.Eliminar_Archivo(this.files_arr).subscribe(res => {
       console.log(res)
       $('.chk').prop('checked', false);
       res.arr.forEach(e => {
-        (e.success)
-          ? Materialize.toast(`El archivo ${e.nombre_archivo} se elimino exitosamente`, 3000, 'green rounded')
-          : Materialize.toast(`Error en la base de datos`, 3000, 'red rounded')
+        if (e.success) {
+          Materialize.toast(`El archivo ${e.nombre_archivo} se elimino exitosamente`, 3000, 'green rounded')
+          //NOW ADDING TO HISTORY
+          reporte.alterado = e.nombre_archivo;
+          this.reporteService.addReport(reporte).subscribe(data => {
+            if (!data.success) {
+              Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+            }
+          })
+          //END OF history
+        }
+        else
+          Materialize.toast(`Error en la base de datos`, 3000, 'red rounded')
       });
       this.getAll()
     });
@@ -184,9 +214,6 @@ export class HistorialComponent implements OnInit {
     var p2 = name.substring(pos, name.length);
     return `${p1}papelera${id}${p2}`
   }
-
-
-
 
   Anyone_checked() {
     return ($('.chk:checkbox:checked').length != 0) ? true : false

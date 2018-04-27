@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { ClientesService } from '../../services/clientes.service'
+import { ReporteService } from '../../services/reporte.service'
 import { Router } from '@angular/router'
 import { ActivatedRoute } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
@@ -55,10 +56,11 @@ export class ClienteComponent implements OnInit {
 
 
 
-  constructor(private CliService: ClientesService, 
-              private router: Router, 
-              private renderer2: Renderer2,
-              private route: ActivatedRoute) { }
+  constructor(private CliService: ClientesService,
+    private reporteService: ReporteService,
+    private router: Router,
+    private renderer2: Renderer2,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     $('.modal').modal();
@@ -96,7 +98,7 @@ export class ClienteComponent implements OnInit {
 
     this.renderer2.removeClass(this.LabelTelefonoCasa.nativeElement, "active")
     $('#TelefonoCasa').val("")
-    
+
     this.renderer2.removeClass(this.LabelCelular.nativeElement, "active")
     $('#Celular').val("")
 
@@ -164,6 +166,12 @@ export class ClienteComponent implements OnInit {
       correo_personal: $('#CorreoPersonal').val(),
       correo_empresarial: $('#CorreoEmpresarial').val(),
     }
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Agregar',
+      modulo: 'Clientes',
+      alterado: $('#Cedula').val()
+    }
     if (this.ValidateForm()) {
       if (this.switch) {//si el switch esta en true guarda
         this.CliService.GuardarCliente(cliente).subscribe(data => {
@@ -171,6 +179,14 @@ export class ClienteComponent implements OnInit {
             this.getAll();
             $('#modal1').modal('close');
             Materialize.toast('Los datos se guardaron exitosamente', 3000, 'green rounded')
+            //NOW ADDING TO HISTORY
+            reporte.accion = 'Agregar';
+            this.reporteService.addReport(reporte).subscribe(data => {
+              if (!data.success) {
+                Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+              }
+            })
+            //END OF history
           }
           else {
             Materialize.toast('Error, cedula repetida', 3000, 'red rounded')
@@ -184,6 +200,14 @@ export class ClienteComponent implements OnInit {
           this.switch = true;
           $('#modal1').modal('close');
           Materialize.toast('Los datos se editaron exitosamente', 3000, 'green rounded')
+          //NOW ADDING TO HISTORY
+          reporte.accion = 'Editar';
+          this.reporteService.addReport(reporte).subscribe(data => {
+            if (!data.success) {
+              Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+            }
+          })
+          //END OF history
         });
       }
     }
@@ -203,16 +227,16 @@ export class ClienteComponent implements OnInit {
     }
   }
 
-  Proyecto(id){
+  Proyecto(id) {
     localStorage.setItem("id_cliente", id)
     this.router.navigate(["/proyecto"], { relativeTo: this.route });
   }
 
-  Detalles(id){
-    this.CliService.Detalles({cedula: id}).subscribe(data => {
+  Detalles(id) {
+    this.CliService.Detalles({ cedula: id }).subscribe(data => {
       console.log(data)
-        this.detalles = data;
-        $('#Detalles').modal('open');
+      this.detalles = data;
+      $('#Detalles').modal('open');
     });
   }
 
@@ -223,16 +247,16 @@ export class ClienteComponent implements OnInit {
     if ($('#Apellidos').val() == '')
       return false
     if ($('#Cedula').val() == '')
-      return false   
+      return false
     if ($('#Direccion').val() == '')
-      return false 
+      return false
     if ($('#TelefonoTrabajo').val() == '')
-      return false 
+      return false
     if ($('#Celular').val() == '')
-      return false  
+      return false
     if ($('#CorreoEmpresarial').val() == '')
-      return false 
-      
+      return false
+
     return true
   }
 
