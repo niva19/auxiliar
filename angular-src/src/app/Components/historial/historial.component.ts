@@ -106,7 +106,7 @@ export class HistorialComponent implements OnInit {
       else {
         this.getAll()
         //recuperado
-        reporte.alterado = 'no name'; //##########################################UNKNOWN NAME//##########################################
+        reporte.alterado = res.name;
         this.reporteService.addReport(reporte).subscribe(data => {
           if (!data.success) {
             Materialize.toast('Error al guardar historial', 3000, 'red rounded')

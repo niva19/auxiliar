@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/co
 import { EmpleadosService } from '../../services/empleados.service'
 import { ReporteService } from '../../services/reporte.service'
 import { Router } from '@angular/router'
+
 import * as Materialize from 'angular2-materialize'
 
 declare var jQuery: any;
