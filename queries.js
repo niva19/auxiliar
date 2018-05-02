@@ -21,6 +21,20 @@ var db = pgp(connectionString);
 **********************************************************************************/
 
 //  ******************************** REPORTES ************************************
+function limpiaReporte(req, res, next) {
+  console.log('LIMPIANDO REPORTES')
+  db.any('Delete from Historial where fecha < NOW() - INTERVAL \'31 days\'')
+    .then(function (data) {
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
 function getAllReportes(req, res, next) {
   db.any('select  to_char(fecha, \'yyyy/mm/dd\') as fecha, to_char(fecha, \'hh:mi:ss am\') as hora, nombre, accion, modulo, alterado from historial')
     .then(function (data) {
@@ -32,7 +46,7 @@ function getAllReportes(req, res, next) {
     });
 }
 
-function saveReporte(req, res, next){
+function saveReporte(req, res, next) {
   db.none('insert into historial values(now(), ${nombre}, ${accion},${modulo},${alterado})',
     req.body)
     .then(() => {
@@ -62,7 +76,7 @@ function getAllWorkers(req, res, next) {
 }
 
 function saveWorker(req, res, next) {
-  
+
   db.none('insert into Planilla values(${nombre}, ${apellidos}, ${dni}, ${puesto}, ${telefono}, ${fechaEntrada}, ${fechaSalida}, ${tipoSalario}, ${montoSalario})',
     req.body)
     .then(() => {
@@ -80,7 +94,7 @@ function saveWorker(req, res, next) {
 }
 
 function editWorker(req, res, next) {
-  
+
   db.none('update Planilla set nombre = ${nombre}, apellidos = ${apellidos}, puesto = ${puesto}, telefono = ${telefono}, fechaEntrada = ${fechaEntrada}, fechaSalida = ${fechaSalida}, tipoSalario = ${tipoSalario}, montoSalario=${montoSalario} where dni = ${dni}',
     req.body)
     .then(() => {
@@ -98,7 +112,7 @@ function editWorker(req, res, next) {
 }
 
 function getWorker(req, res, next) {
-  
+
   db.any('select * from Planilla where dni=${dni}', req.body)
     .then((data) => {
       console.log(data);
@@ -114,7 +128,7 @@ function getWorker(req, res, next) {
 }
 
 function deleteWorker(req, res, next) {
-  
+
   db.none('DELETE FROM Planilla WHERE dni = ${dni}', req.body)
     .then(() => {
       res.status(200)
@@ -131,7 +145,7 @@ function deleteWorker(req, res, next) {
 }
 
 function searchWorkers(req, res, next) {
-  
+
   db.any('select * from Planilla where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -160,7 +174,7 @@ function getAllProviders(req, res, next) {
 }
 
 function SaveProvider(req, res, next) {
-  
+
   db.none('insert into Proveedor values(${empresa}, ${contacto}, ${telefono}, ${correo} , ${producto})',
     req.body)
     .then(() => {
@@ -178,7 +192,7 @@ function SaveProvider(req, res, next) {
 }
 
 function EditProvider(req, res, next) {
-  
+
   db.none('UPDATE Proveedor SET empresa = ${empresa}, contacto = ${contacto}, telefono = ${telefono}, correo = ${correo}, producto = ${producto} where empresa = ${pk}',
     req.body)
     .then(() => {
@@ -196,7 +210,7 @@ function EditProvider(req, res, next) {
 }
 
 function GetProvider(req, res, next) {
-  
+
   db.any('select * from Proveedor where empresa=${empresa}', req.body)
     .then((data) => {
       console.log(data);
@@ -212,7 +226,7 @@ function GetProvider(req, res, next) {
 }
 
 function DeleteProvider(req, res, next) {
-  
+
   db.none('DELETE FROM Proveedor WHERE empresa = ${empresa}', req.body)
     .then(() => {
       res.status(200)
@@ -229,7 +243,7 @@ function DeleteProvider(req, res, next) {
 }
 
 function SearchProviders(req, res, next) {
-  
+
   db.any('select * from Proveedor where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -270,7 +284,7 @@ function getdetailcustomer(req, res, next) {
 }
 
 function SaveCustomer(req, res, next) {
-  
+
   db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono_trabajo}, ${telefono_casa}, ${celular}, ${correo_personal}, ${correo_empresarial})',
     req.body)
     .then(() => {
@@ -288,7 +302,7 @@ function SaveCustomer(req, res, next) {
 }
 
 function EditCustomer(req, res, next) {
-  
+
   db.none('UPDATE Cliente SET nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, telefono_trabajo = ${telefono_trabajo}, telefono_casa = ${telefono_casa}, celular = ${celular}, correo_empresarial = ${correo_empresarial}, correo_personal = ${correo_personal} where cedula = ${cedula}',
     req.body)
     .then(() => {
@@ -306,7 +320,7 @@ function EditCustomer(req, res, next) {
 }
 
 function GetCustomer(req, res, next) {
-  
+
   db.any('select * from Cliente where cedula=${cedula}', req.body)
     .then((data) => {
       console.log(data);
@@ -322,7 +336,7 @@ function GetCustomer(req, res, next) {
 }
 
 function DeleteCustomer(req, res, next) {
-  
+
   db.none('DELETE FROM cliente WHERE cedula = ${cedula}', req.body)
     .then(() => {
       res.status(200)
@@ -339,7 +353,7 @@ function DeleteCustomer(req, res, next) {
 }
 
 function SearchCustomers(req, res, next) {
-  
+
   db.any('select * from Cliente where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -411,7 +425,7 @@ function getEmployeesCNA(req, res, next) {
 }
 
 function saveEmployee(req, res, next) {
-  
+
   db.none('insert into Usuario values(${nombre}, ${apellidos}, ${dni}, ${direccion}, ${telefono}, ${correo}, ${usuario}, ${contrasena}, ${isgerente}, ${fechaentrada}, ${fechasalida}, ${tiposalario}, ${montosalario})',
     req.body)
     .then(() => {
@@ -429,7 +443,7 @@ function saveEmployee(req, res, next) {
 }
 
 function editEmployee(req, res, next) {
-  
+
   db.none('update Usuario set nombre = ${nombre}, apellidos = ${apellidos}, direccion = ${direccion}, correo = ${correo}, telefono = ${telefono}, contrasena = ${contrasena}, isgerente = ${isgerente}, fechaentrada = ${fechaentrada}, fechasalida = ${fechasalida}, tiposalario = ${tiposalario}, montosalario = ${montosalario} where dni = ${dni}',
     req.body)
     .then(() => {
@@ -447,7 +461,7 @@ function editEmployee(req, res, next) {
 }
 
 function getEmployee(req, res, next) {
-  
+
   db.any('select * from Usuario where dni=${dni}', req.body)
     .then((data) => {
       console.log(data);
@@ -463,7 +477,7 @@ function getEmployee(req, res, next) {
 }
 
 function deleteEmployee(req, res, next) {
-  
+
   db.none('DELETE FROM Usuario WHERE dni = ${dni}', req.body)
     .then(() => {
       res.status(200)
@@ -480,7 +494,7 @@ function deleteEmployee(req, res, next) {
 }
 
 function searchEmployee(req, res, next) {
-  
+
   db.any('select * from Empleado where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -514,7 +528,7 @@ function execute(command, callback) {
 };
 
 function saveProject(req, res, next) {
-  
+
 
   //EL NOMBRE SE JUNTA EN UNA SOLA CADENA
   var nomProy = req.body.nombreProyecto;
@@ -585,7 +599,7 @@ function editProject(req, res, next) {
 }
 
 function getProject(req, res, next) {
-  
+
   db.any('select * from Proyecto where nombreproyecto=${nombreProyecto}', req.body)
     .then((data) => {
       console.log(data);
@@ -601,7 +615,7 @@ function getProject(req, res, next) {
 }
 
 function deleteProject(req, res, next) {
-  
+
   db.none('DELETE FROM Proyecto WHERE nombreproyecto = ${nombreProyecto}', req.body)
     .then(() => {
       res.status(200)
@@ -618,7 +632,7 @@ function deleteProject(req, res, next) {
 }
 
 function searchProject(req, res, next) {
-  
+
   db.any('select * from Proyecto where ' + req.body.filtro + ' = ${parametro}', req.body)
     .then((data) => {
       console.log(data);
@@ -834,9 +848,9 @@ function recoveryfile(req, res, next) {
 
           if (query_res.father) break;
           else {
-            let ins = t.none('insert into Carpeta values(${nombre_carpeta}, ${ruta_padre})',file)
+            let ins = t.none('insert into Carpeta values(${nombre_carpeta}, ${ruta_padre})', file)
 
-            carpeta_arr.push({ruta_padre: file.ruta_padre, nombre_carpeta: file.nombre_carpeta})
+            carpeta_arr.push({ ruta_padre: file.ruta_padre, nombre_carpeta: file.nombre_carpeta })
 
             // let mkdir = execute(`mkdir ${file.ruta_padre}\\${file.nombre_carpeta}`, output => output);
             var values = get_folder_name(file.ruta_padre)
@@ -845,8 +859,8 @@ function recoveryfile(req, res, next) {
           }
         }
 
-        if(carpeta_arr.length != 0){
-          for (var j = carpeta_arr.length - 1; j > -1; j--){
+        if (carpeta_arr.length != 0) {
+          for (var j = carpeta_arr.length - 1; j > -1; j--) {
             let mkdir = execute(`mkdir ${carpeta_arr[j].ruta_padre}\\${carpeta_arr[j].nombre_carpeta}`, output => output);
           }
         }
@@ -855,7 +869,7 @@ function recoveryfile(req, res, next) {
         let insert = yield t.none('insert into Archivos values(${nombre_archivo}, ${nombre_carpeta}, ${ruta_padre})',
           file).then(val => {
             //aca se recupera el archivo 
-            return { success: true }
+            return { success: true, name: file.nombre_archivo }
           }).catch(err => {
             return { success: false, file: file }
           });
@@ -1125,6 +1139,7 @@ module.exports = {
   // REPORTES
   getAllReportes: getAllReportes,
   saveReporte: saveReporte,
+  limpiaReporte: limpiaReporte,
   // PLANILLA 
   getAllWorkers: getAllWorkers,
   SaveWorker: saveWorker,

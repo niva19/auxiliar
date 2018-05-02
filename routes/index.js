@@ -86,6 +86,7 @@ router.post('/api/savefiles', db.savefiles);
 
 //------------- GET REPORTES
 router.get('/api/getreportes', db.getAllReportes);
+router.get('/api/limpiareport', db.limpiaReporte);
 router.post('/api/savereport', db.saveReporte);
 
 // ------------ BUSCAR ARCHIVOS

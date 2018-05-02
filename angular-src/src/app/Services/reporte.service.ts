@@ -20,4 +20,10 @@ export class ReporteService {
     headers.append('Content-Type', 'application/json');
     return this.http.post('http://localhost:3000/api/savereport', reporte, { headers: headers }).map(res => res.json())
   }
+
+  limpiaReport() {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get('http://localhost:3000/api/limpiareport', { headers: headers }).map(res => res.json())
+  }
 }

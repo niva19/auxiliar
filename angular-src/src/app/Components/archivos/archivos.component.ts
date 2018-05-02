@@ -106,7 +106,7 @@ export class ArchivosComponent implements OnInit {
     this.Carpetas_Service.Eliminar_Carpeta(carpeta).subscribe(res => {
       if (res.success) {
         this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
-        
+
       }
       else
         Materialize.toast('ERROR, primero debe borrar el contenido de esta carpeta', 5000, 'red rounded')
@@ -223,7 +223,12 @@ export class ArchivosComponent implements OnInit {
           ruta_padre: this.carpeta_actual.ruta_padre,
         };
       })
-
+      const reporte = {
+        nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+        accion: 'Agregar',
+        modulo: 'Archivos',
+        alterado: 'NONE'
+      }
 
       this.Archivos_Service.Guardar_Archivo(archivos).subscribe(res => {
         var flag = false;
@@ -236,6 +241,14 @@ export class ArchivosComponent implements OnInit {
           }
           else {
             Materialize.toast(`El archivo "${this.upload_files[i].name}" se enlazo al proyecto exitosamente`, 3000, 'green rounded')
+            //NOW ADDING TO HISTORY
+            reporte.alterado = this.upload_files[i].name;
+            this.reporteService.addReport(reporte).subscribe(data => {
+              if (!data.success) {
+                Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+              }
+            })
+            //END OF history
           }
         }
         this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta);
@@ -251,11 +264,27 @@ export class ArchivosComponent implements OnInit {
     })
   }
 
-  Desenlazar_Archivo() {
+  Desenlazar_Archivo() {  //el archivo a desenlazar
     console.log(this.archivos_eliminar)
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Desenlazar',
+      modulo: 'Archivos',
+      alterado: 'NONE'
+    }
     this.Archivos_Service.Desenlazar_Archivo(this.archivos_eliminar).subscribe(res => {
       res.arr.forEach(e => {
-        if (e.success) Materialize.toast(`El archivo ${e.nombre_archivo} se desenlazo correctamente`, 3000, 'green rounded')
+        if (e.success) {
+          Materialize.toast(`El archivo ${e.nombre_archivo} se desenlazo correctamente`, 3000, 'green rounded')
+          //NOW ADDING TO HISTORY
+          reporte.alterado = e.nombre_archivo;
+          this.reporteService.addReport(reporte).subscribe(data => {
+            if (!data.success) {
+              Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+            }
+          })
+          //END OF history
+        }
         else Materialize.toast(`Error, el archivo ${e.nombre_archivo} no se desenlazo`, 5000, 'red rounded')
 
         this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
