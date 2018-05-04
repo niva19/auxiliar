@@ -113,6 +113,7 @@ fecha timestamp,
 nombre text,
 accion text,
 modulo text,
+alterado text
 );
 
 insert into usuario values('Luis','Carrillo','40232014','Heredia','222222','asd@gmail.com','admin','admin',true,'12/03/2015','12/03/2015','mensual','25000');
