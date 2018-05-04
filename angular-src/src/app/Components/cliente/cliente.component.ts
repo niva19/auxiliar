@@ -17,6 +17,7 @@ export class ClienteComponent implements OnInit {
   switch: Boolean = true
   borrar: String//variable auxiliar utilizada para guardar la cedula cuando se proceda a borrar
   ax: any[];
+  pos: any;
   detalles: any[];
   filtro: any
 
@@ -70,7 +71,6 @@ export class ClienteComponent implements OnInit {
 
   getAll() {
     this.CliService.getAll().subscribe(data => {
-      console.log(data)
       this.ax = data;
     });
   }
@@ -116,7 +116,8 @@ export class ClienteComponent implements OnInit {
     $('#modal1').modal('open');
   }
 
-  Editar(id) {
+  Editar(id, pos) {
+    this.pos = pos
     const cliente = {
       cedula: id
     }
@@ -176,7 +177,8 @@ export class ClienteComponent implements OnInit {
       if (this.switch) {//si el switch esta en true guarda
         this.CliService.GuardarCliente(cliente).subscribe(data => {
           if (data.success) {
-            this.getAll();
+            this.ax.push({nombre: cliente.nombre, apellidos: cliente.apellidos, cedula: cliente.cedula})
+            
             $('#modal1').modal('close');
             Materialize.toast('Los datos se guardaron exitosamente', 3000, 'green rounded')
             //NOW ADDING TO HISTORY
@@ -195,8 +197,10 @@ export class ClienteComponent implements OnInit {
       }
       else {//si el switch esta en false edita
         this.CliService.EditarCliente(cliente).subscribe(data => {
-          console.log(data);
-          this.getAll();
+          this.ax[this.pos].nombre = cliente.nombre
+          this.ax[this.pos].apellidos = cliente.apellidos
+          this.ax[this.pos].cedula = cliente.cedula
+
           this.switch = true;
           $('#modal1').modal('close');
           Materialize.toast('Los datos se editaron exitosamente', 3000, 'green rounded')
@@ -234,7 +238,6 @@ export class ClienteComponent implements OnInit {
 
   Detalles(id) {
     this.CliService.Detalles({ cedula: id }).subscribe(data => {
-      console.log(data)
       this.detalles = data;
       $('#Detalles').modal('open');
     });

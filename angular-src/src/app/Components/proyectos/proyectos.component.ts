@@ -30,6 +30,7 @@ export class ProyectosComponent implements OnInit {
   switch: Boolean = true
   detalles: any[]
   ax: any[]
+  pos: any
   // pkProyecto: String
   // archivos: any[]
 
@@ -135,7 +136,8 @@ export class ProyectosComponent implements OnInit {
   }
 
   // --------------------------------- EDITAR PROYECTO ---------------------------------
-  Editar(nom) {
+  Editar(nom, pos) {
+    this.pos = pos
     const proyecto = {
       nombreProyecto: nom
     }
@@ -230,8 +232,9 @@ export class ProyectosComponent implements OnInit {
       if (this.switch) {//si el switch esta en true guarda
         this.ProyService.GuardarProyecto(proyecto).subscribe(data => {
           if (data.success) {
-            console.log(data);
-            this.getAll();
+            // console.log(data);
+            this.ax.push({nombreproyecto: proyecto.nombreProyecto, ruta: data.ruta})
+
             $('#modal1').modal('close');
             Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
             //NOW ADDING TO HISTORY
@@ -253,7 +256,8 @@ export class ProyectosComponent implements OnInit {
         this.ProyService.EditarProyecto(proyecto).subscribe(data => {
           console.log(data)
           if (data.success) {
-            this.getAll();
+            this.ax[this.pos].nombreproyecto = proyecto.nombreProyecto
+            
             this.switch = true;
             $('#modal1').modal('close');
             Materialize.toast('El proyecto se guardó exitosamente', 3000, 'green rounded')
@@ -322,12 +326,15 @@ export class ProyectosComponent implements OnInit {
 
   Ir_Empleados(nombre) {
     localStorage.setItem("nombre_proyecto", nombre)
+    this.router.navigate(["/planilla"], { relativeTo: this.route })
   }
 
-  Detalles(v) {
-    console.log(v)
-    this.detalles = [v]
-    $('#modal4').modal('open')
+  Detalles(id) {
+    this.ProyService.Detalles({id:id}).subscribe(res =>{
+      console.log(res)
+      this.detalles = res
+      $('#modal4').modal('open')
+    })    
   }
 
   TipoFinanciamiento() {

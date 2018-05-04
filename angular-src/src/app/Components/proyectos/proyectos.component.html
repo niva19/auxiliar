@@ -8,7 +8,7 @@
     <a class="btn-floating btn-large #b71c1c red darken-4" (click)="atras()">
       <i class="large material-icons">arrow_back</i>
     </a>
-  </div>
+</div>
 
 <div id="modal1" class="modal">
   <div class="modal-content">
@@ -61,8 +61,8 @@
           <label for="banco" #Labelbanco>Nombre del banco</label>
         </div>
         <div class="right">
-          <input type="submit" class="#0d47a1 blue darken-4 btn" value="Guardar">
-          <a class="modal-action modal-close waves-effect waves-green #757575 grey darken-1 btn">Cancelar</a>
+          <a class="btn #0d47a1 red darken-4 modal-action modal-close waves-effect waves-red">Cancelar</a>
+          <input type="submit" class="btn #0d47a1 blue darken-4 waves-effect waves-blue" value="Guardar">
         </div>
       </div>
     </form>
@@ -220,11 +220,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let v of ax | paginate: {itemsPerPage:5, currentPage: p} | filterProyecto:term">
+              <tr *ngFor="let v of ax | paginate: {itemsPerPage:5, currentPage: p} | filterProyecto:term let j = index;">
                 <td>{{v.nombreproyecto}}</td>
                 <!-- OJO CAMBIAR DESPUES nombreProyecto por codProyecto -->
                 <td>
-                  <a class="waves-effect waves-light btn-flat" (click)="Detalles(v)">
+                  <a class="waves-effect waves-light btn-flat" (click)="Detalles(v.nombreproyecto)">
                     <i class="tiny material-icons left">visibility</i>
                   </a>
                 </td>
@@ -232,14 +232,14 @@
                   <a class="waves-effect waves-light btn-flat" (click)="Ir_Empleados(v.nombreproyecto)">
                     <i class="tiny material-icons left">group</i>
                   </a>
-                </td>
+                </td>              
                 <td>
                   <a class="waves-effect waves-light btn-flat" (click)="Ir_Archivos(v.ruta)">
                     <i class="tiny material-icons left">insert_drive_file</i>
                   </a>
                 </td>
                 <td>
-                  <a class="waves-effect waves-light btn-flat" (click)="Editar(v.nombreproyecto)">
+                  <a class="waves-effect waves-light btn-flat" (click)="Editar(v.nombreproyecto, j)">
                     <i class="tiny material-icons left">create</i>
                   </a>
                 </td>

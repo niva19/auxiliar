@@ -8,6 +8,12 @@
   </div>
 </div>
 
+<div id="modal_ruta" class="modal">
+  <div class="modal-content">
+    <h4>{{ruta_actual}}</h4>
+  </div>
+</div>
+  
 
 <div id="eliminar" class="modal">
   <div class="modal-content">
@@ -64,33 +70,33 @@
               <tr>
                 <td>Nombre del Archivo</td>
                 <td>Proyecto Vinculado</td>
-                <td>Carpeta</td>
+                <td>Ruta</td>
                 <td>Abrir_Archivo</td>
-                <td></td>
+                <!-- <td></td> -->
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let v of files | paginate: {itemsPerPage:5, currentPage: p} | filterPapelera:term let j = index;">
                 <td>{{v.nombre_archivo}}</td>
                 <td>{{v.nombre_proyecto}}</td>
-                <td>{{v.nombre_carpeta}}</td>
+                <td (click)="ver_ruta(v.ruta_padre)"><i class="material-icons">timeline</i></td>
                 <td>
                   <a class="waves-effect waves-light btn-flat" (click)="Abrir_Archivo(v)">
                     <i class="tiny material-icons left">insert_drive_file</i>
                   </a>
                 </td>
-                <td style="text-align: center;">
+                <!-- <td style="text-align: center;">
                   <input class="chk filled-in" type="checkbox" [attr.id]="'checkbox'+ j" [attr.data-value]="v.id" />
                   <label [attr.for]="'checkbox'+ j"></label>
-                </td>
+                </td> -->
               </tr>
             </tbody>
           </table>
-          <div class="row">
-            <div class="col s6 offset-s4">
+          <!-- <div class="row">
+            <div class="col s6 offset-s4"> -->
               <pagination-controls (pageChange)="p = $event"></pagination-controls>
-            </div>
-          </div>
+            <!-- </div>
+          </div> -->
           <div class="row">
             <div class="col s4"></div>
             <div *ngIf="Anyone_checked()">

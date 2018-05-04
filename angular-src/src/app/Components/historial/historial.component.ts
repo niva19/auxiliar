@@ -3,6 +3,7 @@ import { ProyectosService } from '../../services/proyectos.service'
 import { ArchivosService } from '../../services/archivos.service'
 import { ReporteService } from '../../services/reporte.service'
 import * as Materialize from 'angular2-materialize'
+import { ROUTER_INITIALIZER } from '@angular/router';
 
 declare var jQuery: any;
 declare var $: any;
@@ -21,7 +22,7 @@ export class HistorialComponent implements OnInit {
   files_arr: any[] = []
   duplicate_file: any
   elejir: boolean
-
+  ruta_actual: String
 
 
   constructor(private Archivos_Service: ArchivosService, private reporteService: ReporteService) { }
@@ -49,9 +50,9 @@ export class HistorialComponent implements OnInit {
 
   getAll() {
     this.Archivos_Service.Papelera().subscribe(files => {
-      files.forEach(file => {
-        file["nombre_proyecto"] = this.Obtener_nombre_proyecto(file.ruta_padre)
-      });
+      // files.forEach(file => {
+      //   file["nombre_proyecto"] = this.Obtener_nombre_proyecto(file.ruta_padre)
+      // });
       console.log(files)
       this.files = files;
     });
@@ -213,6 +214,24 @@ export class HistorialComponent implements OnInit {
     var p1 = name.substring(0, pos);
     var p2 = name.substring(pos, name.length);
     return `${p1}papelera${id}${p2}`
+  }
+
+  ver_ruta(ruta){
+    this.ruta_actual = this.points_to_slash(ruta)
+    $('#modal_ruta').modal('open');
+  }
+
+  points_to_slash(str){
+
+    var cont = 0;
+    for (var i = 0; i < str.length; i++) {
+      if(str.charAt(i) == '.') cont++
+      if(cont == 5) break;
+    }
+
+    var points = str.substring(i+1, str.lenght)
+    points = points.split('.').join('\\');
+    return points
   }
 
   Anyone_checked() {

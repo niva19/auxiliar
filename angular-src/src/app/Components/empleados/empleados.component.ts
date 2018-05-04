@@ -34,16 +34,13 @@ export class EmpleadosComponent implements OnInit {
   ax: any[];
   filtro: any
   parametro: String
-
+  empleado_eliminar: String
 
   @ViewChild('empleadoSeleccionado')
   private empleadoSeleccionado: ElementRef
 
   @ViewChild('buscador')
   private buscador: ElementRef
-
-  @ViewChild('modal2Footer')
-  private modal2Footer: ElementRef
 
   @ViewChild('modal4Footer')
   private modal4Footer: ElementRef
@@ -272,15 +269,15 @@ export class EmpleadosComponent implements OnInit {
     });
   }
 
-  Eliminar(id) {
+  Eliminar() {
     const empleado = {
-      dni: id
+      dni: this.empleado_eliminar
     }
     const reporte = {
       nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
       accion: 'Eliminar',
       modulo: 'Usuarios',
-      alterado: id
+      alterado: this.empleado_eliminar
     }
     this.EmpService.EliminarEmpleado(empleado).subscribe(data => {
       if (data.success) {
@@ -302,22 +299,7 @@ export class EmpleadosComponent implements OnInit {
   }
 
   Confirmar_Eliminar(id) {
-    let button = this.renderer2.createElement('a');
-    this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
-    this.renderer2.setAttribute(button, "class", "modal-action")
-    this.renderer2.setAttribute(button, "class", "modal-close")
-    this.renderer2.setAttribute(button, "class", "waves-effect")
-    this.renderer2.setAttribute(button, "class", "waves-green")
-    this.renderer2.setAttribute(button, "class", "btn-flat")
-    let txt = this.renderer2.createText("Confirmar")
-    this.renderer2.appendChild(button, txt)
-    this.renderer2.listen(button, 'click', () => {
-      this.Eliminar(id)
-    })
-
-    this.renderer2.appendChild(this.modal2Footer.nativeElement, button);
-
-    console.log(id)
+    this.empleado_eliminar = id
     $('#modal2').modal('open');
   }
 

@@ -10,8 +10,7 @@ export class FilterPapeleraPipe implements PipeTransform {
     if(term == undefined) return arr;
     return arr.filter(item => {
       return (item.nombre_archivo.toLowerCase().includes(term.toLowerCase()) || 
-              item.nombre_proyecto.toLowerCase().includes(term.toLowerCase()) ||
-              item.publico.toLowerCase().includes(term.toLowerCase())) 
+              item.nombre_proyecto.toLowerCase().includes(term.toLowerCase())) 
               ? true : false
     });
   }

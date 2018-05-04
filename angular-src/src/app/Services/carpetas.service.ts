@@ -43,4 +43,10 @@ export class CarpetasService {
     return this.http.post('http://localhost:3000/api/movefiles', values, { headers: headers }).map(res => res.json())
   }
 
+  Editar_nombre_Carpeta(values){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/editfoldername', values, { headers: headers }).map(res => res.json())
+  }
+
 }

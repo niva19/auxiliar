@@ -5,9 +5,9 @@ var db = require('../queries');
 
 //Planilla
 // ------------ GET PLANILLA
-router.get('/api/workers', db.getAllWorkers);
+router.post('/api/workers', db.getAllWorkers);
 // ------------ SALVAR PLANILLA
-router.post('/api/workers', db.SaveWorker);
+router.post('/api/saveworker', db.SaveWorker);
 // ------------ EDITAR PLANILLA
 router.put('/api/workers', db.EditWorker);
 // ------------ GET PLANILLA
@@ -84,6 +84,8 @@ router.post('/api/searchproject', db.searchProject);
 // ------------ GUARDAR ARCHIVOS
 router.post('/api/savefiles', db.savefiles);
 
+router.post('/api/detailproject', db.detailproject);
+
 //------------- GET REPORTES
 router.get('/api/getreportes', db.getAllReportes);
 router.get('/api/limpiareport', db.limpiaReporte);
@@ -119,5 +121,7 @@ router.post('/api/deletefolder', db.deletefolder);
 router.post('/api/getfoldertree', db.getfoldertree);
 
 router.post('/api/movefiles', db.movefiles);
+
+router.post('/api/editfoldername', db.editfoldername)
 
 module.exports = router;

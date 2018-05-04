@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { PlanillaService } from '../../services/planilla.service'
 import { ReporteService } from '../../services/reporte.service'
+import { ActivatedRoute } from '@angular/router'
 import { Router } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
@@ -24,15 +25,12 @@ export class PlanillaComponent implements OnInit {
   borrar: String//variable auxiliar utilizada para guardar la cedula cuando se proceda a borrar
   ax: any[];
   detalles: any
-  filtro: any
-  parametro: String
+  nombreproyecto: String = localStorage.getItem("nombre_proyecto")
+  planilla_eliminar: String
 
 
   @ViewChild('buscador')
   private buscador: ElementRef
-
-  @ViewChild('modal2Footer')
-  private modal2Footer: ElementRef
 
   @ViewChild('LabelNombre')
   private LabelNombre: ElementRef
@@ -72,7 +70,9 @@ export class PlanillaComponent implements OnInit {
 
   constructor(private PlaniService: PlanillaService,
     private reporteService: ReporteService,
-    private router: Router, private renderer2: Renderer2) { }
+    private router: Router, 
+    private route: ActivatedRoute,
+    private renderer2: Renderer2) { }
 
   ngOnInit() {
     $('.modal').modal();
@@ -95,7 +95,7 @@ export class PlanillaComponent implements OnInit {
   }
 
   getAll() {
-    this.PlaniService.getAll().subscribe(data => {
+    this.PlaniService.getAll({proyecto: localStorage.getItem("nombre_proyecto")}).subscribe(data => {
       console.log(data)
       this.ax = data;
     });
@@ -156,15 +156,15 @@ export class PlanillaComponent implements OnInit {
     });
   }
 
-  Eliminar(id) {
+  Eliminar() {
     const Planilla = {
-      dni: id
+      dni: this.planilla_eliminar
     }
     const reporte = {
       nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
       accion: 'Eliminar',
       modulo: 'Planilla',
-      alterado: id
+      alterado: this.planilla_eliminar
     }
     this.PlaniService.EliminarPlanilla(Planilla).subscribe(data => {
       if (data.success) {
@@ -186,24 +186,7 @@ export class PlanillaComponent implements OnInit {
   }
 
   Confirmar_Eliminar(id) {
-    let button = this.renderer2.createElement('a');
-    this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
-    // this.modal2Footer.nativeElement.innerHTML ='';
-
-    this.renderer2.setAttribute(button, "class", "modal-action")
-    this.renderer2.setAttribute(button, "class", "modal-close")
-    this.renderer2.setAttribute(button, "class", "waves-effect")
-    this.renderer2.setAttribute(button, "class", "waves-green")
-    this.renderer2.setAttribute(button, "class", "btn-flat")
-    let txt = this.renderer2.createText("Confirmar")
-    this.renderer2.appendChild(button, txt)
-    this.renderer2.listen(button, 'click', () => {
-      this.Eliminar(id)
-    })
-
-    this.renderer2.appendChild(this.modal2Footer.nativeElement, button);
-
-    console.log(id)
+    this.planilla_eliminar = id
     $('#modal2').modal('open');
   }
 
@@ -218,6 +201,7 @@ export class PlanillaComponent implements OnInit {
       fechaSalida: $('#fechaSalida').val(),
       tipoSalario: this.tipoSalario,
       montoSalario: this.montoSalario,
+      nombreproyecto: this.nombreproyecto
     }
     const reporte = {
       nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
@@ -308,6 +292,10 @@ export class PlanillaComponent implements OnInit {
       this.detalles = [detalles]
       $('#modal4').modal('open');
     })
+  }
+
+  atras(){
+    this.router.navigate(["/proyecto"], { relativeTo: this.route })
   }
 
 }

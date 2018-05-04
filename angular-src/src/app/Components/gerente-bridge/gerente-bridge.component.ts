@@ -27,13 +27,37 @@ export class GerenteBridgeComponent implements OnInit {
 
   Carpetas(ruta) {
     this.Carpetas_Service.Obtener_Carpetas({ ruta: ruta }).subscribe(carpetas => {
+      carpetas.forEach(element => {
+        this.get_name(element)
+      });
+      console.log(carpetas)
       this.carpetas = carpetas
     })
   }
 
+  get_name(carpeta){
+    var extension = ""
+    for (var i = carpeta.ruta.length - 1; i > -1; i--) {
+      if (carpeta.ruta.charAt(i) != '.') extension += carpeta.ruta.charAt(i)
+      else break
+    }
+    carpeta["nombre_carpeta"] = this.invertir(extension)
+  }
+
+  invertir(cadena) {
+    var x = cadena.length;
+    var cadenaInvertida = "";
+
+    while (x >= 0) {
+      cadenaInvertida += cadena.charAt(x);
+      x--;
+    }
+    return cadenaInvertida;
+  }
+
   Abrir_Carpeta(carpeta) {
+    console.log(carpeta)
     localStorage.setItem("carpeta_actual",JSON.stringify(carpeta))
-    // localStorage.setItem("ruta_proyecto", `${carpeta.ruta_padre}"\\"${carpeta.nombre_carpeta}`);
     this.router.navigate(["/archivos"], { relativeTo: this.route })
   }
 

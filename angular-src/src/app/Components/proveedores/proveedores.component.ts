@@ -25,12 +25,10 @@ export class ProveedoresComponent implements OnInit {
   filtro: any
   parametro: String
   detalles: any
+  planilla_eliminar: String
 
   @ViewChild('buscador')
   private buscador: ElementRef
-
-  @ViewChild('modal2Footer')
-  private modal2Footer: ElementRef
 
   @ViewChild('LabelEmpresa')
   private LabelEmpresa: ElementRef
@@ -135,15 +133,15 @@ export class ProveedoresComponent implements OnInit {
     });
   }
 
-  Eliminar(id) {
+  Eliminar() {
     const proveedor = {
-      empresa: id
+      empresa: this.planilla_eliminar
     }
     const reporte = {
       nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
       accion: 'Eliminar',
       modulo: 'Proveedores',
-      alterado: id
+      alterado: this.planilla_eliminar
     }
     this.ProveeService.EliminarProveedor(proveedor).subscribe(data => {
       if (data.success) {
@@ -165,24 +163,7 @@ export class ProveedoresComponent implements OnInit {
   }
 
   Confirmar_Eliminar(id) {
-    let button = this.renderer2.createElement('a');
-    this.renderer2.removeChild(this.modal2Footer.nativeElement, this.modal2Footer.nativeElement.children[1]);
-    // this.modal2Footer.nativeElement.innerHTML ='';
-
-    this.renderer2.setAttribute(button, "class", "modal-action")
-    this.renderer2.setAttribute(button, "class", "modal-close")
-    this.renderer2.setAttribute(button, "class", "waves-effect")
-    this.renderer2.setAttribute(button, "class", "waves-green")
-    this.renderer2.setAttribute(button, "class", "btn-flat")
-    let txt = this.renderer2.createText("Confirmar")
-    this.renderer2.appendChild(button, txt)
-    this.renderer2.listen(button, 'click', () => {
-      this.Eliminar(id)
-    })
-
-    this.renderer2.appendChild(this.modal2Footer.nativeElement, button);
-
-    console.log(id)
+    this.planilla_eliminar = id
     $('#modal2').modal('open');
   }
  

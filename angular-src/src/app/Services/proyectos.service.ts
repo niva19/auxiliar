@@ -27,6 +27,12 @@ export class ProyectosService {
     return this.http.post('http://localhost:3000/api/getproject', proyecto, { headers: headers }).map(res => res.json())
   }
 
+  Detalles(id){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/detailproject', id, { headers: headers }).map(res => res.json())
+  }
+
   EditarProyecto(proyecto) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');

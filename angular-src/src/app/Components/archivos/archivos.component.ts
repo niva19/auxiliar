@@ -70,18 +70,28 @@ export class ArchivosComponent implements OnInit {
 
   call_from_gerente_bridge() {
     let carpeta_actual = JSON.parse(localStorage.getItem("carpeta_actual"))
+
     this.carpeta_actual.nombre_carpeta = carpeta_actual.nombre_carpeta
-    this.carpeta_actual.ruta_padre = carpeta_actual.ruta_padre
-    this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
-    this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+    this.carpeta_actual.ruta_padre = carpeta_actual.ruta
+    this.Carpetas(this.carpeta_actual.ruta_padre)
+    this.Archivos(this.carpeta_actual.ruta_padre)
 
     this.carpeta_lista.push({
       nombre_carpeta: this.carpeta_actual.nombre_carpeta,
       ruta_padre: this.carpeta_actual.ruta_padre
     })
-
+    
     console.log("Carpeta Actual: ", this.carpeta_actual)
     console.log("Lista Carpetas: ", this.carpeta_lista)
+  }
+
+  get_name(carpeta){
+    var extension = ""
+    for (var i = carpeta.ruta.length - 1; i > -1; i--) {
+      if (carpeta.ruta.charAt(i) != '.') extension += carpeta.ruta.charAt(i)
+      else break
+    }
+    carpeta["nombre_carpeta"] = this.invertir(extension)
   }
 
   call_from_proyectos() {
@@ -89,7 +99,8 @@ export class ArchivosComponent implements OnInit {
       this.carpeta_actual.nombre_carpeta = carpeta[0].nombre_carpeta
       this.carpeta_actual.ruta_padre = carpeta[0].ruta_padre
       this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
-      this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+      //!!!!!!!!!!!!!!!!!!!!!!!
+      // this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
     })
   }
 
@@ -103,14 +114,14 @@ export class ArchivosComponent implements OnInit {
   }
 
   Confirmar_eliminar_Carpeta(carpeta) {
-    this.Carpetas_Service.Eliminar_Carpeta(carpeta).subscribe(res => {
+    console.log(carpeta)
+    this.Carpetas_Service.Eliminar_Carpeta({ruta: carpeta.ruta, real_path: this.points_to_slash(carpeta.ruta)}).subscribe(res => {
       if (res.success) {
-        this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
-
+        var pos = this.FindObject(carpeta.nombre_carpeta)
+        this.carpetas.splice(pos,1)
       }
       else
         Materialize.toast('ERROR, primero debe borrar el contenido de esta carpeta', 5000, 'red rounded')
-
     })
   }
 
@@ -122,8 +133,10 @@ export class ArchivosComponent implements OnInit {
     for (let i = 0; i < checkboxes.length; i++) {
       this.archivos_eliminar.push({
         ruta_padre: this.carpeta_actual.ruta_padre,
+        real_path: this.points_to_slash(this.carpeta_actual.ruta_padre),
         nombre_carpeta: this.carpeta_actual.nombre_carpeta,
-        nombre_archivo: checkboxes[i].attributes[4].nodeValue
+        nombre_archivo: checkboxes[i].attributes[4].nodeValue,
+        nombre_proyecto: localStorage.getItem("nombre_proyecto")
       })
     }
     console.log(this.archivos_eliminar);
@@ -134,8 +147,8 @@ export class ArchivosComponent implements OnInit {
 
   }
 
-  Archivos(ruta_padre, nombre_carpeta) {
-    this.Archivos_Service.Obtener_Archivos({ ruta_padre: ruta_padre, nombre_carpeta: nombre_carpeta }).subscribe(archivos => {
+  Archivos(ruta_padre) {
+    this.Archivos_Service.Obtener_Archivos({ ruta_padre: ruta_padre}).subscribe(archivos => {
 
       archivos.forEach(archivo => {
         var extension = ""
@@ -153,12 +166,17 @@ export class ArchivosComponent implements OnInit {
 
   Carpetas(ruta) {
     this.Carpetas_Service.Obtener_Carpetas({ ruta: ruta }).subscribe(carpetas => {
+      console.log(carpetas)
+      carpetas.forEach(element => {
+        this.get_name(element)
+      });
       this.carpetas = carpetas
     })
   }
 
   Abrir_Carpeta(carpeta) {
-    this.carpeta_actual.ruta_padre = carpeta.ruta_padre
+    console.log(carpeta)
+    this.carpeta_actual.ruta_padre = carpeta.ruta
     this.carpeta_actual.nombre_carpeta = carpeta.nombre_carpeta
 
     this.carpeta_lista.push({
@@ -169,8 +187,8 @@ export class ArchivosComponent implements OnInit {
     console.log("Carpeta Actual: ", this.carpeta_actual)
     console.log("Lista Carpetas: ", this.carpeta_lista)
 
-    this.Carpetas(carpeta.ruta_padre + "\\" + carpeta.nombre_carpeta)
-    this.Archivos(carpeta.ruta_padre, carpeta.nombre_carpeta)
+    this.Carpetas(carpeta.ruta)
+    this.Archivos(carpeta.ruta)
   }
 
   invertir(cadena) {
@@ -190,17 +208,21 @@ export class ArchivosComponent implements OnInit {
       Materialize.toast('Debe agregar un nombre', 3000, 'red rounded')
     }
     else {
+      var path = `${this.carpeta_actual.ruta_padre}.${$('#nombre_carpeta').val()}`
       let carpeta = {
-        nombre_carpeta: $('#nombre_carpeta').val(),
-        ruta_padre: `${this.carpeta_actual.ruta_padre}\\${this.carpeta_actual.nombre_carpeta}`,
+        ruta: path,
+        real_path: this.points_to_slash(path)
       }
 
+      console.log(carpeta)
       this.Carpetas_Service.Guardar_Carpeta(carpeta).subscribe(res => {
         console.log(res)
         if (res.success) {
           $('#modal1').modal('close');
           Materialize.toast('Carpeta Agregada', 3000, 'green rounded')
-          this.Carpetas(`${this.carpeta_actual.ruta_padre}\\${this.carpeta_actual.nombre_carpeta}`)
+          this.get_name(carpeta)
+          this.carpetas.push(carpeta)
+          $("#nombre_carpeta").val("")
         }
         else {
           if (res.err.code == "23505") {
@@ -212,15 +234,28 @@ export class ArchivosComponent implements OnInit {
     }
   }
 
+  points_to_slash(str){
+    var userprofile = "%"
+    var i;
+    for (i = 0; i < str.length; i++) {
+      if(str.charAt(i) == '.') break
+      userprofile += str.charAt(i)
+    }
+    userprofile += "%"
+    userprofile = `${userprofile}.${str.substring(i+1, str.lenght)}`
+    userprofile = userprofile.split('.').join('\\');
+    return userprofile
+  }
+
   Enlazar_Archivos() {
     if (this.upload_files.length != 0) {
 
       let archivos = this.upload_files.map(file => {
         return {
           realPath: file.path,
+          ruta: this.carpeta_actual.ruta_padre,
           nombre_archivo: file.name,
-          nombre_carpeta: this.carpeta_actual.nombre_carpeta,
-          ruta_padre: this.carpeta_actual.ruta_padre,
+          ruta_padre: this.carpeta_actual.ruta_padre
         };
       })
       const reporte = {
@@ -230,17 +265,28 @@ export class ArchivosComponent implements OnInit {
         alterado: 'NONE'
       }
 
+      this.set_path(archivos)
+      console.log(archivos)
+
       this.Archivos_Service.Guardar_Archivo(archivos).subscribe(res => {
         var flag = false;
+        var aux_arr = []
+
         for (let i = 0; i < res.arr.length; i++) {
           if (!res.arr[i].success) {
             if (res.arr[i].err.code == "23505") {
               Materialize.toast(`El archivo "${this.upload_files[i].name}" ya existe`, 7000, 'red rounded')
               flag = true;
+              aux_arr.push(false)
             }
           }
           else {
             Materialize.toast(`El archivo "${this.upload_files[i].name}" se enlazo al proyecto exitosamente`, 3000, 'green rounded')
+            aux_arr.push(true)
+            
+            this.get_extension(archivos[i])
+
+            this.archivos.push(archivos[i])
             //NOW ADDING TO HISTORY
             reporte.alterado = this.upload_files[i].name;
             this.reporteService.addReport(reporte).subscribe(data => {
@@ -251,15 +297,53 @@ export class ArchivosComponent implements OnInit {
             //END OF history
           }
         }
-        this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta);
+
+        this.limpiar_upload_files(aux_arr);
+
+        // this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta);
         (!flag) ? $('#modal1').modal('close') : null;
       })
     }
     else Materialize.toast('Debe elegir al menos un archivo', 3000, 'red rounded')
   }
 
-  Abrir_Archivo(archivo) {
-    this.Archivos_Service.Abrir_Archivo({ ruta: `${archivo.ruta_padre}\\${archivo.nombre_carpeta}\\\"${archivo.nombre_archivo}\"` }).subscribe(res => {
+  set_path(data){
+    data.forEach(e => {
+      var userprofile = "%"
+      var i;
+      for (i = 0; i < e.ruta.length; i++) {
+        if(e.ruta.charAt(i) == '.') break
+        userprofile += e.ruta.charAt(i)
+      }
+      userprofile += "%"
+      userprofile = `${userprofile}.${e.ruta.substring(i+1, e.ruta.lenght)}`
+      userprofile = userprofile.split('.').join('\\');
+      e.ruta = userprofile
+    });
+  }
+
+  get_extension(archivo){
+    var extension = ""
+    for (var i = archivo.nombre_archivo.length - 1; i > -1; i--) {
+      if (archivo.nombre_archivo.charAt(i) != '.') extension += archivo.nombre_archivo.charAt(i)
+      else break
+    }
+    archivo["extension"] = this.invertir(extension)
+  }
+
+  limpiar_upload_files(arr){
+    for(var i = arr.length - 1; i>=0 ;i--){
+        if(arr[i]) this.upload_files.splice(i,1);
+    }
+    var $el = $('#inputfile');
+    $el.wrap('<form>').closest('form').get(0).reset();
+    $el.unwrap();
+  }
+
+  Abrir_Archivo(file) {
+    // console.log(e)
+    // console.log(this.carpeta_actual.ruta_padre)
+    this.Archivos_Service.Abrir_Archivo({ ruta: `${this.points_to_slash(file.ruta_padre)}\\\"${file.nombre_archivo}\"` }).subscribe(res => {
       Materialize.toast('Abriendo archivo', 3000, 'green rounded')
     })
   }
@@ -287,14 +371,15 @@ export class ArchivosComponent implements OnInit {
         }
         else Materialize.toast(`Error, el archivo ${e.nombre_archivo} no se desenlazo`, 5000, 'red rounded')
 
-        this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+        //!!!!!!!!!!!!!!!!!!!!!!!
+        this.Archivos(this.carpeta_actual.ruta_padre)
       });
 
     })
   }
 
   Expresion_Regular(event: any) {
-    const pattern = /[a-zA-Z0-9]/;
+    const pattern = /[a-zA-Z0-9_]/;
     let inputChar = String.fromCharCode(event.charCode);
 
     if (!pattern.test(inputChar)) {
@@ -310,8 +395,8 @@ export class ArchivosComponent implements OnInit {
       this.carpeta_lista.splice(-1, 1)
       console.log("Carpeta Actual: ", this.carpeta_actual)
       console.log("Lista Carpetas: ", this.carpeta_lista)
-      this.Carpetas(this.carpeta_actual.ruta_padre + "\\" + this.carpeta_actual.nombre_carpeta)
-      this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+      this.Carpetas(this.carpeta_actual.ruta_padre)
+      this.Archivos(this.carpeta_actual.ruta_padre)
     }
     else {
       (this.ingresarService.isGerente())
@@ -351,19 +436,69 @@ export class ArchivosComponent implements OnInit {
     });
   }
 
+  mostar_editar_nombre_carpeta(num){
+    $("#tt" + num).css("display", "none")
+    $("#ii" + num).css("display", "block")
+    $("#input_carpeta" + num).focus()
+  }
+
+  get_path_destination_folder(origin, folder_name){
+    for (var i = origin.length; i > -1; i--) {
+        if(origin.charAt(i) == '.') break;
+    }
+    return `${origin.substring(0,i)}.${folder_name}`
+  }
+
+  editar_nombre_carpeta(num, folder, page = 1){
+    var new_name = $("#input_carpeta" + num).val()
+
+    let origin_slash = this.points_to_slash(folder.ruta)
+    let origin_point = folder.ruta
+    let destiny_point = this.get_path_destination_folder(folder.ruta, new_name)
+
+    if (folder.nombre_carpeta != new_name) {
+      this.Carpetas_Service.Editar_nombre_Carpeta({origin_slash: origin_slash,
+                                                   origin_point: origin_point,
+                                                   destiny_point: destiny_point,
+                                                   new_name: new_name}).subscribe(res => {
+        
+        if(res.success){
+          $("#ii" + num).css("display", "none")
+          $("#tt" + num).css("display", "block")
+          let actual = num + ((page - 1) * 5) 
+          this.carpetas[actual]["nombre_carpeta"] = new_name
+          this.carpetas[actual]["ruta"] = destiny_point
+        }
+        else Materialize.toast(`Error, ya existe una carpeta llamada "${new_name}"`, 3000, 'red rounded')
+      })
+    }
+    else {
+      $("#ii" + num).css("display", "none")
+      $("#tt" + num).css("display", "block")
+    }
+  }
+
   mostar_editar_nombre(num) {
     $("#t" + num).css("display", "none")
     $("#i" + num).css("display", "block")
+    $("#input" + num).focus()
   }
 
-  editar_nombre(num, file) {
+  editar_nombre(num, file, page = 1) { 
     var new_name = $("#input" + num).val()
     if (file.nombre_archivo != new_name) {
-      file["new_name"] = new_name
-      this.Archivos_Service.Cambiar_Nombre_Archivo({ file: file }).subscribe(res => {
-        $("#i" + num).css("display", "none")
-        $("#t" + num).css("display", "block")
-        this.archivos[num]["nombre_archivo"] = new_name
+      this.Archivos_Service.Cambiar_Nombre_Archivo({ruta_padre: file.ruta_padre,
+                                                    new_name: new_name,
+                                                    nombre_archivo: file.nombre_archivo,
+                                                    real_path: this.points_to_slash(file.ruta_padre)}).subscribe(res => {
+        
+        if(res.success){
+          $("#i" + num).css("display", "none")
+          $("#t" + num).css("display", "block")
+          let actual = num + ((page - 1) * 5) 
+          this.archivos[actual]["nombre_archivo"] = new_name
+        }
+        else Materialize.toast(`Error, ya existe un archivo llamado "${new_name}"`, 3000, 'red rounded')
       })
     }
     else {
@@ -381,74 +516,60 @@ export class ArchivosComponent implements OnInit {
   }
 
   Confirmar_Mover_Archivos() {
-
     this.Carpetas_Service.Obtener_Arbol({ ruta: localStorage.getItem("ruta_proyecto") }).subscribe(res => {
+      console.log(res)
+      console.log(localStorage.getItem("ruta_proyecto"))
 
       $('#mcontent').html("")
-      var stack = []
-      var arr = []
-      stack.push(res.tree[0]);
-      var cont = 0
-      while (stack.length !== 0) {
-        var node = stack.pop();
-
-        if (node.ruta_padre == "") {
-          $('#mcontent').append(`<ul class="collapsible" id="archivosx"></ul>`)
+      var arr = [];
+      res.tree.forEach(node => {
+        if(node.padre == res.nombre){
+          $('#mcontent').append('<li id="'+ node.nombre_carpeta +'x">'+
+                                '<div class="collapsible-header"><i class="material-icons">folder</i>'+
+                                node.nombre_carpeta+'</div></li>'
+                                );        
         }
-        else {
-          let padre = this.padre_id(node.ruta_padre)
-
-          let html = ""
-
-          let li = $("<li />")
-
-          if (node.children.length == 0) {
-            (this.carpeta_actual.nombre_carpeta == node.nombre_carpeta)
-              ? html = `<div class="collapsible-header blue-text"><i class="material-icons">folder</i>${node.nombre_carpeta}</div>`
-              : html = `<div class="collapsible-header"><i class="material-icons">folder</i>${node.nombre_carpeta}</div>`
-          }
-          else {
-            (this.carpeta_actual.nombre_carpeta == node.nombre_carpeta)
-              ? html = `<div class="collapsible-header blue-text"><i class="material-icons">folder</i>${node.nombre_carpeta}</div><div class="collapsible-body"><ul class="collapsible" id="${node.nombre_carpeta}x"></ul></div>`
-              : html = `<div class="collapsible-header"><i class="material-icons">folder</i>${node.nombre_carpeta}</div><div class="collapsible-body"><ul class="collapsible" id="${node.nombre_carpeta}x"></ul></div>`
-          }
-          li.attr('id', `btnn${cont}`)
-          li.append(html)
-          $(`#${padre}x`).append(li)
-          arr.push({ ruta_padre: node.ruta_padre, nombre_carpeta: node.nombre_carpeta })
+        else{
+          let li = $(`#${node.padre}x`)
+          li.append('<div class="collapsible-body">'+
+                    '<ul class="collapsible">'+
+                    '<li id="'+ node.nombre_carpeta +'x">'+
+                    '<div class="collapsible-header"><i class="material-icons">folder</i>'+
+                    node.nombre_carpeta+'</div></li></ul></div>');
         }
-
-        for (var i = node.children.length - 1; i >= 0; i--) {
-          stack.push(node.children[i]);
-        }
-        cont++
-      }
-      $('.collapsible').collapsible();
-
-      $(".collapsible-header").addClass("active");
-      $(".collapsible-body").css("display", "block");
-      $(".expand-toggle").toggleClass("expanded");
+        
+        arr.push({ ruta: node.ruta, nombre_carpeta: node.nombre_carpeta })
+      });
 
       for (let i = 0; i < arr.length; i++) {
         if (this.carpeta_actual.nombre_carpeta != arr[i].nombre_carpeta) {
-          document.getElementById(`btnn${i + 1}`)
+          document.getElementById(`${arr[i].nombre_carpeta}x`)
             .addEventListener("click", function (e) {
               e.stopPropagation()
               $('#carpeta_destino').val(arr[i].nombre_carpeta)
-              $('#carpeta_oculta').val(JSON.stringify(arr[i]))
+              $('#carpeta_oculta').val(arr[i].ruta)
             });
         }
         else {
-          document.getElementById(`btnn${i + 1}`)
+          // $(`#${arr[i].nombre_carpeta}x`).first().addClass("blue-text")
+          let child = $(`#${arr[i].nombre_carpeta}x`).children()[0]
+          child.className += " blue-text";
+          document.getElementById(`${arr[i].nombre_carpeta}x`)
             .addEventListener("click", function (e) {
               e.stopPropagation()
             });
         }
       }
 
+      $('#carpeta_destino').val("");
+      $('.collapsible').collapsible();
+      $(".collapsible-header").addClass("active");
+      $(".collapsible-body").css("display", "block");
+      $(".expand-toggle").toggleClass("expanded");
       $('#opciones').modal('close');
       $('#tree').modal('open');
-    })
+     
+    });
 
   }
 
@@ -460,14 +581,16 @@ export class ArchivosComponent implements OnInit {
     for (let i = 0; i < checkboxes.length; i++) {
       this.archivos_mover.push({
         ruta_padre: this.carpeta_actual.ruta_padre,
-        nombre_carpeta: this.carpeta_actual.nombre_carpeta,
-        nombre_archivo: checkboxes[i].attributes[4].nodeValue
+        nombre_archivo: checkboxes[i].attributes[4].nodeValue,
+        origen: this.points_to_slash(this.carpeta_actual.ruta_padre)
       })
     }
 
-    let destiny = JSON.parse($("#carpeta_oculta").val())
-
-    this.Carpetas_Service.Mover_Archivos({ destiny: destiny, files: this.archivos_mover }).subscribe(res => {
+    
+    let destiny = $("#carpeta_oculta").val()
+    console.log("***",this.archivos_mover)
+    console.log("***", destiny)
+    this.Carpetas_Service.Mover_Archivos({ destiny: destiny, destino: this.points_to_slash(destiny), files: this.archivos_mover }).subscribe(res => {
       if (!res.success) {
         this.archivo_repetido = res
         $("#mensaje_archivo_repetido").text(`el destino ya tiene un archivo llamado "${res.nombre_archivo}"`)
@@ -475,7 +598,7 @@ export class ArchivosComponent implements OnInit {
       }
       else {
         this.flag = true
-        this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+        this.Archivos(this.carpeta_actual.ruta_padre)
       }
     })
   }
@@ -490,9 +613,9 @@ export class ArchivosComponent implements OnInit {
     }
 
     if (this.archivos_mover.length != 0) {
-      let destiny = JSON.parse($("#carpeta_oculta").val())
+      let destiny = $("#carpeta_oculta").val()
 
-      this.Carpetas_Service.Mover_Archivos({ destiny: destiny, files: this.archivos_mover }).subscribe(res => {
+      this.Carpetas_Service.Mover_Archivos({ destiny: destiny, destino: this.points_to_slash(destiny), files: this.archivos_mover }).subscribe(res => {
         if (!res.success) {
           console.log(res)
           this.archivo_repetido = res
@@ -501,15 +624,23 @@ export class ArchivosComponent implements OnInit {
         else {
           $('#archivo_repetido').modal('close');
           this.flag = true
-          this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+          this.Archivos(this.carpeta_actual.ruta_padre)
         }
       })
     }
     else {
       $('#archivo_repetido').modal('close');
       this.flag = true
-      this.Archivos(this.carpeta_actual.ruta_padre, this.carpeta_actual.nombre_carpeta)
+      this.Archivos(this.carpeta_actual.ruta_padre)
     }
 
+  }
+
+  FindObject(nombre_carpeta) {
+    for (var i = 0; i < this.carpetas.length; i++) {
+      if (this.carpetas[i]['nombre_carpeta'] == nombre_carpeta) {
+        return i;
+      }
+    }
   }
 }

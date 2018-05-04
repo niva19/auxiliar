@@ -12,13 +12,13 @@ export class PlanillaService {
   GuardarPlanilla(planilla) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/workers', planilla, { headers: headers }).map(res => res.json())
+    return this.http.post('http://localhost:3000/api/saveworker', planilla, { headers: headers }).map(res => res.json())
   }
 
-  getAll() {
+  getAll(proyecto) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.get('http://localhost:3000/api/workers', { headers: headers }).map(res => res.json())
+    return this.http.post('http://localhost:3000/api/workers', proyecto, { headers: headers }).map(res => res.json())
   }
   ///////////////////////////////////////////////////////////////////////////////////
   getById(planilla) {
