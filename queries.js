@@ -36,7 +36,7 @@ function limpiaReporte(req, res, next) {
 }
 
 function getAllReportes(req, res, next) {
-  db.any('select  to_char(fecha, \'yyyy/mm/dd\') as fecha, to_char(fecha, \'hh:mi:ss am\') as hora, nombre, accion, modulo, alterado from historial')
+  db.any('select  to_char(fecha, \'yyyy/mm/dd\') as fecha, to_char(fecha, \'hh:mi:ss am\') as hora, nombre, accion, modulo, alterado from historial order by fecha desc, hora desc')
     .then(function (data) {
       res.status(200)
         .json(data);
