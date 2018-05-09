@@ -8,8 +8,8 @@ var options = {
 var pgp = require('pg-promise')(options);
 //var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
 //var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
-var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
-// var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
+//var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
+var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
 
 var db = pgp(connectionString);
 
@@ -1118,13 +1118,45 @@ function deletepermanentfolder(req, res, next) {
 }
 function recoveryfolders(req, res, next) {
   var obj = JSON.stringify(toObject(req.body))
-  console.log(obj)
 
-  db.func('recovery_folders', [obj])
+  db.task(function* (t) {
+    //Inicia crear carpetas
+    var update_full_path = req.body[0].update_full_path;
+    for (let j = 0; j < req.body.length; j++) {
+      var carpeta_arr = []
+      while (true) {
+        let folder = yield t.any(`SELECT * FROM subltree ('${update_full_path}', nlevel('${update_full_path}')-1, nlevel('${update_full_path}'))`).then(val => val)
+        if (folder[0].subltree != "publico" && folder[0].subltree != "privado") {
+          let query_res = yield t.any(`SELECT * FROM carpeta WHERE ruta = '${update_full_path}'`).then(vals => {
+            return (vals.length == 0) ? { father: false } : { father: true }
+          })
+
+          if (query_res.father) break;
+          else {
+            yield t.none(`insert into Carpeta values('${update_full_path}')`)
+            let father = yield t.any(`select subltree from subltree('${update_full_path}',0,nlevel('${update_full_path}')-1)`)
+            carpeta_arr.push(update_full_path)
+            update_full_path = father[0].subltree
+          }
+        }
+        else break
+      }
+
+      if(carpeta_arr.length != 0){
+        for (var i = carpeta_arr.length - 1; i > -1; i--) {
+          require('child_process').execSync(`mkdir ${points_to_slash(carpeta_arr[i])}`)
+        }
+      }      
+    }
+    //Termina crear carpetas
+
+
+    //Inicia recuperar carpetas
+    yield db.func('recovery_folders', [obj])
     .then(data => {
       req.body.forEach(e => {
         let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\papelera${e.id} ${e.nombre_carpeta}`
-        require('child_process').execSync(path) 
+        require('child_process').execSync(path)
         path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\${e.nombre_carpeta} ${e.slash_path}`
         require('child_process').execSync(path)
       })
@@ -1139,6 +1171,12 @@ function recoveryfolders(req, res, next) {
           success: false
         });
     });
+    //Termina recuperar carpetas
+
+  })
+    .then(events => { })
+    .catch(error => { });
+
 }
 
 

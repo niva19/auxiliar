@@ -60,6 +60,13 @@ create table Archivos(
     constraint fkCarpeta foreign key (ruta_padre) references Carpeta on update cascade
 );
 
+create table Archivos_Cliente(
+    nombre_archivo text,
+    cedula text,
+    primary key (cedula, nombre_archivo),
+    constraint fkCliente_Archivos_Cliente foreign key (cedula) references Cliente on update cascade
+);
+
 -- create table Carpetas_Papelera(
 --     ruta ltree,
 --     nombreProyecto text,

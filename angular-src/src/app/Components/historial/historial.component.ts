@@ -180,7 +180,8 @@ export class HistorialComponent implements OnInit {
         id: parseInt(this.folders[id].id),
         nombre_carpeta: this.folders[id].nombre_carpeta,
         update_path: values[0],
-        slash_path: values[1]
+        slash_path: this.points_to_slash(values[1]),
+        update_full_path: values[1]
       })
     }
     console.log(this.folders_arr)
@@ -293,7 +294,7 @@ export class HistorialComponent implements OnInit {
 
     var half_path = `${str.substring(0,p1)}.${nombre_proyecto}`
     var full_path = `${half_path}.${str.substring(p2 + 1, j)}`
-    return [half_path, this.points_to_slash(full_path)]
+    return [half_path, full_path]
   }
 
 

@@ -236,6 +236,11 @@ export class ClienteComponent implements OnInit {
     this.router.navigate(["/proyecto"], { relativeTo: this.route });
   }
 
+  Archivos(id){
+    localStorage.setItem("id_cliente", id)
+    this.router.navigate(["/cliente_archivos"], { relativeTo: this.route });
+  }
+
   Detalles(id) {
     this.CliService.Detalles({ cedula: id }).subscribe(data => {
       this.detalles = data;
