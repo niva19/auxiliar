@@ -545,7 +545,7 @@ function saveProject(req, res, next) {
   var mes = fecha.split(separador2).splice(0, 1).toString().split(separador1).pop();
   var anio = fecha.split(separador1).pop();
 
-  var path = '%userprofile%\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto 
+  var path = '%userprofile%\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto
   var data_path = `userprofile.Documents.SistemaPROARINSA.${anio}.${mes}.${nomJunto}`
 
   db.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente})',
@@ -586,7 +586,7 @@ function saveProject(req, res, next) {
     })
 }
 
-function detailproject(req, res, next){
+function detailproject(req, res, next) {
 
   db.any('select direccion, tipoProyecto, tipoObra, descripcion, fechaInicio, fechaFinaliza, estado, banco from Proyecto where nombreProyecto = ${id}', req.body)
     .then(function (data) {
@@ -704,70 +704,83 @@ function openfile(req, res, next) {
     });
 
 }
-function unlink(req, res, next) {//VALIDAR PARA POSIBLES ROLLBACKS
 
-  db.task(function* (t) {
-    var arr = []
-    for (let i = 0; i < req.body.length; i++) {
-      var file = req.body[i];
-      let id = yield t.one("insert into archivos_papelera values (${nombre_archivo}, ${nombre_proyecto}, ${ruta_padre}) RETURNING id", file)
-        .then(data => {
-          return data
-        })
-        .catch(err => {
-          return { success: false, err: err, nombre_archivo: file.nombre_archivo }
+function downloadfile(req, res, next) {
+
+  let path = `xcopy ${req.body.ruta}${req.body.nombre_archivo} %userprofile%\\Downloads /E /D`;
+  console.log(path);
+
+  execute(path, function (output) {
+    let real_std = output.substring(0, output.length - 2)
+    let err = "0 archivo(s) copiado(s)"
+    if (real_std == err) {
+      var val = handler(req.body)
+      res.status(200)
+        .json({
+          output: val
         });
-
-
-      let query_res = yield t.any("delete from archivos where ruta_padre = ${ruta_padre} and nombre_archivo = ${nombre_archivo}", file)
-        .then(() => {
-          return { success: true, nombre_archivo: file.nombre_archivo }
-        })
-        .catch(err => {
-          return { success: false, err: err, nombre_archivo: file.nombre_archivo }
-        });
-
-      let ax = yield execute(`move ${file.real_path}\\\"${file.nombre_archivo}\" %userprofile%\\Documents\\SistemaPROARINSA\\papelera`, output => {
-        return output
-      });
-
-      let bx = yield execute(`ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${file.nombre_archivo}\" \"${string_val(file.nombre_archivo, id.id)}\"`, output2 => {
-        return output2
-      });
-
-      arr.push(query_res);
     }
+    else {
+      res.status(200)
+        .json({
+          output: true
+        });
+    }
+  });
+}
 
-    res.status(200).json({ arr: arr });
-  })
-    .then(events => { })
-    .catch(error => { });
+function unlink(req, res, next) {//VALIDAR PARA POSIBLES ROLLBACKS
+  var files = toObject(req.body.files);
+  var json_files = JSON.stringify(files)
 
+  db.func('insert_archivos_papelera', [json_files, req.body.ruta_padre, req.body.nombre_proyecto])
+    .then(data => {
+
+      let path_files = req.body.path_files
+      var path
+
+      for (let i = 0; i < path_files.length; i++) {
+        path = `move ${path_files[i]} %userprofile%\\Documents\\SistemaPROARINSA\\papelera`
+        require('child_process').execSync(path)
+
+        path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${files[i]}\" \"papelera${data[0].insert_archivos_papelera[i]}.${get_extension(files[i])}\"`
+        require('child_process').execSync(path)
+      }
+
+      res.status(200)
+        .json({
+          success: true,
+          arr: req.body.files
+        });
+    })
+    .catch(error => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
 }
 
 function deletefile(req, res, next) {
-
-  db.task(function* (t) {
-
-    var arr = []
-    for (let i = 0; i < req.body.length; i++) {
-      var file = req.body[i];
-      let query_res = yield t.any('delete from Archivos_Papelera where id = ${id}',
-        file).then(val => {
-          execute(`del %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${string_val(file.nombre_archivo, file.id)}\"`, function (output) {
-            console.log(output);
-          });
-          return { success: true, nombre_archivo: file.nombre_archivo }
-        }).catch(err => {
-          return { err: err, nombre_archivo: file.nombre_archivo }
+  let ids = req.body.map(e => parseInt(e.id))
+  db.func('delete_archivos_papelera', [ids])
+    .then(data => {
+      req.body.forEach(e => {
+        let path = `del %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"papelera${e.id}.${get_extension(e.nombre_archivo)}\"`
+        require('child_process').execSync(path)
+      })
+      res.status(200)
+        .json({
+          success: true,
+          arr: req.body
         });
-      arr.push(query_res);
-    }
-
-    res.status(200).json({ arr: arr });
-  })
-    .then(events => { })
-    .catch(error => { });
+    })
+    .catch(error => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
 }
 
 function searchfiles(req, res, next) {
@@ -822,67 +835,58 @@ function verifyduplicatefiles(req, res, next) {
 
 function recoveryfile(req, res, next) {
   db.task(function* (t) {
-
+    arr_files_names = []
     for (let i = 0; i < req.body.length; i++) {
-      var file = req.body[i];
-      /*!!!!!!!!!!!!!!!!!!!!!!!*/
+      let file = req.body[i];
+
+      //Inicia reemplazar archivo
       if (file.reemplazar) {
+        yield t.any('delete from Archivos_Papelera where id = ${id}', file)
 
-        let del = yield t.any('delete from Archivos_Papelera where id = ${id}',
-          file).then(val => {
-            return { success: true }
-          }).catch(err => {
-            return { success: false }
-          });
+        let file_name = `papelera${file.id}.${get_extension(file.nombre_archivo)}`
+        let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${file_name}\" \"${file.nombre_archivo}\"`
+        require('child_process').execSync(path)
 
-        let ax = yield execute(`del ${file.ruta_padre}\\${file.nombre_carpeta}\\\"${file.nombre_archivo}\"`, output => {
-          return output
-        });
+        path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${file.nombre_archivo}\" ${file.ruta_slash}`
+        require('child_process').execSync(path)
 
-        let aux_name = string_val(file.nombre_archivo, file.id)
-
-        let bx = yield execute(`move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${aux_name}\" ${file.ruta_padre}\\${file.nombre_carpeta}`, output => {
-          return output
-        });
-
-        let cx = yield execute(`ren ${file.ruta_padre}\\${file.nombre_carpeta}\\\"${aux_name}\" \"${file.nombre_archivo}\"`, output2 => {
-          return output2
-        });
+        arr_files_names.push(file.nombre_archivo)
       }
-      /*!!!!!!!!!!!!!!!!!!!!!!!*/
+      //Finaliza reemplazar archivo
+
       else {
+        //Inicia crear carpeta
+        let ruta_padre = req.body[i].ruta_padre;
         var carpeta_arr = []
         while (true) {
-          let query_res = yield t.any('select * from Carpeta where ruta_padre = ${ruta_padre} and nombre_carpeta = ${nombre_carpeta}',
-            file).then(vals => {
-              return (vals.length == 1)
-                ? { father: true }
-                : { father: false }
+          let folder = yield t.any(`SELECT * FROM subltree ('${file.ruta_padre}', nlevel('${file.ruta_padre}')-1, nlevel('${file.ruta_padre}'))`).then(val => val)
+          if (folder[0].subltree != "publico" && folder[0].subltree != "privado") {
+            let query_res = yield t.any(`SELECT * FROM carpeta WHERE ruta = '${file.ruta_padre}'`).then(vals => {
+              return (vals.length == 0) ? { father: false } : { father: true }
             })
 
-          if (query_res.father) break;
-          else {
-            let ins = t.none('insert into Carpeta values(${nombre_carpeta}, ${ruta_padre})', file)
-
-            carpeta_arr.push({ ruta_padre: file.ruta_padre, nombre_carpeta: file.nombre_carpeta })
-
-            // let mkdir = execute(`mkdir ${file.ruta_padre}\\${file.nombre_carpeta}`, output => output);
-            var values = get_folder_name(file.ruta_padre)
-            file.ruta_padre = values.ruta_padre
-            file.nombre_carpeta = values.nombre_carpeta
+            if (query_res.father) break;
+            else {
+              yield t.none(`insert into Carpeta values('${file.ruta_padre}')`)
+              let father = yield t.any(`select subltree from subltree('${file.ruta_padre}',0,nlevel('${file.ruta_padre}')-1)`)
+              carpeta_arr.push(file.ruta_padre)
+              file.ruta_padre = father[0].subltree
+            }
           }
+          else break
         }
 
         if (carpeta_arr.length != 0) {
           for (var j = carpeta_arr.length - 1; j > -1; j--) {
-            let mkdir = execute(`mkdir ${carpeta_arr[j].ruta_padre}\\${carpeta_arr[j].nombre_carpeta}`, output => output);
+            require('child_process').execSync(`mkdir ${points_to_slash(carpeta_arr[j])}`)
           }
         }
+        //Finaliza crear carpeta
 
-        file = req.body[i];
-        let insert = yield t.none('insert into Archivos values(${nombre_archivo}, ${nombre_carpeta}, ${ruta_padre})',
+        //Inicia recuperar archivo
+        file.ruta_padre = ruta_padre
+        let insert = yield t.none('insert into Archivos values(${nombre_archivo}, ${ruta_padre})',
           file).then(val => {
-            //aca se recupera el archivo 
             return { success: true, name: file.nombre_archivo }
           }).catch(err => {
             return { success: false, file: file }
@@ -894,27 +898,19 @@ function recoveryfile(req, res, next) {
           return;
         }
 
-        let del = yield t.any('delete from Archivos_Papelera where id = ${id}',
-          file).then(val => {
-            return { success: true }
-          }).catch(err => {
-            return { success: false }
-          });
+        yield t.any('delete from Archivos_Papelera where id = ${id}', file)
 
-        let aux_name = string_val(file.nombre_archivo, file.id)
+        let path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"papelera${file.id}.${get_extension(file.nombre_archivo)}\" ${file.ruta_slash}`
+        require('child_process').execSync(path)
 
-        let ax = yield execute(`move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${aux_name}\" ${file.ruta_padre}\\${file.nombre_carpeta}`, output => {
-          return output
-        });
+        path = `ren ${file.ruta_slash}\\\"papelera${file.id}.${get_extension(file.nombre_archivo)}\" \"${file.nombre_archivo}\"`
+        require('child_process').execSync(path)
 
-        let bx = yield execute(`ren ${file.ruta_padre}\\${file.nombre_carpeta}\\\"${aux_name}\" \"${file.nombre_archivo}\"`, output2 => {
-          return output2
-        });
+        arr_files_names.push(file.nombre_archivo)
+        //Finaliza recuperar archivo
       }
-
     }
-
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, files: arr_files_names });
   })
     .then(events => { })
     .catch(error => { });
@@ -979,32 +975,17 @@ function changefilename(req, res, next) {
     })
 }
 
-function editfoldername(req, res, next){
+function editfoldername(req, res, next) {
   let folder = req.body
   db.func('Update_Folders', [folder.origin_point, folder.destiny_point])
     .then(data => {
-        let path = `ren ${folder.origin_slash} ${folder.new_name}`
-        execute(path, output2 => {});
+      let path = `ren ${folder.origin_slash} ${folder.new_name}`
+      execute(path, output2 => { });
 
-        res.status(200)
-          .json({ success: true });
+      res.status(200)
+        .json({ success: true });
     })
     .catch(error => {
-      res.status(200)
-      .json({
-        success: false
-      });
-    });
-}
-
-function getfolders(req, res, next) {
-  db.any("select * from carpeta where ruta ~ '"+ req.body.ruta +".*{1}'")
-    .then((data) => {
-      console.log(data);
-      res.status(200)
-        .json(data);
-    })
-    .catch(function (err) {
       res.status(200)
         .json({
           success: false
@@ -1012,8 +993,8 @@ function getfolders(req, res, next) {
     });
 }
 
-function getpublicfolder(req, res, next) {
-  db.any("select * from carpeta where ruta_padre = ${ruta} and nombre_carpeta = 'publico'", req.body)
+function getfolders(req, res, next) {
+  db.any("select * from carpeta where ruta ~ '" + req.body.ruta + ".*{1}'")
     .then((data) => {
       console.log(data);
       res.status(200)
@@ -1049,50 +1030,110 @@ function savefolder(req, res, next) {
 }
 
 function deletefolder(req, res, next) {
-  db.task(function* (t) {
-    let folder = req.body
-    let children = yield t.any("select * from carpeta where ruta ~ '"+ req.body.ruta +".*{1}'")
-      .then(vals => {
-        return (vals.length == 1) ? true : false
-      }).catch(err => err);
+  var folders = req.body.carpetas.map(e => e.ruta_points)
+  console.log("asd")
 
-    if (children) {
-      res.status(200).json({ success: false });
-    }
-    else {
-      let file_children = yield t.none("delete from carpeta where ruta = ${ruta}", req.body)
-        .then(() => false).catch(err => true);
+  db.func('delete_carpetas', [folders, req.body.nombre_proyecto])
+    .then(data => {
 
-      if (file_children) {
-        res.status(200).json({ success: false });
+      let folder_paths = req.body.carpetas.map(e => {
+        return { ruta: e.ruta_slash, nombre_carpeta: e.nombre_carpeta }
+      })
+      var path
+
+      for (let i = 0; i < folder_paths.length; i++) {
+        path = `move ${folder_paths[i].ruta} %userprofile%\\Documents\\SistemaPROARINSA\\papelera`
+        require('child_process').execSync(path)
+
+        path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\${folder_paths[i].nombre_carpeta} papelera${data[0].delete_carpetas[i]}`
+        require('child_process').execSync(path)
       }
 
-      execute(`rd /s /q ${folder.real_path}`, function (output) {
-        console.log(output);
-      });
+      res.status(200)
+        .json({
+          success: true,
+          arr: req.body.files
+        });
+    })
+    .catch(error => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
 
-      res.status(200).json({ success: true });
-    }
-  })
-    .then(events => { })
-    .catch(error => { });
 }
 
 function getfoldertree(req, res, next) {
 
-  db.any("SELECT ruta, nlevel(ruta),"+
-         "subpath(ruta,nlevel(ruta)-1) as nombre_carpeta,"+
-         "subltree(ruta,nlevel(ruta)-2 ,nlevel(ruta)-1) as padre "+
-         "FROM carpeta WHERE ruta <@ '"+ req.body.ruta +"' order by nlevel")
+  db.any("SELECT ruta, nlevel(ruta)," +
+    "subpath(ruta,nlevel(ruta)-1) as nombre_carpeta," +
+    "subltree(ruta,nlevel(ruta)-2 ,nlevel(ruta)-1) as padre " +
+    "FROM carpeta WHERE ruta <@ '" + req.body.ruta + "' order by nlevel")
     .then((data) => {
-      
-      db.any("select * from subpath('"+ req.body.ruta +"', nlevel('"+ req.body.ruta +"')-1)")
-      .then((nombre) => {
-        res.status(200)
-        .json({tree: data, nombre: nombre[0].subpath});
-      })
+
+      db.any("select * from subpath('" + req.body.ruta + "', nlevel('" + req.body.ruta + "')-1)")
+        .then((nombre) => {
+          res.status(200)
+            .json({ tree: data, nombre: nombre[0].subpath });
+        })
     })
     .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+function getunlinkfolders(req, res, next) {
+  db.any('select subltree(ruta, nlevel(ruta)-1, nlevel(ruta)) nombre_carpeta, ruta, nombreproyecto, id from Carpetas_Papelera')
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+function deletepermanentfolder(req, res, next) {
+  let ids = req.body.map(e => parseInt(e))
+  db.func('delete_carpetas_papelera', [ids])
+    .then(data => {
+      req.body.forEach(e => {
+        let path = `rd /s /q %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\papelera${e}`
+        require('child_process').execSync(path)
+      })
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch(error => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+function recoveryfolders(req, res, next) {
+  var obj = JSON.stringify(toObject(req.body))
+  console.log(obj)
+
+  db.func('recovery_folders', [obj])
+    .then(data => {
+      req.body.forEach(e => {
+        let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\papelera${e.id} ${e.nombre_carpeta}`
+        require('child_process').execSync(path) 
+        path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\${e.nombre_carpeta} ${e.slash_path}`
+        require('child_process').execSync(path)
+      })
+      res.status(200)
+        .json({
+          success: true
+        });
+    })
+    .catch(error => {
       res.status(200)
         .json({
           success: false
@@ -1103,6 +1144,67 @@ function getfoldertree(req, res, next) {
 
 /*FUNCIONES AUXILIARES*/
 
+function get_extension(nombre_archivo) {
+  var extension = ""
+  for (var i = nombre_archivo.length - 1; i > -1; i--) {
+    if (nombre_archivo.charAt(i) != '.') extension += nombre_archivo.charAt(i)
+    else break
+  }
+  return invertir(extension)
+}
+
+function invertir(cadena) {
+  var x = cadena.length;
+  var cadenaInvertida = "";
+
+  while (x >= 0) {
+    cadenaInvertida += cadena.charAt(x);
+    x--;
+  }
+  return cadenaInvertida;
+}
+
+function toObject(arr) {
+  var rv = {};
+  for (var i = 0; i < arr.length; ++i)
+    rv[i] = arr[i];
+  return rv;
+}
+
+function handler(body) {
+  var cont = 1;
+  var new_values = get_filename(body.nombre_archivo)
+  while (true) {
+    var new_name = `${new_values[0]}(${cont})${new_values[1]}`
+    var new_path = `xcopy ${body.ruta}${body.nombre_archivo} %userprofile%\\Downloads\\${new_name}* /E /D`
+    var res = require('child_process').execSync(new_path).toString();
+
+    cont++;
+    var real_std = res.substring(0, res.length - 2)
+    if (real_std != "0 archivo(s) copiado(s)") break;
+  }
+  return true;
+}
+
+function get_filename(str) {
+  for (var i = str.length - 1; i > -1; i--) {
+    if (str.charAt(i) == '.') break;
+  }
+  return [str.substring(0, i), str.substring(i, str.length)]
+}
+
+function points_to_slash(str) {
+  var userprofile = "%"
+  var i;
+  for (i = 0; i < str.length; i++) {
+    if (str.charAt(i) == '.') break
+    userprofile += str.charAt(i)
+  }
+  userprofile += "%"
+  userprofile = `${userprofile}.${str.substring(i + 1, str.lenght)}`
+  userprofile = userprofile.split('.').join('\\');
+  return userprofile
+}
 
 function string_val(name, id) {
   var i;
@@ -1185,11 +1287,14 @@ module.exports = {
   recoveryfile: recoveryfile,
   verifyduplicatefiles: verifyduplicatefiles,
   changefilename: changefilename,
+  downloadfile: downloadfile,
   getfolders: getfolders,
   savefolder: savefolder,
-  getpublicfolder: getpublicfolder,
   deletefolder: deletefolder,
   getfoldertree: getfoldertree,
   movefiles: movefiles,
-  editfoldername: editfoldername
+  editfoldername: editfoldername,
+  getunlinkfolders: getunlinkfolders,
+  deletepermanentfolder: deletepermanentfolder,
+  recoveryfolders: recoveryfolders
 }

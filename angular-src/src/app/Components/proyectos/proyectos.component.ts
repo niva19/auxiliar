@@ -315,9 +315,10 @@ export class ProyectosComponent implements OnInit {
   }
 
 
-  Ir_Archivos(ruta) {
+  Ir_Archivos(ruta, nombre) {
     let gerente = this.ingresarService.isGerente();
     localStorage.setItem("ruta_proyecto", ruta);
+    localStorage.setItem("nombre_proyecto", nombre);
     // this.data.Set_Ruta_Proyecto(ruta);
     (gerente)
       ? this.router.navigate(["/gerente_bridge"], { relativeTo: this.route })

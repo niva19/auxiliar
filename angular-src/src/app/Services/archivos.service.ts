@@ -19,6 +19,12 @@ export class ArchivosService {
     return this.http.post('http://localhost:3000/api/openfile', path, { headers: headers }).map(res => res.json())
   }
 
+  Descargar_Archivo(path){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/downloadfile', path, { headers: headers }).map(res => res.json())
+  }
+
   Guardar_Archivo(archivo){
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');

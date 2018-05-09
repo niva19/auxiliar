@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProyectosService } from '../../services/proyectos.service'
 import { ArchivosService } from '../../services/archivos.service'
+import { CarpetasService } from '../../services/carpetas.service'
 import { ReporteService } from '../../services/reporte.service'
 import * as Materialize from 'angular2-materialize'
 import { ROUTER_INITIALIZER } from '@angular/router';
@@ -16,78 +17,200 @@ declare var $: any;
 export class HistorialComponent implements OnInit {
 
   files: any[]
+  folders: any[]
   file: String
-  pkproyecto: String
   archivo_aux: any = { ruta_padre: "", nombre_carpeta: "", nombre_archivo: "" }
   files_arr: any[] = []
+  folders_arr: any[] = []
   duplicate_file: any
-  elejir: boolean
+  //true = carpeta, false = archivo
+  chk: String = ".chk_folders"
   ruta_actual: String
 
 
-  constructor(private Archivos_Service: ArchivosService, private reporteService: ReporteService) { }
+  constructor(private Archivos_Service: ArchivosService, 
+              private reporteService: ReporteService,
+              private Carpetas_Service: CarpetasService) { }
 
   ngOnInit() {
-    $('.modal').modal(); 
+    $('.tabs').tabs();
+    $(".tabs .indicator ").css("background-color", "black");
+    $('.modal').modal();
     $('#remplazar_omitir').modal({
       dismissible: false
     })
     this.getAll();
+    this.get_carpetas();
   }
-
-  Obtener_nombre_proyecto(ruta) {
-    var cont = 0
-    var nombre_proyecto = ""
-    for (var i = 0; i < ruta.length; i++) {
-      if (cont == 5) {
-        if (ruta.charAt(i) == "\\") break;
-        nombre_proyecto += ruta.charAt(i)
-      }
-      else if (ruta.charAt(i) == "\\") cont++
-    }
-    return nombre_proyecto
-  }
-
+  /*1*/
   getAll() {
     this.Archivos_Service.Papelera().subscribe(files => {
-      // files.forEach(file => {
-      //   file["nombre_proyecto"] = this.Obtener_nombre_proyecto(file.ruta_padre)
-      // });
-      console.log(files)
       this.files = files;
     });
   }
 
-  Modal_Recuperar(archivo) {
-    this.archivo_aux.ruta_padre = archivo.ruta_padre
-    this.archivo_aux.nombre_carpeta = archivo.nombre_carpeta
-    this.archivo_aux.nombre_archivo = archivo.nombre_archivo
-    $('#recuperar').modal('open');
+  get_carpetas(){
+    this.Carpetas_Service.Papelera().subscribe(folders => {
+      console.log(folders)
+      this.folders = folders
+    });
   }
+  /*1*/
 
-  Modal_Eliminar(archivo) {
-    this.archivo_aux.ruta_padre = archivo.ruta_padre
-    this.archivo_aux.nombre_carpeta = archivo.nombre_carpeta
-    this.archivo_aux.nombre_archivo = archivo.nombre_archivo
-    $('#eliminar').modal('open');
-  }
 
-  FindObject(id) {
-    for (var i = 0; i < this.files.length; i++) {
-      if (this.files[i]['id'] == id) {
-        return this.files[i];
-      }
+
+  Confirmar_Eliminar() {
+    if(this.chk == ".chk_folders"){
+      this.Confirmar_Eliminar_Carpetas()
+    }
+    else if(this.chk == ".chk_proyect_files"){
+      this.Confirmar_Eliminar_Archivos_Proyecto();
+    }
+    else if(this.chk == ".chk_customer_files"){
+
     }
   }
 
-  Recuperar_Archivos() {
-    $('#opciones').modal('close');
+  /*1*/
+  Confirmar_Eliminar_Carpetas(){
+    let checkboxes = $('.chk_folders:checkbox:checked');
+    (checkboxes.length == 1)
+      ? $('#mensaje_eliminar_carpetas').text("¿Está seguro que desea eliminar este elemento de forma permanente?")
+      : $('#mensaje_eliminar_carpetas').text(`¿Está seguro que desea eliminar estos ${checkboxes.length} elementos de forma permanente?`);
+    $('#eliminar_carpetas').modal('open');
+  }
+  Eliminar_Carpetas(){
+    let checkboxes = $('.chk_folders:checked')
+
     this.files_arr = []
-    let checkboxes = $('.chk:checkbox:checked')
-    let id = checkboxes[0].attributes[4].nodeValue
     for (let i = 0; i < checkboxes.length; i++) {
       let id = checkboxes[i].attributes[4].nodeValue
-      this.files_arr.push(this.FindObject(id))
+      this.files_arr.push(this.folders[id].id)
+    }
+    console.log(this.files_arr)
+    this.Carpetas_Service.Eliminar_Carpeta_Permanentemente(this.files_arr).subscribe(res =>{
+      this.unselect_all()
+      if (res.success) {
+        Materialize.toast(`Los carpetas se eliminaron exitosamente`, 3000, 'green rounded')
+        this.get_carpetas()
+      }
+      else Materialize.toast(`Error, no se eliminaron las carpetas`, 3000, 'red rounded')
+    })
+  }
+  /*1*/
+
+  /*2*/
+  Confirmar_Eliminar_Archivos_Proyecto() {
+    let checkboxes = $('.chk_proyect_files:checkbox:checked');
+    (checkboxes.length == 1)
+      ? $('#mensaje_eliminar_archivos_proyecto').text("¿Está seguro que desea eliminar este elemento de forma permanente?")
+      : $('#mensaje_eliminar_archivos_proyecto').text(`¿Está seguro que desea eliminar estos ${checkboxes.length} elementos de forma permanente?`);
+    $('#eliminar_archivos_proyecto').modal('open');
+  }
+  Eliminar_Archivos_Proyecto() {
+    let checkboxes = $('.chk_proyect_files:checked')
+
+    this.files_arr = []
+    for (let i = 0; i < checkboxes.length; i++) {
+      let id = checkboxes[i].attributes[4].nodeValue
+      this.files_arr.push({
+        id: this.files[id].id,
+        nombre_archivo: this.files[id].nombre_archivo
+      })
+    }
+
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Eliminar',
+      modulo: 'Papelera',
+      alterado: 'NONE'
+    }
+
+    this.Archivos_Service.Eliminar_Archivo(this.files_arr).subscribe(res => {
+      this.unselect_all()
+      if (res.success) {
+        Materialize.toast(`Los archivos se eliminaron exitosamente`, 3000, 'green rounded')
+        this.getAll()
+      }
+      else Materialize.toast(`Error, no se eliminaron los archivos`, 3000, 'red rounded')
+
+      res.arr.forEach(e => {
+        //NOW ADDING TO HISTORY
+        reporte.alterado = e.nombre_archivo;
+        this.reporteService.addReport(reporte).subscribe(data => {
+          if (!data.success) {
+            Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+          }
+        })
+        //END OF history
+      });
+    });
+  }
+  /*2*/
+  
+
+  Confirmar_Recuperar() {
+    if(this.chk == ".chk_folders"){
+      this.Confirmar_Recuperar_Carpetas()
+    }
+    else if(this.chk == ".chk_proyect_files"){
+      this.Confirmar_Recuperar_Archivos_Proyecto();
+    }
+    else if(this.chk == ".chk_customer_files"){
+
+    }
+  }
+
+  /*1*/
+  Confirmar_Recuperar_Carpetas(){
+    let checkboxes = $('.chk_folders:checkbox:checked');
+    (checkboxes.length == 1)
+      ? $('#mensaje_recuperar_carpetas').text("¿Está seguro de recuperar este elemento?")
+      : $('#mensaje_recuperar_carpetas').text(`¿Está seguro de recuperar estos ${checkboxes.length} elementos?`);
+    $('#recuperar_carpetas').modal('open');
+  }
+  Recuperar_Carpetas(){
+    let checkboxes = $('.chk_folders:checked')
+
+    this.folders_arr = []
+    for (let i = 0; i < checkboxes.length; i++) {
+      let id = checkboxes[i].attributes[4].nodeValue
+      let values = this.update_folder_path(this.folders[id].ruta, this.folders[id].nombreproyecto)
+      this.folders_arr.push({
+        id: parseInt(this.folders[id].id),
+        nombre_carpeta: this.folders[id].nombre_carpeta,
+        update_path: values[0],
+        slash_path: values[1]
+      })
+    }
+    console.log(this.folders_arr)
+
+    this.Carpetas_Service.Recuperar_Carpetas(this.folders_arr).subscribe(res =>{
+      this.get_carpetas()
+    })
+  }
+  rem_or_omi_Recuperar_Carpeta(){
+  }
+  /*1*/
+
+  /*2*/
+  Confirmar_Recuperar_Archivos_Proyecto(){
+    let checkboxes = $('.chk_proyect_files:checkbox:checked');
+    (checkboxes.length == 1)
+      ? $('#mensaje_recuperar_archivos_proyecto').text("¿Está seguro de recuperar este elemento?")
+      : $('#mensaje_recuperar_archivos_proyecto').text(`¿Está seguro de recuperar estos ${checkboxes.length} elementos?`);
+    $('#recuperar_archivos_proyecto').modal('open'); 
+  }
+  Recuperar_Archivos_Proyecto() {
+    let checkboxes = $('.chk_proyect_files:checkbox:checked')
+
+    this.files_arr = []
+    for (let i = 0; i < checkboxes.length; i++) {
+      let id = checkboxes[i].attributes[4].nodeValue
+      this.files_arr.push(this.files[id])
+      let obj = this.get_update_path(this.files[id].ruta_padre, this.files[id].nombre_proyecto)
+      this.files_arr[i]["ruta_padre"] = obj.ruta_points
+      this.files_arr[i]["ruta_slash"] = obj.ruta_slash
     }
 
     const reporte = {
@@ -97,6 +220,7 @@ export class HistorialComponent implements OnInit {
       alterado: 'NONE'
     }
 
+    console.log(this.files_arr)
     this.Archivos_Service.Recuperar_Archivo(this.files_arr).subscribe(res => {
       console.log(res)
       if (!res.success) {
@@ -117,8 +241,7 @@ export class HistorialComponent implements OnInit {
       }
     });
   }
-
-  rem_or_omi(opcion) {
+  rem_or_omi_Archivos_proyecto(opcion) {
 
     if (opcion == "reemplazar") {
       this.files_arr[this.duplicate_file.pos][opcion] = true
@@ -133,120 +256,137 @@ export class HistorialComponent implements OnInit {
         console.log(res)
         if (!res.success) {
           this.duplicate_file = res
-          $('#mensaje_remplazar_omitir').text(`El destino ya posee un archivo llamado \"${res.file.nombre_archivo}\"`);
+          $('#mensaje_remplazar_omitir_archivos_proyecto').text(`El destino ya posee un archivo llamado \"${res.file.nombre_archivo}\"`);
         }
         else {
-          $('#remplazar_omitir').modal('close');
+          $('#remplazar_omitir_archivos_proyecto').modal('close');
           this.getAll()
         }
       });
     }
     else {
-      $('#remplazar_omitir').modal('close');
+      $('#remplazar_omitir_archivos_proyecto').modal('close');
       this.getAll()
     }
   }
+  /*2*/
 
-  Confirmar_Eliminar() {
-    let checkboxes = $('.chk:checkbox:checked');
-    (checkboxes.length == 1)
-      ? $('#mensaje_eliminar').text("¿Está seguro que desea eliminar este archivo de forma permanente?")
-      : $('#mensaje_eliminar').text(`¿Está seguro que desea eliminar estos ${checkboxes.length} elementos de forma permanente?`);
-    $('#opciones').modal('close');
-    $('#eliminar').modal('open');
-  }
 
-  Eliminar_Archivo() {
-
-    this.files_arr = []
-    let checkboxes = $('.chk:checkbox:checked')
-
-    let id = checkboxes[0].attributes[4].nodeValue
-    for (let i = 0; i < checkboxes.length; i++) {
-      let id = checkboxes[i].attributes[4].nodeValue
-      this.files_arr.push(this.FindObject(id))
+  update_folder_path(str,nombre_proyecto){
+    var cont = 0;
+    var p1,p2;
+    for (var i = 0; i < str.length; i++) {
+      if (str.charAt(i) == '.') cont++;
+      if(cont == 5){
+        p1 = i;
+        cont++;
+      }
+      else if(cont == 7){
+        p2 = i;
+        break;
+      }
     }
-    const reporte = {
-      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
-      accion: 'Eliminar',
-      modulo: 'Papelera',
-      alterado: 'NONE'
+
+    for (var j = str.length; j > -1; j--) {
+      if (str.charAt(j) == '.') break;
     }
-    console.log(this.files_arr)
 
-    this.Archivos_Service.Eliminar_Archivo(this.files_arr).subscribe(res => {
-      console.log(res)
-      $('.chk').prop('checked', false);
-      res.arr.forEach(e => {
-        if (e.success) {
-          Materialize.toast(`El archivo ${e.nombre_archivo} se elimino exitosamente`, 3000, 'green rounded')
-          //NOW ADDING TO HISTORY
-          reporte.alterado = e.nombre_archivo;
-          this.reporteService.addReport(reporte).subscribe(data => {
-            if (!data.success) {
-              Materialize.toast('Error al guardar historial', 3000, 'red rounded')
-            }
-          })
-          //END OF history
-        }
-        else
-          Materialize.toast(`Error en la base de datos`, 3000, 'red rounded')
-      });
-      this.getAll()
-    });
-  }
-
-  Abrir_Archivo(file) {
-    let name = this.string_val(file.nombre_archivo, file.id)
-    let ruta = `%userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${name}\"`
-    this.Archivos_Service.Abrir_Archivo({ ruta: ruta }).subscribe(res => {
-      Materialize.toast(`Abriendo archivo`, 3000, 'green rounded')
-    });
+    var half_path = `${str.substring(0,p1)}.${nombre_proyecto}`
+    var full_path = `${half_path}.${str.substring(p2 + 1, j)}`
+    return [half_path, this.points_to_slash(full_path)]
   }
 
 
-  string_val(name, id) {
+  get_update_path(str, nombre_proyecto){
+    var userprofile = "%"
     var i;
-    for (i = name.length - 1; i > -1; i--) {
-      if (name.charAt(i) == '.') break
+    for (i = 0; i < str.length; i++) {
+      if (str.charAt(i) == '.') break
+      userprofile += str.charAt(i)
     }
-    var pos = i
-    var p1 = name.substring(0, pos);
-    var p2 = name.substring(pos, name.length);
-    return `${p1}papelera${id}${p2}`
+    userprofile += "%"
+    userprofile = `${userprofile}.${str.substring(i + 1, str.lenght)}`
+
+    var cont = 0;
+    var p1, p2;
+    for (i = 0; i < userprofile.length; i++) {
+      if (userprofile.charAt(i) == '.') cont++
+      if(cont == 5){
+        p1 = i;
+        cont++
+      }  
+      if(cont == 7){
+        p2 = i
+        break
+      } 
+    }
+
+    var proyecto = userprofile.substring(p1+1,p2)
+
+    if(proyecto == nombre_proyecto){
+      return {ruta_points: str, ruta_slash: userprofile.split('.').join('\\')}
+    }
+
+    else{
+      var ruta_points = `${userprofile.substring(0,p1+1)}${nombre_proyecto}${userprofile.substring(p2,userprofile.length)}`
+      var ruta_slash = ruta_points.split('.').join('\\');
+      ruta_points = ruta_points.split('%').join('');
+      return {ruta_points: ruta_points, ruta_slash: ruta_slash}
+    }
+
   }
 
-  ver_ruta(ruta){
-    this.ruta_actual = this.points_to_slash(ruta)
+  ver_ruta(ruta) {
+    this.ruta_actual = this.get_path(ruta)
     $('#modal_ruta').modal('open');
   }
 
-  points_to_slash(str){
+  get_path(str) {
 
     var cont = 0;
     for (var i = 0; i < str.length; i++) {
-      if(str.charAt(i) == '.') cont++
-      if(cont == 5) break;
+      if (str.charAt(i) == '.') cont++
+      if (cont == 5) break;
     }
 
-    var points = str.substring(i+1, str.lenght)
+    var points = str.substring(i + 1, str.lenght)
     points = points.split('.').join('\\');
     return points
   }
 
+  points_to_slash(str) {
+    var userprofile = "%"
+    var i;
+    for (i = 0; i < str.length; i++) {
+      if (str.charAt(i) == '.') break
+      userprofile += str.charAt(i)
+    }
+    userprofile += "%"
+    userprofile = `${userprofile}.${str.substring(i + 1, str.lenght)}`
+    userprofile = userprofile.split('.').join('\\');
+    return userprofile
+  }
+
+
+
   Anyone_checked() {
-    return ($('.chk:checkbox:checked').length != 0) ? true : false
+    return ($(`${this.chk}:checkbox:checked`).length != 0) ? true : false
   }
 
   select_all() {
-    $('.chk').prop('checked', true);
+    $(this.chk).prop('checked', true)
   }
 
-  deselect_all() {
-    $('.chk').prop('checked', false);
+  unselect_all() {
+    $(this.chk).prop('checked', false)
   }
 
   Ir_Opciones() {
     $('#opciones').modal('open');
+  }
+
+  change_chk(chk){
+    this.unselect_all()
+    this.chk = chk
   }
 }

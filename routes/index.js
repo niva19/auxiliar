@@ -110,11 +110,12 @@ router.post('/api/verifyduplicatefiles', db.verifyduplicatefiles);
 
 router.post('/api/changefilename', db.changefilename);
 
+router.post('/api/downloadfile', db.downloadfile);
+
+//Carpetas
 router.post('/api/getfolders', db.getfolders);
 
 router.post('/api/savefolder', db.savefolder);
-
-router.post('/api/getpublicfolder', db.getpublicfolder);
 
 router.post('/api/deletefolder', db.deletefolder);
 
@@ -124,4 +125,9 @@ router.post('/api/movefiles', db.movefiles);
 
 router.post('/api/editfoldername', db.editfoldername)
 
+router.get('/api/getunlinkfolders', db.getunlinkfolders)
+
+router.post('/api/deletepermanentfolder', db.deletepermanentfolder)
+
+router.post('/api/recoveryfolders', db.recoveryfolders)
 module.exports = router;

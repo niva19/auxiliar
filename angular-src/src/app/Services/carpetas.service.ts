@@ -18,12 +18,6 @@ export class CarpetasService {
     headers.append('Content-Type', 'application/json');
     return this.http.post('http://localhost:3000/api/savefolder', carpeta, { headers: headers }).map(res => res.json())
   }
-
-  Obtener_Carpeta_Publica(carpeta) {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/getpublicfolder', carpeta, { headers: headers }).map(res => res.json())
-  }
   
   Eliminar_Carpeta(carpeta){
     let headers = new Headers();
@@ -49,4 +43,21 @@ export class CarpetasService {
     return this.http.post('http://localhost:3000/api/editfoldername', values, { headers: headers }).map(res => res.json())
   }
 
+  Papelera(){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.get('http://localhost:3000/api/getunlinkfolders', { headers: headers }).map(res => res.json())
+  }
+
+  Eliminar_Carpeta_Permanentemente(carpeta){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/deletepermanentfolder', carpeta, { headers: headers }).map(res => res.json())
+  }
+
+  Recuperar_Carpetas(carpetas){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/recoveryfolders', carpetas, { headers: headers }).map(res => res.json())
+  }
 }

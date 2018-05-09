@@ -4,6 +4,27 @@
   </a>
 </div>
 
+<div id="descargando_archivo" class="modal">
+  <div class="modal-content">
+    <h4>Descargando archivo</h4>
+    <br>
+    <div class="progress">
+      <div class="indeterminate"></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="Eliminar_carpeta" class="modal">
+  <div class="modal-content">
+    <h4 id="mensaje_eliminar_carpeta"></h4>
+  </div>
+  <div class="modal-footer">
+    <a class="btn #0d47a1 red darken-4 modal-action modal-close waves-effect waves-red">Cancelar</a>
+    <a class="btn #0d47a1 blue darken-4 modal-action modal-close waves-effect waves-green" (click)="Eliminar_Carpeta()">Aceptar</a>
+  </div>
+</div>
+
 <div id="opciones" class="modal">
   <div class="modal-content">
     <h4 id="mensaje_remplazar_omitir"></h4>
@@ -53,7 +74,7 @@
       <div class="file-field input-field">
         <div class="btn #2e7d32 green darken-3">
           <span>Archivo</span>
-          <input type="file" multiple (change)="onChange($event)">
+          <input #myInput type="file" multiple (change)="onChange($event)">
         </div>
         <div class="file-path-wrapper">
           <input id="inputfile" class="file-path validate" type="text">
@@ -85,10 +106,10 @@
 
 <div id="tree" class="modal">
   <div class="modal-content">
-      <ul class="collapsible" id="mcontent">
+    <ul class="collapsible" id="mcontent">
 
-      </ul>
-  
+    </ul>
+
     <br>
     <div class="input-field ">
       <i class="material-icons prefix">folder_open</i>
@@ -165,26 +186,51 @@
             </ul>
 
             <div id="tab_carpetas">
+              <br>
+              <div *ngIf="flag_carpeta">
+                <button type="button" label="Click" (click)="set_flag_carpeta(false)" class="#0d47a1 blue darken-4 btn">Seleccionar</button>
+              </div>
+              <div *ngIf="!flag_carpeta">
+                <a materialize="dropdown" class='dropdown-button btn' href='#' data-activates='options_carpeta'>opciones</a>
+
+                <ul id='options_carpeta' class='dropdown-content'>
+                  <li>
+                    <a (click)="Confimar_Eliminar_Carpeta()">
+                      <i class="material-icons">delete</i>Eliminar</a>
+                  </li>
+                  <li>
+                    <a (click)="select_all_carpeta()">
+                      <i class="material-icons">select_all</i>Seleccionar todo</a>
+                  </li>
+                  <li>
+                    <a (click)="set_flag_carpeta(true)">
+                      <i class="material-icons">cancel</i>Cancelar</a>
+                  </li>
+                </ul>
+              </div>
               <ul class="collection" *ngFor="let i of carpetas; let j = index " [style.overflow]="'visible'">
                 <li class="collection-item avatar">
                   <img src="assets/img/folder.png" alt="" class="circle">
                   <span class="title" [attr.id]="'tt'+ j" (click)="mostar_editar_nombre_carpeta(j)">{{i.nombre_carpeta}}</span>
 
                   <span class="title" style="display: none" [attr.id]="'ii'+ j">
-                    <input type="text" class="validate title" [attr.id]="'input_carpeta'+j" [attr.value]="i.nombre_carpeta" (blur)="editar_nombre_carpeta(j, i, p)" (keypress)="Expresion_Regular($event)">
+                    <input type="text" class="validate title" [attr.id]="'input_carpeta'+j" [attr.value]="i.nombre_carpeta" (blur)="editar_nombre_carpeta(j, i, p)"
+                      (keypress)="Expresion_Regular($event)">
                   </span>
 
-                  <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'ddd'+ j">
-                    <i class="material-icons">dehaze</i>
-                  </a>
-                  <ul [attr.id]="'ddd'+ j" class='dropdown-content'>
-                    <li>
-                      <a (click)="Abrir_Carpeta(i)">Abrir</a>
-                    </li>
-                    <li>
-                      <a (click)="Confirmar_eliminar_Carpeta(i)">Eliminar</a>
-                    </li>
-                  </ul>
+                  <div *ngIf="flag_carpeta">
+                    <a class="secondary-content" (click)="Abrir_Carpeta(i)" href="javascript:void(0)">
+                      <i class="material-icons black-text">forward</i>
+                    </a>
+                  </div>
+                  <div *ngIf="!flag_carpeta">
+                    <form action="#" class='secondary-content'>
+                      <p>
+                        <input class="chk_carpeta" type="checkbox" [attr.id]="'checkbox_carpeta'+ j" [attr.data-value]="j" />
+                        <label [attr.for]="'checkbox_carpeta'+ j"></label>
+                      </p>
+                    </form>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -212,31 +258,21 @@
                   </li>
                 </ul>
               </div>
-              <ul class="collection" *ngFor="let i of archivos | paginate: {itemsPerPage:5, currentPage: p} let j = index" [style.overflow]="'visible'">
+              <ul class="collection" *ngFor="let i of archivos; let j = index">
                 <li class="collection-item avatar">
                   <img [attr.src]="'assets/img/' + i.extension + '.png'" alt="" class="circle">
                   <span class="title" [attr.id]="'t'+ j" (click)="mostar_editar_nombre(j)">{{i.nombre_archivo}}</span>
 
                   <span class="title" style="display: none" [attr.id]="'i'+ j">
-                    <input type="text" class="validate title" [attr.id]="'input'+j" [attr.value]="i.nombre_archivo" (blur)="editar_nombre(j, i, p)">
+                    <input type="text" class="validate title" [attr.id]="'input'+j" [attr.value]="i.nombre_archivo" (blur)="editar_nombre(j, i)">
                   </span>
-
-
+                  <p>
+                    <a href="javascript:void(0)" (click)="Descargar_Archivo(i)">Descargar</a>
+                  </p>
                   <div *ngIf="flag">
                     <a class="secondary-content" (click)="Abrir_Archivo(i)" href="javascript:void(0)">
-                      <i class="material-icons">send</i>
+                      <i class="material-icons black-text">open_in_new</i>
                     </a>
-                    <!-- <a materialize="dropdown" class='secondary-content dropdown-button btn' href='#' [attr.data-activates]="'dd'+ j">
-                      <i class="material-icons">dehaze</i>
-                    </a>
-                    <ul [attr.id]="'dd'+ j" class='dropdown-content'>
-                      <li>
-                        <a (click)="Abrir_Archivo(i)">Abrir</a>
-                      </li>
-                      <li>
-                        <a (click)="Confirmar_Desenlazar(i)">Desenlazar</a>
-                      </li>
-                    </ul> -->
                   </div>
                   <div *ngIf="!flag">
                     <form action="#" class='secondary-content'>
@@ -248,7 +284,6 @@
                   </div>
                 </li>
               </ul>
-              <pagination-controls (pageChange)="p = $event"></pagination-controls>
             </div>
           </div>
         </div>
