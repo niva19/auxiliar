@@ -7,6 +7,12 @@ export class CarpetasService {
 
   constructor(private http: Http) { }
 
+  Reemplazar_Carpetas(val) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/replacefolders', val, { headers: headers }).map(res => res.json())
+  }
+  
   Obtener_Carpetas(proyecto) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');

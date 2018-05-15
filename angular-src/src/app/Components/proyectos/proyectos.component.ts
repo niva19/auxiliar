@@ -31,8 +31,6 @@ export class ProyectosComponent implements OnInit {
   detalles: any[]
   ax: any[]
   pos: any
-  // pkProyecto: String
-  // archivos: any[]
 
   filtro: any
   parametro: String

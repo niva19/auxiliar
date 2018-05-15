@@ -104,6 +104,8 @@ router.get('/api/getunlinkfiles', db.getunlinkfiles);
 
 router.post('/api/recoveryfile', db.recoveryfile); 
 
+router.post('/api/replacefiles', db.replacefiles);
+
 router.post('/api/searchfiles', db.searchfiles);
 
 router.post('/api/verifyduplicatefiles', db.verifyduplicatefiles);
@@ -130,4 +132,26 @@ router.get('/api/getunlinkfolders', db.getunlinkfolders)
 router.post('/api/deletepermanentfolder', db.deletepermanentfolder)
 
 router.post('/api/recoveryfolders', db.recoveryfolders)
+
+router.post('/api/replacefolders', db.replacefolders)
+
+//Archivos_clientes
+router.post('/api/savecustomerfiles', db.savecustomerfiles)
+
+router.post('/api/getcustomerfiles', db.getcustomerfiles)
+
+router.post('/api/getpath', db.get_path)
+
+router.post('/api/changecustomerfilename', db.changecustomerfilename)
+
+router.post('/api/unlinkcustomerfiles', db.unlinkcustomerfiles)
+
+router.get('/api/getunlinkcustomerfiles', db.getunlinkcustomerfiles)
+
+router.post('/api/deletecustomerfile', db.deletecustomerfile)
+
+router.post('/api/recoverycustomerfile', db.recoverycustomerfile)
+
+router.post('/api/replacecustomerfile', db.replacecustomerfile)
+
 module.exports = router;

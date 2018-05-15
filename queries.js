@@ -8,8 +8,8 @@ var options = {
 var pgp = require('pg-promise')(options);
 //var connectionString = 'postgres://postgres:database@localhost:5432/PROARINSADB';
 //var connectionString = 'postgres://postgres:l53s@localhost:5432/PROARINSADB';
-//var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
-var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
+var connectionString = 'postgres://postgres:mio@localhost:8485/PROARINSADB';
+//var connectionString = 'postgres://postgres:mio@localhost:5432/PROARINSADB';
 
 var db = pgp(connectionString);
 
@@ -284,10 +284,16 @@ function getdetailcustomer(req, res, next) {
 }
 
 function SaveCustomer(req, res, next) {
-
-  db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono_trabajo}, ${telefono_casa}, ${celular}, ${correo_personal}, ${correo_empresarial})',
+  let path = `userprofile.Documents.SistemaPROARINSA.${req.body.cedula}`
+  req.body["ruta"] = path
+  db.none('insert into Cliente values(${nombre}, ${apellidos}, ${cedula}, ${direccion},${telefono_trabajo}, ${telefono_casa}, ${celular}, ${correo_personal}, ${correo_empresarial}, ${ruta})',
     req.body)
     .then(() => {
+      var real_path = `%userprofile%\\Documents\\SistemaPROARINSA\\${req.body.cedula}`
+      require('child_process').execSync(`mkdir ${real_path}`);
+      real_path += "\\archivos_cliente";
+      require('child_process').execSync(`mkdir ${real_path}`);
+
       res.status(200)
         .json({
           success: true
@@ -528,62 +534,70 @@ function execute(command, callback) {
 };
 
 function saveProject(req, res, next) {
+  db.task(function* (t) {
 
+    var ruta_padre = yield t.any(`select ruta from Cliente where cedula = '${req.body.cliente}'`)
+      .then(data => data[0].ruta)
 
-  //EL NOMBRE SE JUNTA EN UNA SOLA CADENA
-  var nomProy = req.body.nombreProyecto;
-  //Separador: el split elimina los caracteres asignados a lo separadores
-  var separador = " ";
-  var nomJunto = nomProy.split(separador).join('');
+    //EL NOMBRE SE JUNTA EN UNA SOLA CADENA
+    var nomProy = req.body.nombreProyecto;
+    //Separador: el split elimina los caracteres asignados a lo separadores
+    var separador = " ";
+    var nomJunto = nomProy.split(separador).join('');
 
-  //LAS FECHAS SE JUNTA EN UNA SOLA CADENA
-  var fecha = req.body.fechaInicio;
-  //Separador: el split elimina los caracteres asignados a lo separadores
-  var separador1 = " ";
-  var separador2 = ", ";
-  // Se logra el formato mes y año de las carpetas
-  var mes = fecha.split(separador2).splice(0, 1).toString().split(separador1).pop();
-  var anio = fecha.split(separador1).pop();
+    //LAS FECHAS SE JUNTA EN UNA SOLA CADENA
+    var fecha = req.body.fechaInicio;
+    //Separador: el split elimina los caracteres asignados a lo separadores
+    var separador1 = " ";
+    var separador2 = ", ";
+    // Se logra el formato mes y año de las carpetas
+    var mes = fecha.split(separador2).splice(0, 1).toString().split(separador1).pop();
+    var anio = fecha.split(separador1).pop();
 
-  var path = '%userprofile%\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto
-  var data_path = `userprofile.Documents.SistemaPROARINSA.${anio}.${mes}.${nomJunto}`
+    var data_path = `${ruta_padre}.${anio}.${mes}.${nomJunto}`
+    //var path = '%userprofile%\\Documents\\SistemaPROARINSA\\' + anio + '\\' + mes + '\\' + nomJunto
+    //var data_path = `userprofile.Documents.SistemaPROARINSA.${anio}.${mes}.${nomJunto}`
+    var path = points_to_slash(data_path)
 
-  db.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente})',
-    req.body)
-    .then(() => {
-      //EJECUTAR EL COMANDO AQUI
-      //CREAR DIRECTORIO
-      db.none('UPDATE Proyecto SET ruta = $1 WHERE nombreProyecto = $2', [data_path, req.body.nombreProyecto]);
-      execute('mkdir ' + path, function (output) {
-        console.log(output);
-
-        execute('mkdir ' + path + '\\publico', function (output) {
+    yield t.none('insert into Proyecto values(${nombreProyecto}, ${direccion}, ${tipoProyecto}, ${tipoObra}, ${descripcion}, ${fechaInicio}, ${fechaFinaliza}, ${estado}, ${banco}, ${cliente})',
+      req.body)
+      .then(() => {
+        //EJECUTAR EL COMANDO AQUI
+        //CREAR DIRECTORIO
+        db.none('UPDATE Proyecto SET ruta = $1 WHERE nombreProyecto = $2', [data_path, req.body.nombreProyecto]);
+        execute('mkdir ' + path, function (output) {
           console.log(output);
-        });
 
-        execute('mkdir ' + path + '\\privado', function (output) {
-          console.log(output);
-        });
+          execute('mkdir ' + path + '\\publico', function (output) {
+            console.log(output);
+          });
 
-        // db.none("insert into Carpeta values('publico', '" + path + "')")
-        // db.none("insert into Carpeta values('privado', '" + path + "')")
+          execute('mkdir ' + path + '\\privado', function (output) {
+            console.log(output);
+          });
 
-        db.none("insert into Carpeta values('" + data_path + ".publico" + "')")
-        db.none("insert into Carpeta values('" + data_path + ".privado" + "')")
+          // db.none("insert into Carpeta values('publico', '" + path + "')")
+          // db.none("insert into Carpeta values('privado', '" + path + "')")
 
-      });
-      res.status(200)
-        .json({
-          success: true,
-          ruta: path
+          db.none("insert into Carpeta values('" + data_path + ".publico" + "')")
+          db.none("insert into Carpeta values('" + data_path + ".privado" + "')")
+
         });
-    })
-    .catch((err) => {
-      res.status(200)
-        .json({
-          success: false
-        });
-    })
+        res.status(200)
+          .json({
+            success: true,
+            ruta: path
+          });
+      })
+      .catch((err) => {
+        res.status(200)
+          .json({
+            success: false
+          });
+      })
+  })
+    .then(events => { })
+    .catch(error => { });
 }
 
 function detailproject(req, res, next) {
@@ -665,7 +679,6 @@ function searchProject(req, res, next) {
 }
 
 function savefiles(req, res, next) {
-
   db.task(function* (t) {
     var arr = []
     for (let i = 0; i < req.body.length; i++) {
@@ -706,27 +719,23 @@ function openfile(req, res, next) {
 }
 
 function downloadfile(req, res, next) {
+  for (let i = 0; i < req.body.length; i++) {
+    let file = req.body[i]
+    let path = `xcopy ${file.ruta}${file.nombre_archivo} %userprofile%\\Downloads /E /D`;
+    execute(path, function (output) {
+      let real_std = output.substring(0, output.length - 2)
+      let err = "0 archivo(s) copiado(s)"
+      if (real_std == err) {
+        handler(file)
 
-  let path = `xcopy ${req.body.ruta}${req.body.nombre_archivo} %userprofile%\\Downloads /E /D`;
-  console.log(path);
+      }
+    });
+  }
 
-  execute(path, function (output) {
-    let real_std = output.substring(0, output.length - 2)
-    let err = "0 archivo(s) copiado(s)"
-    if (real_std == err) {
-      var val = handler(req.body)
-      res.status(200)
-        .json({
-          output: val
-        });
-    }
-    else {
-      res.status(200)
-        .json({
-          output: true
-        });
-    }
-  });
+  res.status(200)
+    .json({
+      output: true
+    });
 }
 
 function unlink(req, res, next) {//VALIDAR PARA POSIBLES ROLLBACKS
@@ -835,85 +844,116 @@ function verifyduplicatefiles(req, res, next) {
 
 function recoveryfile(req, res, next) {
   db.task(function* (t) {
-    arr_files_names = []
-    for (let i = 0; i < req.body.length; i++) {
-      let file = req.body[i];
 
-      //Inicia reemplazar archivo
-      if (file.reemplazar) {
-        yield t.any('delete from Archivos_Papelera where id = ${id}', file)
+    //Inicia verificar si existe archivo
+    var not_repeat_files = [], repeat_files = []
+    for (let x = 0; x < req.body.length; x++) {
+      let exist = yield t.any(`select * from archivos where nombre_archivo = '${req.body[x].nombre_archivo}' and ruta_padre = '${req.body[x].ruta_padre}'`)
+        .then(val => { return (val.length == 0) ? false : true });
+      (!exist) ? not_repeat_files.push(req.body[x]) : repeat_files.push(req.body[x])
+    }
+    //Termina verificar si existe archivo
 
-        let file_name = `papelera${file.id}.${get_extension(file.nombre_archivo)}`
-        let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${file_name}\" \"${file.nombre_archivo}\"`
-        require('child_process').execSync(path)
 
-        path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${file.nombre_archivo}\" ${file.ruta_slash}`
-        require('child_process').execSync(path)
+    //Inicia crear carpetas
+    for (let j = 0; j < not_repeat_files.length; j++) {
+      var update_full_path = not_repeat_files[j].ruta_padre;
+      var carpeta_arr = []
+      while (true) {
+        let folder = yield t.any(`SELECT * FROM subltree ('${update_full_path}', nlevel('${update_full_path}')-1, nlevel('${update_full_path}'))`).then(val => val)
+        if (folder[0].subltree != "publico" && folder[0].subltree != "privado") {
+          let query_res = yield t.any(`SELECT * FROM carpeta WHERE ruta = '${update_full_path}'`).then(vals => {
+            return (vals.length == 0) ? { father: false } : { father: true }
+          })
 
-        arr_files_names.push(file.nombre_archivo)
+          if (query_res.father) break;
+          else {
+            yield t.none(`insert into Carpeta values('${update_full_path}')`)
+            let father = yield t.any(`select subltree from subltree('${update_full_path}',0,nlevel('${update_full_path}')-1)`)
+            carpeta_arr.push(update_full_path)
+            update_full_path = father[0].subltree
+          }
+        }
+        else break
       }
-      //Finaliza reemplazar archivo
 
-      else {
-        //Inicia crear carpeta
-        let ruta_padre = req.body[i].ruta_padre;
-        var carpeta_arr = []
-        while (true) {
-          let folder = yield t.any(`SELECT * FROM subltree ('${file.ruta_padre}', nlevel('${file.ruta_padre}')-1, nlevel('${file.ruta_padre}'))`).then(val => val)
-          if (folder[0].subltree != "publico" && folder[0].subltree != "privado") {
-            let query_res = yield t.any(`SELECT * FROM carpeta WHERE ruta = '${file.ruta_padre}'`).then(vals => {
-              return (vals.length == 0) ? { father: false } : { father: true }
-            })
-
-            if (query_res.father) break;
-            else {
-              yield t.none(`insert into Carpeta values('${file.ruta_padre}')`)
-              let father = yield t.any(`select subltree from subltree('${file.ruta_padre}',0,nlevel('${file.ruta_padre}')-1)`)
-              carpeta_arr.push(file.ruta_padre)
-              file.ruta_padre = father[0].subltree
-            }
-          }
-          else break
+      if (carpeta_arr.length != 0) {
+        for (var i = carpeta_arr.length - 1; i > -1; i--) {
+          require('child_process').execSync(`mkdir ${points_to_slash(carpeta_arr[i])}`)
         }
-
-        if (carpeta_arr.length != 0) {
-          for (var j = carpeta_arr.length - 1; j > -1; j--) {
-            require('child_process').execSync(`mkdir ${points_to_slash(carpeta_arr[j])}`)
-          }
-        }
-        //Finaliza crear carpeta
-
-        //Inicia recuperar archivo
-        file.ruta_padre = ruta_padre
-        let insert = yield t.none('insert into Archivos values(${nombre_archivo}, ${ruta_padre})',
-          file).then(val => {
-            return { success: true, name: file.nombre_archivo }
-          }).catch(err => {
-            return { success: false, file: file }
-          });
-
-        if (!insert.success) {
-          insert["pos"] = i
-          res.status(200).json(insert);
-          return;
-        }
-
-        yield t.any('delete from Archivos_Papelera where id = ${id}', file)
-
-        let path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"papelera${file.id}.${get_extension(file.nombre_archivo)}\" ${file.ruta_slash}`
-        require('child_process').execSync(path)
-
-        path = `ren ${file.ruta_slash}\\\"papelera${file.id}.${get_extension(file.nombre_archivo)}\" \"${file.nombre_archivo}\"`
-        require('child_process').execSync(path)
-
-        arr_files_names.push(file.nombre_archivo)
-        //Finaliza recuperar archivo
       }
     }
-    res.status(200).json({ success: true, files: arr_files_names });
+    //Termina crear carpetas
+
+
+    if (not_repeat_files.length != 0) {
+      var parameters = not_repeat_files.map(e => {
+        return {
+          nombre_archivo: e.nombre_archivo,
+          ruta_padre: e.ruta_padre,
+          id: parseInt(e.id)
+        }
+      })
+
+      var json_files = JSON.stringify(parameters)
+
+      db.func('recovery_proyecto_archivos', [json_files])
+        .then(data => {
+          not_repeat_files.forEach(e => {
+            let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\papelera${e.id}.${get_extension(e.nombre_archivo)} \"${e.nombre_archivo}\"`
+            require('child_process').execSync(path)
+            path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${e.nombre_archivo}\" ${e.ruta_slash}`
+            require('child_process').execSync(path)
+          })
+          res.status(200)
+            .json({
+              success: true,
+              repeat_files: repeat_files,
+              not_repeat_files: not_repeat_files
+            });
+        })
+        .catch(error => {
+          res.status(200)
+            .json({
+              success: false
+            });
+        });
+    }
+    else {
+      res.status(200)
+        .json({
+          success: true,
+          repeat_files: repeat_files,
+          not_repeat_files: not_repeat_files
+        });
+    }
   })
     .then(events => { })
     .catch(error => { });
+}
+
+function replacefiles(req, res, next) {
+  let ids = req.body.map(e => parseInt(e.id))
+  db.func('delete_archivos_papelera', [ids])
+    .then(() => {
+      req.body.forEach(e => {
+        let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\papelera${e.id}.${get_extension(e.nombre_archivo)} \"${e.nombre_archivo}\"`
+        require('child_process').execSync(path)
+        path = `move /y %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${e.nombre_archivo}\" ${e.ruta_slash}`
+        require('child_process').execSync(path)
+      })
+      res.status(200)
+        .json({
+          success: true,
+          files: req.body
+        });
+    })
+    .catch(error => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
 }
 
 function movefiles(req, res, next) {
@@ -1117,12 +1157,22 @@ function deletepermanentfolder(req, res, next) {
     });
 }
 function recoveryfolders(req, res, next) {
-  var obj = JSON.stringify(toObject(req.body))
-
   db.task(function* (t) {
+
+    //Inicia verificar si existe carpeta
+    var not_repeat_folders = [], repeat_folders = []
+    for (let x = 0; x < req.body.length; x++) {
+      let exist = yield t.any(`select * from carpeta where ruta = '${req.body[x].update_full_path}.${req.body[x].nombre_carpeta}'`)
+        .then(val => { return (val.length == 0) ? false : true });
+      (!exist) ? not_repeat_folders.push(req.body[x]) : repeat_folders.push(req.body[x])
+    }
+    var obj = JSON.stringify(toObject(not_repeat_folders))
+    //Termina verificar si existe carpeta
+
     //Inicia crear carpetas
-    var update_full_path = req.body[0].update_full_path;
-    for (let j = 0; j < req.body.length; j++) {
+
+    for (let j = 0; j < not_repeat_folders.length; j++) {
+      var update_full_path = not_repeat_folders[j].update_full_path;
       var carpeta_arr = []
       while (true) {
         let folder = yield t.any(`SELECT * FROM subltree ('${update_full_path}', nlevel('${update_full_path}')-1, nlevel('${update_full_path}'))`).then(val => val)
@@ -1142,27 +1192,82 @@ function recoveryfolders(req, res, next) {
         else break
       }
 
-      if(carpeta_arr.length != 0){
+      if (carpeta_arr.length != 0) {
         for (var i = carpeta_arr.length - 1; i > -1; i--) {
           require('child_process').execSync(`mkdir ${points_to_slash(carpeta_arr[i])}`)
         }
-      }      
+      }
     }
     //Termina crear carpetas
 
 
     //Inicia recuperar carpetas
     yield db.func('recovery_folders', [obj])
-    .then(data => {
-      req.body.forEach(e => {
-        let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\papelera${e.id} ${e.nombre_carpeta}`
-        require('child_process').execSync(path)
-        path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\${e.nombre_carpeta} ${e.slash_path}`
-        require('child_process').execSync(path)
+      .then(data => {
+        not_repeat_folders.forEach(e => {
+          let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\papelera${e.id} ${e.nombre_carpeta}`
+          require('child_process').execSync(path)
+          path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\${e.nombre_carpeta} ${e.slash_path}`
+          require('child_process').execSync(path)
+        })
+        res.status(200)
+          .json({
+            success: true,
+            repeat_folders: repeat_folders
+          });
       })
-      res.status(200)
-        .json({
-          success: true
+      .catch(error => {
+        res.status(200)
+          .json({
+            success: false
+          });
+      });
+    //Termina recuperar carpetas
+
+  })
+    .then(events => { })
+    .catch(error => { });
+}
+
+function replacefolders(req, res, next) {
+  var ids = req.body.map(e => parseInt(e.id))
+  var folders_path = req.body.map(e => `${e.update_full_path}.${e.nombre_carpeta}`)
+  var obj = JSON.stringify(toObject(req.body
+    .map(e => { return { id: e.id, update_path: e.update_path } })))
+
+
+  db.func('delete_folder_permanently', [folders_path])
+    .then(() => {
+      db.func('recovery_folders', [obj])
+        .then(() => {
+          db.func('delete_carpetas_papelera', [ids])
+            .then(() => {
+              req.body.forEach(e => {
+                let path = `rd /s /q ${e.slash_path}\\\"${e.nombre_carpeta}\"`
+                require('child_process').execSync(path)
+                path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\papelera${e.id} \"${e.nombre_carpeta}\"`
+                require('child_process').execSync(path)
+                path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${e.nombre_carpeta}\" ${e.slash_path}`
+                require('child_process').execSync(path)
+              })
+              res.status(200)
+                .json({
+                  success: true,
+                  files: req.body
+                });
+            })
+            .catch(error => {
+              res.status(200)
+                .json({
+                  success: false
+                });
+            });
+        })
+        .catch(error => {
+          res.status(200)
+            .json({
+              success: false
+            });
         });
     })
     .catch(error => {
@@ -1171,14 +1276,218 @@ function recoveryfolders(req, res, next) {
           success: false
         });
     });
-    //Termina recuperar carpetas
-
-  })
-    .then(events => { })
-    .catch(error => { });
 
 }
 
+function get_path(req, res, next) {
+  db.any('select ruta from cliente where cedula = ${cliente}', req.body)
+    .then(data => {
+      res.status(200)
+        .json({ ruta: data[0].ruta });
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function savecustomerfiles(req, res, next) {
+  db.task(function* (t) {
+    var arr = []
+    for (let i = 0; i < req.body.length; i++) {
+      var file = req.body[i];
+
+      file.destiny = points_to_slash(file.destiny)
+
+      let query_res = yield t.none('insert into Archivos_Cliente values(${nombre_archivo}, ${cedula})',
+        file).then(val => {
+          execute(`copy \"${file.realPath}\" ${file.destiny}`, output => output)
+          return { success: true }
+        }).catch(err => {
+          return { success: false, err: err }
+        });
+      arr.push(query_res);
+    }
+
+    res.status(200).json({ arr: arr });
+  })
+    .then(events => { })
+    .catch(error => { });
+}
+
+function getcustomerfiles(req, res, next) {
+  db.any('select * from Archivos_Cliente where cedula = ${cliente}', req.body)
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function changecustomerfilename(req, res, next) {
+  db.none("update Archivos_Cliente set nombre_archivo = ${new_name} where cedula = ${cedula} and nombre_archivo = ${nombre_archivo}", req.body)
+    .then(() => {
+      let file = req.body
+      let path = `ren ${file.real_path}\\\"${file.nombre_archivo}\" \"${file.new_name}\"`
+      execute(path, output2 => { });
+      res.status(200)
+        .json({ success: true });
+    })
+    .catch(function (err) {
+      res.status(200)
+        .json({
+          success: false
+        });
+    })
+}
+
+function unlinkcustomerfiles(req, res, next) {
+  var files = toObject(req.body.files);
+  var json_files = JSON.stringify(files)
+
+  db.func('insert_cliente_archivos_papelera', [json_files, req.body.ruta_padre])
+    .then(data => {
+
+      let path_files = req.body.path_files
+      var path
+
+      for (let i = 0; i < path_files.length; i++) {
+        path = `move ${path_files[i]} %userprofile%\\Documents\\SistemaPROARINSA\\papelera`
+        require('child_process').execSync(path)
+
+        path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${files[i]}\" \"clientepapelera${data[0].insert_cliente_archivos_papelera[i]}.${get_extension(files[i])}\"`
+        require('child_process').execSync(path)
+      }
+
+      res.status(200)
+        .json({
+          success: true,
+          arr: req.body.files
+        });
+    })
+    .catch(error => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+function getunlinkcustomerfiles(req, res, next) {
+  db.any(`select pl.id, pl.nombre_archivo, pl.cedula, cl.ruta from 
+  (select id, nombre_archivo, cedula from archivos_cliente_papelera) as pl, cliente as cl
+  where cl.cedula = pl.cedula`)
+    .then(function (data) {
+      res.status(200)
+        .json(data);
+    })
+    .catch(function (err) {
+      return next(err);
+    });
+}
+
+function deletecustomerfile(req, res, next) {
+  let ids = req.body.map(e => parseInt(e.id))
+  db.func('delete_archivos_clientes_papelera', [ids])
+    .then(() => {
+      req.body.forEach(e => {
+        let path = `del %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"clientepapelera${e.id}.${get_extension(e.nombre_archivo)}\"`
+        require('child_process').execSync(path)
+      })
+      res.status(200)
+        .json({
+          success: true,
+          arr: req.body
+        });
+    })
+    .catch(error => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
+
+function recoverycustomerfile(req, res, next) {
+  db.task(function* (t) {
+    var not_repeat_files = [], repeat_files = []
+    for (let x = 0; x < req.body.length; x++) {
+      let exist = yield t.any(`select * from Archivos_Cliente where nombre_archivo = '${req.body[x].nombre_archivo}' and cedula = '${req.body[x].cedula}'`)
+        .then(val => { return (val.length == 0) ? false : true });
+      (!exist) ? not_repeat_files.push(req.body[x]) : repeat_files.push(req.body[x])
+    }
+
+    if (not_repeat_files.length != 0) {
+      var parameters = not_repeat_files.map(e => {
+        return {
+          nombre_archivo: e.nombre_archivo,
+          cedula: e.cedula,
+          id: parseInt(e.id)
+        }
+      })
+
+      var json_files = JSON.stringify(parameters)
+
+      db.func('recovery_cliente_archivos', [json_files])
+        .then(data => {
+
+          not_repeat_files.forEach(e => {
+            let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\clientepapelera${e.id}.${get_extension(e.nombre_archivo)} \"${e.nombre_archivo}\"`
+            require('child_process').execSync(path)
+            path = `move %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${e.nombre_archivo}\" ${e.ruta_slash}\\archivos_cliente`
+            require('child_process').execSync(path)
+          })
+          res.status(200)
+            .json({
+              success: true,
+              repeat_files: repeat_files,
+              not_repeat_files: not_repeat_files
+            });
+        })
+        .catch(error => {
+          res.status(200)
+            .json({
+              success: false
+            });
+        });
+    }
+    else {
+      res.status(200)
+        .json({
+          success: true,
+          repeat_files: repeat_files,
+          not_repeat_files: not_repeat_files
+        });
+    }
+  })
+    .then(events => { })
+    .catch(error => { });
+}
+
+function replacecustomerfile(req, res, next) {
+  let ids = req.body.map(e => parseInt(e.id))
+  db.func('delete_archivos_clientes_papelera', [ids])
+    .then(() => {
+      req.body.forEach(e => {
+        let path = `ren %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\clientepapelera${e.id}.${get_extension(e.nombre_archivo)} \"${e.nombre_archivo}\"`
+        require('child_process').execSync(path)
+        path = `move /y %userprofile%\\Documents\\SistemaPROARINSA\\papelera\\\"${e.nombre_archivo}\" ${e.ruta_slash}\\archivos_cliente`
+        require('child_process').execSync(path)
+      })
+      res.status(200)
+        .json({
+          success: true,
+          files: req.body
+        });
+    })
+    .catch(error => {
+      res.status(200)
+        .json({
+          success: false
+        });
+    });
+}
 
 /*FUNCIONES AUXILIARES*/
 
@@ -1221,7 +1530,6 @@ function handler(body) {
     var real_std = res.substring(0, res.length - 2)
     if (real_std != "0 archivo(s) copiado(s)") break;
   }
-  return true;
 }
 
 function get_filename(str) {
@@ -1323,6 +1631,7 @@ module.exports = {
   unlink: unlink,
   getunlinkfiles: getunlinkfiles,
   recoveryfile: recoveryfile,
+  replacefiles: replacefiles,
   verifyduplicatefiles: verifyduplicatefiles,
   changefilename: changefilename,
   downloadfile: downloadfile,
@@ -1334,5 +1643,16 @@ module.exports = {
   editfoldername: editfoldername,
   getunlinkfolders: getunlinkfolders,
   deletepermanentfolder: deletepermanentfolder,
-  recoveryfolders: recoveryfolders
+  recoveryfolders: recoveryfolders,
+  replacefolders: replacefolders,
+  savecustomerfiles: savecustomerfiles,
+  getcustomerfiles: getcustomerfiles,
+  get_path: get_path,
+  changecustomerfilename: changecustomerfilename,
+  unlinkcustomerfiles: unlinkcustomerfiles,
+  getunlinkcustomerfiles: getunlinkcustomerfiles,
+  deletecustomerfile: deletecustomerfile,
+  recoverycustomerfile: recoverycustomerfile,
+  replacecustomerfile: replacecustomerfile,
+
 }

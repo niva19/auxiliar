@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ReporteService } from '../../services/reporte.service'
 import { ClienteArchivosService } from '../../services/cliente-archivos.service'
+import { Router } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
 
 declare var jQuery: any;
@@ -13,22 +15,52 @@ declare var $: any;
 })
 export class ClienteArchivosComponent implements OnInit {
 
+  archivos_descarga: any[] = [];
   flag: boolean = true
   upload_files: any[] = []
   archivos: any[]
-  carpeta_actual: any = { nombre_carpeta: "", ruta_padre: "" }
+  ruta: String
+  archivos_eliminar: any[] = []
 
   @ViewChild('myInput')
   myInputVariable: any;
 
   constructor(private reporteService: ReporteService,
-              private clienteArchivosService: ClienteArchivosService) { }
+    private clienteArchivosService: ClienteArchivosService,
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     $('.modal').modal();
     $('.dropdown-button').dropdown();
+    this.Archivos();
+    this.Get_path();
   }
 
+  Get_path() {
+    this.clienteArchivosService.Obtener_Ruta({ cliente: localStorage.getItem("id_cliente") })
+      .subscribe(ruta => {
+        this.ruta = ruta.ruta
+        this.ruta += '.archivos_cliente'
+      })
+  }
+
+  Archivos() {
+    this.clienteArchivosService.Obtener_Archivos({ cliente: localStorage.getItem("id_cliente") }).subscribe(archivos => {
+
+      archivos.forEach(archivo => {
+        var extension = ""
+        for (var i = archivo.nombre_archivo.length - 1; i > -1; i--) {
+          if (archivo.nombre_archivo.charAt(i) != '.') extension += archivo.nombre_archivo.charAt(i)
+          else break
+        }
+
+        archivo["extension"] = this.invertir(extension)
+      })
+      console.log(archivos)
+      this.archivos = archivos
+    })
+  }
 
   modal1() {
     $('#modal1').modal({
@@ -82,6 +114,102 @@ export class ClienteArchivosComponent implements OnInit {
     this.upload_files.splice(i, 1);
   }
 
+  Confirmar_Descargar() {
+    this.archivos_descarga = []
+    let checkboxes = $('.chk:checkbox:checked');
+    if (checkboxes.length == 0)
+      Materialize.toast(`Debe elejir al menos un archivo`, 3000, 'red rounded');
+    else {
+      (checkboxes.length == 1)
+        ? $('#mensaje_descarga').text("¿Está seguro que desea descargar este elemento?")
+        : $('#mensaje_descarga').text(`¿Está seguro que desea descargar estos ${checkboxes.length} elementos?`);
+      $('#descargar').modal('open');
+    }
+  }
+
+  Descargar_Archivo() {
+    let checkboxes = $('.chk:checkbox:checked')
+    for (let i = 0; i < checkboxes.length; i++) {
+      this.archivos_descarga.push({
+        ruta: `${this.points_to_slash(this.ruta)}\\`,
+        nombre_archivo: `\"${checkboxes[i].attributes[4].nodeValue}\"`
+      })
+    }
+    (checkboxes.length == 1)
+        ? $('#mensaje_barra_descarga').text("Descargando Archivo")
+        : $('#mensaje_barra_descarga').text(`Descargando Archivos`);
+    
+    $("#descargando_archivo").modal("open")
+    this.clienteArchivosService.Descargar_Archivo(this.archivos_descarga).subscribe(res => {
+      if (res.output) {
+        setTimeout(() => {
+          $("#descargando_archivo").modal("close");
+
+          (checkboxes.length == 1)
+            ? Materialize.toast('Archivo descargado', 3000, 'green rounded')
+            : Materialize.toast('Archivos descargados', 3000, 'green rounded')
+            this.set_flag(true)
+        }, 1200);
+      }
+    })
+  }
+
+  Confirmar_Eliminar() {
+    this.archivos_eliminar = []
+    let checkboxes = $('.chk:checkbox:checked');
+    if (checkboxes.length == 0)
+      Materialize.toast(`Debe elejir al menos un archivo`, 3000, 'red rounded');
+    else {
+      (checkboxes.length == 1)
+        ? $('#mensaje_eliminar').text("¿Está seguro que desea eliminar este elemento?")
+        : $('#mensaje_eliminar').text(`¿Está seguro que desea eliminar estos ${checkboxes.length} elementos?`);
+      $('#eliminar').modal('open');
+    }
+  }
+
+  Desenlazar_Archivo() {
+    let checkboxes = $('.chk:checkbox:checked')
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      this.archivos_eliminar.push(checkboxes[i].attributes[4].nodeValue)
+    }
+
+    console.log(this.archivos_eliminar)
+    const reporte = {
+      nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
+      accion: 'Desenlazar',
+      modulo: 'Archivos_Cliente',
+      alterado: 'NONE'
+    }
+
+    let path_files = this.archivos_eliminar.map(file_name => {
+      return `${this.points_to_slash(this.ruta)}\\\"${file_name}\"`
+    })
+
+    this.clienteArchivosService.Desenlazar_Archivo({
+      path_files: path_files,
+      files: this.archivos_eliminar,
+      ruta_padre: localStorage.getItem("id_cliente")
+    }).subscribe(res => {
+      if (res.success) {
+        Materialize.toast(`Los archivos se desenlazaron correctamente`, 3000, 'green rounded')
+        this.Archivos()
+        this.set_flag(true)
+      }
+      else Materialize.toast(`Error, no se pudo desenlazar los archivos`, 3000, 'red rounded')
+
+      res.arr.forEach(e => {
+        //NOW ADDING TO HISTORY
+        reporte.alterado = e;
+        this.reporteService.addReport(reporte).subscribe(data => {
+          if (!data.success) {
+            Materialize.toast('Error al guardar historial', 3000, 'red rounded')
+          }
+        })
+        //END OF history
+      });
+    })
+  }
 
   Enlazar_Archivos() {
     if (this.upload_files.length != 0) {
@@ -89,19 +217,19 @@ export class ClienteArchivosComponent implements OnInit {
       let archivos = this.upload_files.map(file => {
         return {
           realPath: file.path,
-          ruta: this.carpeta_actual.ruta_padre,
+          cedula: localStorage.getItem("id_cliente"),
           nombre_archivo: file.name,
-          ruta_padre: this.carpeta_actual.ruta_padre
+          destiny: this.ruta
         };
       })
       const reporte = {
         nombre: localStorage.getItem('nombre') + ' (' + localStorage.getItem('dni') + ')',
         accion: 'Agregar',
-        modulo: 'Archivos',
+        modulo: 'Cliente_Archivos',
         alterado: 'NONE'
       }
 
-      this.set_path(archivos)
+      // this.set_path(archivos)
       console.log(archivos)
 
       this.clienteArchivosService.Guardar_Archivo(archivos).subscribe(res => {
@@ -111,7 +239,7 @@ export class ClienteArchivosComponent implements OnInit {
         for (let i = 0; i < res.arr.length; i++) {
           if (!res.arr[i].success) {
             if (res.arr[i].err.code == "23505") {
-              Materialize.toast(`El archivo "${this.upload_files[i].name}" ya existe`, 7000, 'red rounded')
+              Materialize.toast(`El archivo "${this.upload_files[i].name}" ya existe`, 5000, 'red rounded')
               flag = true;
               aux_arr.push(false)
             }
@@ -140,20 +268,20 @@ export class ClienteArchivosComponent implements OnInit {
     else Materialize.toast('Debe elegir al menos un archivo', 3000, 'red rounded')
   }
 
-  set_path(data) {
-    data.forEach(e => {
-      var userprofile = "%"
-      var i;
-      for (i = 0; i < e.ruta.length; i++) {
-        if (e.ruta.charAt(i) == '.') break
-        userprofile += e.ruta.charAt(i)
-      }
-      userprofile += "%"
-      userprofile = `${userprofile}.${e.ruta.substring(i + 1, e.ruta.lenght)}`
-      userprofile = userprofile.split('.').join('\\');
-      e.ruta = userprofile
-    });
-  }
+  // set_path(data) {
+  //   data.forEach(e => {
+  //     var userprofile = "%"
+  //     var i;
+  //     for (i = 0; i < e.ruta.length; i++) {
+  //       if (e.ruta.charAt(i) == '.') break
+  //       userprofile += e.ruta.charAt(i)
+  //     }
+  //     userprofile += "%"
+  //     userprofile = `${userprofile}.${e.ruta.substring(i + 1, e.ruta.lenght)}`
+  //     userprofile = userprofile.split('.').join('\\');
+  //     e.ruta = userprofile
+  //   });
+  // }
 
   get_extension(archivo) {
     var extension = ""
@@ -174,46 +302,16 @@ export class ClienteArchivosComponent implements OnInit {
     this.flag = val
   }
 
-  eliminar(){
+  eliminar() {
 
   }
 
-  select_all_carpeta() {
-    $('.chk_carpeta').prop('checked', true);
+  unselect_all() {
+    $('.chk').prop('checked', false);
   }
 
-  mostar_editar_nombre_carpeta(num) {
-    $("#tt" + num).css("display", "none")
-    $("#ii" + num).css("display", "block")
-    $("#input_carpeta" + num).focus()
-  }
-
-  editar_nombre(num, file, ) {
-    var new_name = $("#input" + num).val()
-    if (new_name == "") {
-      Materialize.toast(`Error, debe ingresar un nombre`, 3000, 'red rounded')
-      return;
-    }
-    if (file.nombre_archivo != new_name) {
-      this.clienteArchivosService.Cambiar_Nombre_Archivo({
-        ruta_padre: file.ruta_padre,
-        new_name: new_name,
-        nombre_archivo: file.nombre_archivo,
-        real_path: this.points_to_slash(file.ruta_padre)
-      }).subscribe(res => {
-
-        if (res.success) {
-          $("#i" + num).css("display", "none")
-          $("#t" + num).css("display", "block")
-          this.archivos[num]["nombre_archivo"] = new_name
-        }
-        else Materialize.toast(`Error, ya existe un archivo llamado "${new_name}"`, 3000, 'red rounded')
-      })
-    }
-    else {
-      $("#i" + num).css("display", "none")
-      $("#t" + num).css("display", "block")
-    }
+  select_all() {
+    $('.chk').prop('checked', true);
   }
 
   points_to_slash(str) {
@@ -236,24 +334,52 @@ export class ClienteArchivosComponent implements OnInit {
     return `${origin.substring(0, i)}.${folder_name}`
   }
 
-  Descargar_Archivo(file) {
-    $("#descargando_archivo").modal("open")
-    this.clienteArchivosService.Descargar_Archivo({
-      ruta: `${this.points_to_slash(file.ruta_padre)}\\`,
-      nombre_archivo: `\"${file.nombre_archivo}\"`
-    }).subscribe(res => {
-      if (res.output) {
-        setTimeout(() => {
-          $("#descargando_archivo").modal("close")
-          Materialize.toast('Archivo descargado', 3000, 'green rounded')
-        }, 1200);
-      }
+
+
+  Abrir_Archivo(file) {
+    console.log(file)
+    this.clienteArchivosService.Abrir_Archivo({ ruta: `${this.points_to_slash(this.ruta)}\\\"${file.nombre_archivo}\"` }).subscribe(res => {
+      Materialize.toast('Abriendo archivo', 3000, 'green rounded')
     })
   }
 
-  Abrir_Archivo(file) {
-    this.clienteArchivosService.Abrir_Archivo({ ruta: `${this.points_to_slash(file.ruta_padre)}\\\"${file.nombre_archivo}\"` }).subscribe(res => {
-      Materialize.toast('Abriendo archivo', 3000, 'green rounded')
-    })
+
+  mostar_editar_nombre(num) {
+    $("#t" + num).css("display", "none")
+    $("#i" + num).css("display", "block")
+    $("#input" + num).focus()
+  }
+
+  editar_nombre(num, file) {
+    var new_name = $("#input" + num).val()
+    if (new_name == "") {
+      Materialize.toast(`Error, debe ingresar un nombre`, 3000, 'red rounded')
+      return;
+    }
+    if (file.nombre_archivo != new_name) {
+      this.clienteArchivosService.Cambiar_Nombre_Archivo({
+        ruta_padre: this.ruta,
+        new_name: new_name,
+        nombre_archivo: file.nombre_archivo,
+        real_path: this.points_to_slash(this.ruta),
+        cedula: localStorage.getItem("id_cliente")
+      }).subscribe(res => {
+
+        if (res.success) {
+          $("#i" + num).css("display", "none")
+          $("#t" + num).css("display", "block")
+          this.archivos[num]["nombre_archivo"] = new_name
+        }
+        else Materialize.toast(`Error, ya existe un archivo llamado "${new_name}"`, 3000, 'red rounded')
+      })
+    }
+    else {
+      $("#i" + num).css("display", "none")
+      $("#t" + num).css("display", "block")
+    }
+  }
+
+  atras(){
+    this.router.navigate(["/cliente"], { relativeTo: this.route })
   }
 }

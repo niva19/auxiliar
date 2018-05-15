@@ -9,6 +9,7 @@ telefono_casa text,
 celular text,
 correo_personal text,
 correo_empresarial text,
+ruta text,
 constraint pkCliente primary key (cedula) 
 );
 
@@ -57,7 +58,7 @@ create table Archivos(
     nombre_archivo text,
     ruta_padre ltree,
     primary key (ruta_padre, nombre_archivo),
-    constraint fkCarpeta foreign key (ruta_padre) references Carpeta on update cascade
+    constraint fkCarpeta foreign key (ruta_padre) references Carpeta on update cascade on delete cascade
 );
 
 create table Archivos_Cliente(
@@ -84,6 +85,14 @@ create table Archivos_Papelera(
     id bigserial,
     constraint pk_archivos_papelera primary key (id),
     constraint fkProyecto_Archivos_Papelera foreign key (nombre_proyecto) references Proyecto on update cascade
+);
+
+create table Archivos_Cliente_Papelera(
+    nombre_archivo text,
+    cedula text,
+    id bigserial,
+    constraint pk_archivos_cliente_papelera primary key (id),
+    constraint fkCliente_Archivos_Cliente_Papelera foreign key (cedula) references Cliente on update cascade
 );
 
 
@@ -218,7 +227,7 @@ alterado text
 --             sub_cont = sub_cont + 1;
 --             delete from archivos where ruta_padre = rec.ruta and nombre_archivo = rec2.nombre_archivo;
 --         END LOOP; 
---         carpeta = json_build_object('ruta', subltree(rec.ruta,6,nlevel(rec.ruta)),'zfiles', files);
+--         carpeta = json_build_object('ruta', subltree(rec.ruta,7,nlevel(rec.ruta)),'zfiles', files);
 --         carpetas[cont] = carpeta;
 --         cont = cont + 1;
 --         delete from carpeta where ruta = rec.ruta;
@@ -331,14 +340,86 @@ alterado text
 -- END;
 -- $$ LANGUAGE plpgsql;
 
+-- CREATE OR REPLACE FUNCTION insert_cliente_archivos_papelera(files json, ced text) 
+-- RETURNS integer[] AS $$
+-- DECLARE
+-- 	rec RECORD;
+-- 	idfile integer;
+-- 	ids integer[];
+--     nombrearchivo text;
+--     cont integer;
+-- BEGIN
+-- 	cont = 1;
+-- 	FOR rec IN 	select * from json_each_text(files)
+--     LOOP	
+--     	nombrearchivo = rec.value;
+--         insert into Archivos_Cliente_Papelera values(nombrearchivo, ced) RETURNING id into idfile;
+--         delete from Archivos_Cliente where nombre_archivo = nombrearchivo and cedula = ced;
+--         ids[cont] = idfile;
+--         cont = cont + 1;
+--     END LOOP;
+--   return ids;
+-- END;
+-- $$ LANGUAGE plpgsql VOLATILE;
+
+-- CREATE OR REPLACE FUNCTION delete_archivos_clientes_papelera(files integer[]) 
+-- RETURNS VOID AS $$
+-- DECLARE
+-- 	id_file integer;
+-- BEGIN
+-- 	FOREACH id_file IN ARRAY files
+--    	LOOP
+--       delete from Archivos_Cliente_Papelera where id = id_file;
+--    	END LOOP;
+-- END;
+-- $$ LANGUAGE plpgsql VOLATILE;
+
+
+-- CREATE OR REPLACE FUNCTION recovery_proyecto_archivos(files json) 
+-- RETURNS VOID AS $$
+-- DECLARE
+-- 	rec RECORD;
+--     rec2 RECORD;
+-- 	rutapadre text;
+--     nombrearchivo text;
+--     id_file integer;
+-- BEGIN
+-- 	FOR rec IN select * from json_array_elements(files)
+--     LOOP
+--     	FOR rec2 IN select * from json_each_text(rec.value)
+--         LOOP	
+--             if rec2.key = 'nombre_archivo' then
+--                 nombrearchivo = rec2.value;
+--             elsif rec2.key = 'ruta_padre' then
+--                 rutapadre = rec2.value;
+--             elsif rec2.key = 'id' then
+--                 id_file = rec2.value;
+--             end if;
+--         END LOOP;
+--         insert into Archivos values(nombrearchivo, text2ltree(rutapadre));
+--         delete from Archivos_Papelera where id = id_file;
+--     END LOOP;
+-- END;
+-- $$ LANGUAGE plpgsql VOLATILE;
+
+-- CREATE OR REPLACE FUNCTION delete_folder_permanently(folders text[]) 
+-- RETURNS void AS $$
+-- DECLARE
+-- 	rec Record;
+-- 	ruta_carpeta text;
+-- BEGIN
+-- 	FOREACH ruta_carpeta IN ARRAY folders
+--    	LOOP
+--       FOR rec IN SELECT ruta, nlevel(ruta) FROM carpeta WHERE ruta <@ text2ltree(ruta_carpeta) order by nlevel
+--       LOOP
+--       	delete from Carpeta where ruta = rec.ruta;	
+--       END LOOP;
+--    	END LOOP;
+-- END;
+-- $$ LANGUAGE plpgsql VOLATILE;
 
 insert into usuario values('Luis','Carrillo','40232014','Heredia','222222','asd@gmail.com','sub','123',false,'12/03/2015','12/03/2015','mensual','25000');
 insert into usuario values('Jerry','Ramirez','11567478','Heredia','112233','asd@gmail.com','admin','admin',true,'12','12','mensual','111');
 
--- drop table Cliente CASCADE;
--- drop table Usuario CASCADE;
--- drop table Proyecto CASCADE;
--- drop table Carpeta CASCADE;
--- drop table Archivos CASCADE;
--- drop table Proveedor CASCADE;
--- drop table Planilla CASCADE;
+-- truncate table cliente cascade; 
+-- truncate table carpeta cascade; 

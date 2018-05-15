@@ -10,6 +10,16 @@
   </ul>
 </div>
 
+<div id="eliminar_archivos_cliente" class="modal">
+  <div class="modal-content">
+    <h4 id="mensaje_eliminar_archivos_cliente"></h4>
+  </div>
+  <div class="modal-footer">
+    <a class="btn #0d47a1 red darken-4 modal-action modal-close waves-effect waves-red">Cancelar</a>
+    <a class="btn #0d47a1 blue darken-4 modal-action modal-close waves-effect waves-green" (click)="Eliminar_Archivos_Cliente()">Aceptar</a>
+  </div>
+</div>
+
 <div id="eliminar_archivos_proyecto" class="modal">
   <div class="modal-content">
     <h4 id="mensaje_eliminar_archivos_proyecto"></h4>
@@ -30,6 +40,16 @@
   </div>
 </div>
 
+
+<div id="recuperar_archivos_cliente" class="modal">
+  <div class="modal-content">
+      <h4 id="mensaje_recuperar_archivos_cliente"></h4>
+  </div>
+  <div class="modal-footer">
+    <a class="btn #0d47a1 red darken-4 modal-action modal-close waves-effect waves-red">Cancelar</a>
+    <a class="btn #0d47a1 blue darken-4 modal-action modal-close waves-effect waves-green" (click)="Recuperar_Archivos_Cliente()">Aceptar</a>
+  </div>
+</div>
 
 <div id="recuperar_archivos_proyecto" class="modal">
     <div class="modal-content">
@@ -61,6 +81,25 @@
   </div>
 </div>
 
+<div id="remplazar_omitir_archivos_cliente" class="modal">
+  <div class="modal-content">
+    <h4 id="mensaje_remplazar_omitir_archivos_cliente"></h4>
+    <ul class="collection with-header">
+      <li class="collection-item"><div>Reemplazar archivo destino<a href="javascript:void(0)" class="secondary-content"><i class="material-icons black-text" (click)="rem_or_omi_Archivos_Cliente('reemplazar')">forward</i></a></div></li>
+      <li class="collection-item"><div>Omitir este archivo<a href="javascript:void(0)" class="secondary-content"><i class="material-icons black-text" (click)="rem_or_omi_Archivos_Cliente('omitir')">forward</i></a></div></li>
+    </ul>
+  </div>
+</div>
+
+<div id="remplazar_omitir_carpetas" class="modal">
+  <div class="modal-content">
+    <h4 id="mensaje_remplazar_omitir_carpetas"></h4>
+    <ul class="collection with-header">
+      <li class="collection-item"><div>Reemplazar archivo destino<a href="javascript:void(0)" class="secondary-content"><i class="material-icons black-text" (click)="rem_or_omi_Carpeta('reemplazar')">forward</i></a></div></li>
+      <li class="collection-item"><div>Omitir este archivo<a href="javascript:void(0)" class="secondary-content"><i class="material-icons black-text" (click)="rem_or_omi_Carpeta('omitir')">forward</i></a></div></li>
+    </ul>
+  </div>
+</div>
 
 <div id="modal_ruta" class="modal">
   <div class="modal-content">
@@ -143,7 +182,26 @@
             </table>
           </div>
           <div id="tab_archivos_cliente">
-            <p>asd</p>
+            <br>
+            <table>
+              <thead class="centered">
+                <tr>
+                  <td>Nombre del Archivo</td>
+                  <td>Cliente Vinculado</td>
+                  <td></td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let v of customer_files | filterPapelera:term let j = index;">
+                  <td>{{v.nombre_archivo}}</td>
+                  <td>{{v.cedula}}</td>
+                  <td style="text-align: center;">
+                    <input class="chk_customer_files filled-in" type="checkbox" [attr.id]="'checkbox_customer_file'+ j" [attr.data-value]="j" />
+                    <label [attr.for]="'checkbox_customer_file'+ j"></label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

@@ -5,12 +5,17 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ArchivosService {
 
-  constructor(private http: Http) { }
-
-  Obtener_Archivos(carpeta){
+  Reemplazar_Archivos(val) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    return this.http.post('http://localhost:3000/api/searchfiles', carpeta, { headers: headers }).map(res => res.json())
+    return this.http.post('http://localhost:3000/api/replacefiles', val, { headers: headers }).map(res => res.json())
+  }
+  constructor(private http: Http) { }
+
+  Obtener_Archivos(val){
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    return this.http.post('http://localhost:3000/api/searchfiles', val, { headers: headers }).map(res => res.json())
   }
 
   Abrir_Archivo(path){

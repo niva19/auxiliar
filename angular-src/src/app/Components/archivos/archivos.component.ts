@@ -17,6 +17,7 @@ declare var $: any;
 })
 export class ArchivosComponent implements OnInit {
 
+  archivos_descarga: any[] = [];
   pkProyecto: String
   archivos: any[]
   carpetas: any[]
@@ -38,7 +39,7 @@ export class ArchivosComponent implements OnInit {
     private Carpetas_Service: CarpetasService,
     private ingresarService: IngresarService,
     private router: Router,
-    private route: ActivatedRoute, ) { }
+    private route: ActivatedRoute) { }
 
 
   ngOnInit() {
@@ -68,7 +69,11 @@ export class ArchivosComponent implements OnInit {
   }
 
   select_all() {
-    $('.chk').prop('checked', true);
+    (!this.flag) ? $('.chk').prop('checked', true) : $('.chk_carpeta').prop('checked', true)
+  }
+
+  unselect_all() {
+    (!this.flag) ? $('.chk').prop('checked', false) : $('.chk_carpeta').prop('checked', false)
   }
 
   call_from_gerente_bridge() {
@@ -119,19 +124,6 @@ export class ArchivosComponent implements OnInit {
     $('#modal1').modal('open');
   }
 
-
-  // Confirmar_eliminar_Carpeta(carpeta) {
-  //   console.log(carpeta)
-  //   this.Carpetas_Service.Eliminar_Carpeta({ ruta: carpeta.ruta, real_path: this.points_to_slash(carpeta.ruta) }).subscribe(res => {
-  //     if (res.success) {
-  //       var pos = this.FindObject(carpeta.nombre_carpeta)
-  //       this.carpetas.splice(pos, 1)
-  //     }
-  //     else
-  //       Materialize.toast('ERROR, primero debe borrar el contenido de esta carpeta', 5000, 'red rounded')
-  //   })
-  // }
-
   Confirmar_Desenlazar() {
     $('#opciones').modal('close');
     this.archivos_eliminar = []
@@ -140,12 +132,15 @@ export class ArchivosComponent implements OnInit {
     for (let i = 0; i < checkboxes.length; i++) {
       this.archivos_eliminar.push(checkboxes[i].attributes[4].nodeValue)
     }
-    console.log(this.archivos_eliminar);
-    (checkboxes.length == 1)
-      ? $('#mensaje_eliminar').text("¿Realmente deseea desenlazar el archivo?")
-      : $('#mensaje_eliminar').text("¿Realmente deseea desenlazar los archivos?");
-    $('#desenlazar').modal('open');
 
+    if (checkboxes.length == 0)
+      Materialize.toast(`Debe elejir al menos un archivo`, 3000, 'red rounded');
+    else {
+      (checkboxes.length == 1)
+        ? $('#mensaje_eliminar').text("¿Está seguro que desea eliminar este elemento?")
+        : $('#mensaje_eliminar').text(`¿Está seguro que desea eliminar estos ${checkboxes.length} elementos?`);
+      $('#desenlazar').modal('open');
+    }
   }
 
   Archivos(ruta_padre) {
@@ -287,7 +282,6 @@ export class ArchivosComponent implements OnInit {
             }
           }
           else {
-            Materialize.toast(`El archivo "${this.upload_files[i].name}" se enlazo al proyecto exitosamente`, 3000, 'green rounded')
             aux_arr.push(true)
 
             this.get_extension(archivos[i])
@@ -349,16 +343,41 @@ export class ArchivosComponent implements OnInit {
     })
   }
 
-  Descargar_Archivo(file) {
+  Confirmar_Descargar() {
+    this.archivos_descarga = []
+    let checkboxes = $('.chk:checkbox:checked');
+    if (checkboxes.length == 0)
+      Materialize.toast(`Debe elejir al menos un archivo`, 3000, 'red rounded');
+    else {
+      (checkboxes.length == 1)
+        ? $('#mensaje_descarga').text("¿Está seguro que desea descargar este elemento?")
+        : $('#mensaje_descarga').text(`¿Está seguro que desea descargar estos ${checkboxes.length} elementos?`);
+      $('#descargar').modal('open');
+    }
+  }
+
+  Descargar_Archivo() {
+    let checkboxes = $('.chk:checkbox:checked')
+    for (let i = 0; i < checkboxes.length; i++) {
+      this.archivos_descarga.push({
+        ruta: `${this.points_to_slash(this.carpeta_actual.ruta_padre)}\\`,
+        nombre_archivo: `\"${checkboxes[i].attributes[4].nodeValue}\"`
+      })
+    }
+    (checkboxes.length == 1)
+      ? $('#mensaje_barra_descarga').text("Descargando Archivo")
+      : $('#mensaje_barra_descarga').text(`Descargando Archivos`);
+
     $("#descargando_archivo").modal("open")
-    this.Archivos_Service.Descargar_Archivo({
-      ruta: `${this.points_to_slash(file.ruta_padre)}\\`,
-      nombre_archivo: `\"${file.nombre_archivo}\"`
-    }).subscribe(res => {
+    this.Archivos_Service.Descargar_Archivo(this.archivos_descarga).subscribe(res => {
       if (res.output) {
         setTimeout(() => {
-          $("#descargando_archivo").modal("close")
-          Materialize.toast('Archivo descargado', 3000, 'green rounded')
+          $("#descargando_archivo").modal("close");
+
+          (checkboxes.length == 1)
+            ? Materialize.toast('Archivo descargado', 3000, 'green rounded')
+            : Materialize.toast('Archivos descargados', 3000, 'green rounded')
+          this.set_flag(true)
         }, 1200);
       }
     })
@@ -386,6 +405,7 @@ export class ArchivosComponent implements OnInit {
       if (res.success) {
         Materialize.toast(`Los archivos se desenlazaron correctamente`, 3000, 'green rounded')
         this.Archivos(this.carpeta_actual.ruta_padre)
+        this.set_flag(true)
       }
       else Materialize.toast(`Error, no se pudo desenlazar los archivos`, 3000, 'red rounded')
 
@@ -473,7 +493,7 @@ export class ArchivosComponent implements OnInit {
     return `${origin.substring(0, i)}.${folder_name}`
   }
 
-  editar_nombre_carpeta(num, folder, page = 1) {
+  editar_nombre_carpeta(num, folder) {
     var new_name = $("#input_carpeta" + num).val()
 
     if (new_name == "") {
@@ -501,9 +521,8 @@ export class ArchivosComponent implements OnInit {
         if (res.success) {
           $("#ii" + num).css("display", "none")
           $("#tt" + num).css("display", "block")
-          let actual = num + ((page - 1) * 5)
-          this.carpetas[actual]["nombre_carpeta"] = new_name
-          this.carpetas[actual]["ruta"] = destiny_point
+          this.carpetas[num]["nombre_carpeta"] = new_name
+          this.carpetas[num]["ruta"] = destiny_point
         }
         else Materialize.toast(`Error, ya existe una carpeta llamada "${new_name}"`, 3000, 'red rounded')
       })
@@ -557,65 +576,70 @@ export class ArchivosComponent implements OnInit {
   }
 
   Confirmar_Mover_Archivos() {
-    this.Carpetas_Service.Obtener_Arbol({ ruta: localStorage.getItem("ruta_proyecto") }).subscribe(res => {
-      console.log(res)
-      console.log(localStorage.getItem("ruta_proyecto"))
 
-      $('#mcontent').html("")
-      var arr = [];
-      var cont = 0
-      res.tree.forEach(node => {
-        if (node.padre == res.nombre) {
-          $('#mcontent').append('<li id="' + node.nombre_carpeta + cont + 'x">' +
-            '<div class="collapsible-header"><i class="material-icons">folder</i>' +
-            node.nombre_carpeta + '</div></li>'
-          );
-          this.id_padre(res.tree, node.nombre_carpeta, `${node.nombre_carpeta}${cont}x`)
-          cont++
-        }
-        else {
-          let li = $(`#${node.padre}`)
-          li.append('<div class="collapsible-body">' +
-            '<ul class="collapsible">' +
-            '<li id="' + node.nombre_carpeta + cont + 'x">' +
-            '<div class="collapsible-header"><i class="material-icons">folder</i>' +
-            node.nombre_carpeta + '</div></li></ul></div>');
-          this.id_padre(res.tree, node.nombre_carpeta, `${node.nombre_carpeta}${cont}x`)
-          cont++
+    let checkboxes = $('.chk:checkbox:checked');
+    if (checkboxes.length == 0)
+      Materialize.toast(`Debe elejir al menos un archivo`, 3000, 'red rounded');
+    else {
+      this.Carpetas_Service.Obtener_Arbol({ ruta: localStorage.getItem("ruta_proyecto") }).subscribe(res => {
+        console.log(res)
+        console.log(localStorage.getItem("ruta_proyecto"))
+
+        $('#mcontent').html("")
+        var arr = [];
+        var cont = 0
+        res.tree.forEach(node => {
+          if (node.padre == res.nombre) {
+            $('#mcontent').append('<li id="' + node.nombre_carpeta + cont + 'x">' +
+              '<div class="collapsible-header"><i class="material-icons">folder</i>' +
+              node.nombre_carpeta + '</div></li>'
+            );
+            this.id_padre(res.tree, node.nombre_carpeta, `${node.nombre_carpeta}${cont}x`)
+            cont++
+          }
+          else {
+            let li = $(`#${node.padre}`)
+            li.append('<div class="collapsible-body">' +
+              '<ul class="collapsible">' +
+              '<li id="' + node.nombre_carpeta + cont + 'x">' +
+              '<div class="collapsible-header"><i class="material-icons">folder</i>' +
+              node.nombre_carpeta + '</div></li></ul></div>');
+            this.id_padre(res.tree, node.nombre_carpeta, `${node.nombre_carpeta}${cont}x`)
+            cont++
+          }
+
+          arr.push({ ruta: node.ruta, nombre_carpeta: node.nombre_carpeta, id: `${node.nombre_carpeta}${cont - 1}x` })
+        });
+
+        for (let i = 0; i < arr.length; i++) {
+          if (this.carpeta_actual.nombre_carpeta != arr[i].nombre_carpeta) {
+            document.getElementById(arr[i].id)
+              .addEventListener("click", function (e) {
+                e.stopPropagation()
+                $('#carpeta_destino').val(arr[i].nombre_carpeta)
+                $('#carpeta_oculta').val(arr[i].ruta)
+              });
+          }
+          else {
+            let child = $("#" + arr[i].id).children()[0]
+            child.className += " blue-text";
+            document.getElementById(arr[i].id)
+              .addEventListener("click", function (e) {
+                e.stopPropagation()
+              });
+          }
         }
 
-        arr.push({ ruta: node.ruta, nombre_carpeta: node.nombre_carpeta, id: `${node.nombre_carpeta}${cont - 1}x` })
+        $('#carpeta_destino').val("");
+        $('.collapsible').collapsible();
+        $(".collapsible-header").addClass("active");
+        $(".collapsible-body").css("display", "block");
+        $(".expand-toggle").toggleClass("expanded");
+        $('#opciones').modal('close');
+        $('#tree').modal('open');
+
       });
-
-      for (let i = 0; i < arr.length; i++) {
-        if (this.carpeta_actual.nombre_carpeta != arr[i].nombre_carpeta) {
-          document.getElementById(arr[i].id)
-            .addEventListener("click", function (e) {
-              e.stopPropagation()
-              $('#carpeta_destino').val(arr[i].nombre_carpeta)
-              $('#carpeta_oculta').val(arr[i].ruta)
-            });
-        }
-        else {
-          let child = $("#" + arr[i].id).children()[0]
-          child.className += " blue-text";
-          document.getElementById(arr[i].id)
-            .addEventListener("click", function (e) {
-              e.stopPropagation()
-            });
-        }
-      }
-
-      $('#carpeta_destino').val("");
-      $('.collapsible').collapsible();
-      $(".collapsible-header").addClass("active");
-      $(".collapsible-body").css("display", "block");
-      $(".expand-toggle").toggleClass("expanded");
-      $('#opciones').modal('close');
-      $('#tree').modal('open');
-
-    });
-
+    }
   }
 
   id_padre(tree, nombre_carpeta, id) {
@@ -650,6 +674,7 @@ export class ArchivosComponent implements OnInit {
       else {
         this.flag = true
         this.Archivos(this.carpeta_actual.ruta_padre)
+        this.set_flag(true)
       }
     })
   }
@@ -676,6 +701,7 @@ export class ArchivosComponent implements OnInit {
           $('#archivo_repetido').modal('close');
           this.flag = true
           this.Archivos(this.carpeta_actual.ruta_padre)
+          this.set_flag(true)
         }
       })
     }
@@ -683,6 +709,7 @@ export class ArchivosComponent implements OnInit {
       $('#archivo_repetido').modal('close');
       this.flag = true
       this.Archivos(this.carpeta_actual.ruta_padre)
+      this.set_flag(true)
     }
 
   }
@@ -707,10 +734,14 @@ export class ArchivosComponent implements OnInit {
     this.carpetas_eliminar = []
     let checkboxes = $('.chk_carpeta:checkbox:checked');
 
-    (checkboxes.length == 1)
-      ? $('#mensaje_eliminar_carpeta').text("¿Está seguro que desea eliminar este elemento?")
-      : $('#mensaje_eliminar_carpeta').text(`¿Está seguro que desea eliminar estos ${checkboxes.length} elementos de forma permanente?`);
-    $('#Eliminar_carpeta').modal('open');
+    if (checkboxes.length == 0)
+      Materialize.toast(`Debe elejir al menos un archivo`, 3000, 'red rounded');
+    else {
+      (checkboxes.length == 1)
+        ? $('#mensaje_eliminar_carpeta').text("¿Está seguro que desea eliminar este elemento?")
+        : $('#mensaje_eliminar_carpeta').text(`¿Está seguro que desea eliminar estos ${checkboxes.length} elementos?`);
+      $('#Eliminar_carpeta').modal('open');
+    }
   }
 
   Eliminar_Carpeta() {
@@ -718,14 +749,15 @@ export class ArchivosComponent implements OnInit {
 
     for (let i = 0; i < checkboxes.length; i++) {
       this.carpetas_eliminar.push({
-        nombre_carpeta: this.carpetas[checkboxes[i].attributes[4].nodeValue].nombre_carpeta, 
+        nombre_carpeta: this.carpetas[checkboxes[i].attributes[4].nodeValue].nombre_carpeta,
         ruta_points: this.carpetas[checkboxes[i].attributes[4].nodeValue].ruta,
         ruta_slash: this.points_to_slash(this.carpetas[checkboxes[i].attributes[4].nodeValue].ruta)
       })
     }
     console.log(this.carpetas_eliminar)
-    this.Carpetas_Service.Eliminar_Carpeta({carpetas: this.carpetas_eliminar, nombre_proyecto: localStorage.getItem("nombre_proyecto")}).subscribe(res => {
+    this.Carpetas_Service.Eliminar_Carpeta({ carpetas: this.carpetas_eliminar, nombre_proyecto: localStorage.getItem("nombre_proyecto") }).subscribe(res => {
       this.Carpetas(this.carpeta_actual.ruta_padre)
+      this.set_flag_carpeta(true)
     })
   }
 }

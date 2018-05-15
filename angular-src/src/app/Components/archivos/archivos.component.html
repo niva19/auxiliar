@@ -1,12 +1,78 @@
-<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+<div *ngIf="flag" class="fixed-action-btn" style="bottom: 45px; right: 24px;">
   <a class="btn-floating btn-large #b71c1c red darken-4" (click)="atras()">
     <i class="large material-icons">arrow_back</i>
   </a>
 </div>
 
+<div *ngIf="!flag" class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
+  <a class="btn-floating btn-large #0d47a1 blue darken-4">
+    <i class="large material-icons">menu</i>
+  </a>
+  <ul>
+    <li (click)="unselect_all()">
+      <a class="btn-floating red darken-3">
+        <i class="material-icons">highlight_off</i>
+      </a>
+    </li>
+    <li (click)="Confirmar_Desenlazar()">
+      <a class="btn-floating red darken-1">
+        <i class="material-icons">delete_forever</i>
+      </a>
+    </li>
+    <li (click)="Confirmar_Mover_Archivos()">
+      <a class="btn-floating blue darken-1">
+        <i class="material-icons">swap_horiz</i>
+      </a>
+    </li>
+    <li (click)="Confirmar_Descargar()">
+      <a class="btn-floating blue darken-2">
+        <i class="material-icons">file_download</i>
+      </a>
+    </li>
+    <li (click)="select_all()">
+      <a class="btn-floating blue darken-3">
+        <i class="material-icons">select_all</i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="!flag_carpeta" class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
+  <a class="btn-floating btn-large #0d47a1 blue darken-4">
+    <i class="large material-icons">menu</i>
+  </a>
+  <ul>
+    <li (click)="unselect_all()">
+      <a class="btn-floating red darken-3">
+        <i class="material-icons">highlight_off</i>
+      </a>
+    </li>
+    <li (click)="Confimar_Eliminar_Carpeta()">
+      <a class="btn-floating red darken-1">
+        <i class="material-icons">delete_forever</i>
+      </a>
+    </li>
+    <li (click)="select_all()">
+      <a class="btn-floating blue darken-3">
+        <i class="material-icons">select_all</i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div id="descargar" class="modal">
+  <div class="modal-content">
+    <h4 id="mensaje_descarga"></h4>
+  </div>
+  <div class="modal-footer">
+    <a class="btn #0d47a1 red darken-4 modal-action modal-close waves-effect waves-red">Cancelar</a>
+    <a class="btn #0d47a1 blue darken-4 modal-action modal-close waves-effect waves-blue" (click)="Descargar_Archivo()">Aceptar</a>
+  </div>
+</div>
+
 <div id="descargando_archivo" class="modal">
   <div class="modal-content">
-    <h4>Descargando archivo</h4>
+    <h4 id="mensaje_barra_descarga"></h4>
     <br>
     <div class="progress">
       <div class="indeterminate"></div>
@@ -178,10 +244,10 @@
           <div class="row">
             <ul class="tabs tabs-fixed-width tab-demo z-depth-1 black-text ">
               <li class="tab">
-                <a class="active black-text" href="#tab_carpetas">Carpetas</a>
+                <a class="active black-text" href="#tab_carpetas" (click) = "set_flag(true)">Carpetas</a>
               </li>
               <li class="tab">
-                <a class="black-text" href="#tab_archivos">Archivos</a>
+                <a class="black-text" href="#tab_archivos" (click)="set_flag_carpeta(true)">Archivos</a>
               </li>
             </ul>
 
@@ -191,22 +257,7 @@
                 <button type="button" label="Click" (click)="set_flag_carpeta(false)" class="#0d47a1 blue darken-4 btn">Seleccionar</button>
               </div>
               <div *ngIf="!flag_carpeta">
-                <a materialize="dropdown" class='dropdown-button btn' href='#' data-activates='options_carpeta'>opciones</a>
-
-                <ul id='options_carpeta' class='dropdown-content'>
-                  <li>
-                    <a (click)="Confimar_Eliminar_Carpeta()">
-                      <i class="material-icons">delete</i>Eliminar</a>
-                  </li>
-                  <li>
-                    <a (click)="select_all_carpeta()">
-                      <i class="material-icons">select_all</i>Seleccionar todo</a>
-                  </li>
-                  <li>
-                    <a (click)="set_flag_carpeta(true)">
-                      <i class="material-icons">cancel</i>Cancelar</a>
-                  </li>
-                </ul>
+                <button type="button" label="Click" (click)="set_flag_carpeta(true)" class="#0d47a1 red darken-4 btn">Cancelar</button>
               </div>
               <ul class="collection" *ngFor="let i of carpetas; let j = index " [style.overflow]="'visible'">
                 <li class="collection-item avatar">
@@ -241,22 +292,7 @@
                 <button type="button" label="Click" (click)="set_flag(false)" class="#0d47a1 blue darken-4 btn">Seleccionar</button>
               </div>
               <div *ngIf="!flag">
-                <a materialize="dropdown" class='dropdown-button btn' href='#' data-activates='options'>opciones</a>
-
-                <ul id='options' class='dropdown-content'>
-                  <li>
-                    <a (click)="opciones()">
-                      <i class="material-icons">arrow_forward</i>Continuar</a>
-                  </li>
-                  <li>
-                    <a (click)="select_all()">
-                      <i class="material-icons">select_all</i>Seleccionar todo</a>
-                  </li>
-                  <li>
-                    <a (click)="set_flag(true)">
-                      <i class="material-icons">cancel</i>Cancelar</a>
-                  </li>
-                </ul>
+                <button type="button" label="Click" (click)="set_flag(true)" class="#0d47a1 red darken-4 btn">Cancelar</button>
               </div>
               <ul class="collection" *ngFor="let i of archivos; let j = index">
                 <li class="collection-item avatar">
@@ -266,9 +302,6 @@
                   <span class="title" style="display: none" [attr.id]="'i'+ j">
                     <input type="text" class="validate title" [attr.id]="'input'+j" [attr.value]="i.nombre_archivo" (blur)="editar_nombre(j, i)">
                   </span>
-                  <p>
-                    <a href="javascript:void(0)" (click)="Descargar_Archivo(i)">Descargar</a>
-                  </p>
                   <div *ngIf="flag">
                     <a class="secondary-content" (click)="Abrir_Archivo(i)" href="javascript:void(0)">
                       <i class="material-icons black-text">open_in_new</i>
