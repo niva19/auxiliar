@@ -4,6 +4,8 @@ import { ClienteArchivosService } from '../../services/cliente-archivos.service'
 import { Router } from '@angular/router'
 import { ActivatedRoute } from '@angular/router'
 import * as Materialize from 'angular2-materialize'
+import * as commands from '../../../../command/commands.js';
+
 
 declare var jQuery: any;
 declare var $: any;
@@ -35,6 +37,7 @@ export class ClienteArchivosComponent implements OnInit {
     $('.dropdown-button').dropdown();
     this.Archivos();
     this.Get_path();
+    console.log("****", commands.mine());
   }
 
   Get_path() {
@@ -56,6 +59,7 @@ export class ClienteArchivosComponent implements OnInit {
         }
 
         archivo["extension"] = this.invertir(extension)
+        archivo["nombre"] = archivo.nombre_archivo.substring(0,i)
       })
       console.log(archivos)
       this.archivos = archivos
@@ -268,20 +272,6 @@ export class ClienteArchivosComponent implements OnInit {
     else Materialize.toast('Debe elegir al menos un archivo', 3000, 'red rounded')
   }
 
-  // set_path(data) {
-  //   data.forEach(e => {
-  //     var userprofile = "%"
-  //     var i;
-  //     for (i = 0; i < e.ruta.length; i++) {
-  //       if (e.ruta.charAt(i) == '.') break
-  //       userprofile += e.ruta.charAt(i)
-  //     }
-  //     userprofile += "%"
-  //     userprofile = `${userprofile}.${e.ruta.substring(i + 1, e.ruta.lenght)}`
-  //     userprofile = userprofile.split('.').join('\\');
-  //     e.ruta = userprofile
-  //   });
-  // }
 
   get_extension(archivo) {
     var extension = ""
@@ -290,6 +280,7 @@ export class ClienteArchivosComponent implements OnInit {
       else break
     }
     archivo["extension"] = this.invertir(extension)
+    archivo["nombre"] = archivo.nombre_archivo.substring(0,i)
   }
 
   limpiar_upload_files(arr) {
@@ -356,10 +347,10 @@ export class ClienteArchivosComponent implements OnInit {
       Materialize.toast(`Error, debe ingresar un nombre`, 3000, 'red rounded')
       return;
     }
-    if (file.nombre_archivo != new_name) {
+    if (file.nombre != new_name) {
       this.clienteArchivosService.Cambiar_Nombre_Archivo({
         ruta_padre: this.ruta,
-        new_name: new_name,
+        new_name: `${new_name}.${this.archivos[num]["extension"]}`,
         nombre_archivo: file.nombre_archivo,
         real_path: this.points_to_slash(this.ruta),
         cedula: localStorage.getItem("id_cliente")
@@ -368,7 +359,8 @@ export class ClienteArchivosComponent implements OnInit {
         if (res.success) {
           $("#i" + num).css("display", "none")
           $("#t" + num).css("display", "block")
-          this.archivos[num]["nombre_archivo"] = new_name
+          this.archivos[num]["nombre"] = new_name
+          this.archivos[num]["nombre_archivo"] = `${new_name}.${this.archivos[num]["extension"]}`
         }
         else Materialize.toast(`Error, ya existe un archivo llamado "${new_name}"`, 3000, 'red rounded')
       })

@@ -30,6 +30,7 @@ export class ArchivosComponent implements OnInit {
   archivo_repetido: any
   flag: boolean = true
   flag_carpeta: boolean = true
+  current_tab: boolean = true
 
   @ViewChild('myInput')
   myInputVariable: any;
@@ -74,6 +75,25 @@ export class ArchivosComponent implements OnInit {
 
   unselect_all() {
     (!this.flag) ? $('.chk').prop('checked', false) : $('.chk_carpeta').prop('checked', false)
+  }
+
+  select(){
+    (this.current_tab) 
+    ? this.set_flag_carpeta(false) 
+    : this.set_flag(false)
+    // console.log("flag ", this.flag)
+    // console.log("flag_carpeta ", this.flag_carpeta)
+  }
+
+  change_tab(tab){
+    if(tab){
+      this.set_flag(true)
+      this.current_tab = true
+    }
+    else{
+      this.set_flag_carpeta(true)
+      this.current_tab = false
+    }
   }
 
   call_from_gerente_bridge() {
@@ -154,6 +174,7 @@ export class ArchivosComponent implements OnInit {
         }
 
         archivo["extension"] = this.invertir(extension)
+        archivo["nombre"] = archivo.nombre_archivo.substring(0,i)
       })
       console.log(archivos)
       this.archivos = archivos
@@ -326,6 +347,7 @@ export class ArchivosComponent implements OnInit {
       else break
     }
     archivo["extension"] = this.invertir(extension)
+    archivo["nombre"] = archivo.nombre_archivo.substring(0,i)
   }
 
   limpiar_upload_files(arr) {
@@ -539,16 +561,16 @@ export class ArchivosComponent implements OnInit {
     $("#input" + num).focus()
   }
 
-  editar_nombre(num, file, ) {
+  editar_nombre(num, file) {
     var new_name = $("#input" + num).val()
     if (new_name == "") {
       Materialize.toast(`Error, debe ingresar un nombre`, 3000, 'red rounded')
       return;
     }
-    if (file.nombre_archivo != new_name) {
+    if (file.nombre != new_name) {
       this.Archivos_Service.Cambiar_Nombre_Archivo({
         ruta_padre: file.ruta_padre,
-        new_name: new_name,
+        new_name: `${new_name}.${this.archivos[num]["extension"]}`,
         nombre_archivo: file.nombre_archivo,
         real_path: this.points_to_slash(file.ruta_padre)
       }).subscribe(res => {
@@ -556,7 +578,9 @@ export class ArchivosComponent implements OnInit {
         if (res.success) {
           $("#i" + num).css("display", "none")
           $("#t" + num).css("display", "block")
-          this.archivos[num]["nombre_archivo"] = new_name
+          this.archivos[num]["nombre"] = new_name
+          this.archivos[num]["nombre_archivo"] = `${new_name}.${this.archivos[num]["extension"]}`
+          console.log(this.archivos)
         }
         else Materialize.toast(`Error, ya existe un archivo llamado "${new_name}"`, 3000, 'red rounded')
       })
@@ -714,20 +738,8 @@ export class ArchivosComponent implements OnInit {
 
   }
 
-  FindObject(nombre_carpeta) {
-    for (var i = 0; i < this.carpetas.length; i++) {
-      if (this.carpetas[i]['nombre_carpeta'] == nombre_carpeta) {
-        return i;
-      }
-    }
-  }
-
   set_flag_carpeta(val) {
     this.flag_carpeta = val
-  }
-
-  select_all_carpeta() {
-    $('.chk_carpeta').prop('checked', true);
   }
 
   Confimar_Eliminar_Carpeta() {

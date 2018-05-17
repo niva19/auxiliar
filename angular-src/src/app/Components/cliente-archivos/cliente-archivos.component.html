@@ -1,7 +1,19 @@
-<div *ngIf="flag" class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-  <a class="btn-floating btn-large #b71c1c red darken-4" (click)="atras()">
-    <i class="large material-icons">arrow_back</i>
+<div *ngIf="flag" class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
+  <a class="btn-floating btn-large #0d47a1 red darken-4">
+    <i class="large material-icons">menu</i>
   </a>
+  <ul>
+    <li (click)="atras()">
+      <a class="btn-floating #b71c1c red darken-4">
+        <i class="material-icons">arrow_back</i>
+      </a>
+    </li>
+    <li (click)="set_flag(false)">
+      <a class="btn-floating #1565c0 blue darken-3">
+        <i class="material-icons">check</i>
+      </a>
+    </li>
+  </ul>
 </div>
 
 <div *ngIf="!flag" class="fixed-action-btn horizontal" style="bottom: 45px; right: 24px;">
@@ -9,9 +21,9 @@
     <i class="large material-icons">menu</i>
   </a>
   <ul>
-    <li (click)="unselect_all()">
-      <a class="btn-floating red darken-3">
-        <i class="material-icons">highlight_off</i>
+    <li (click)="set_flag(true)">
+      <a class="btn-floating red darken-4">
+        <i class="material-icons">cancel</i>
       </a>
     </li>
     <li (click)="Confirmar_Eliminar()">
@@ -24,9 +36,14 @@
         <i class="material-icons">file_download</i>
       </a>
     </li>
+    <li (click)="unselect_all()">
+      <a class="btn-floating red darken-3">
+        <i class="material-icons">check_box_outline_blank</i>
+      </a>
+    </li>
     <li (click)="select_all()">
       <a class="btn-floating blue darken-3">
-        <i class="material-icons">select_all</i>
+        <i class="material-icons">check_box</i>
       </a>
     </li>
   </ul>
@@ -113,20 +130,13 @@
             </div>
           </div>
           <div class="row">
-
-            <div *ngIf="flag">
-              <button type="button" label="Click" (click)="set_flag(false)" class="#0d47a1 blue darken-4 btn">Seleccionar</button>
-            </div>
-            <div *ngIf="!flag">
-              <button type="button" label="Click" (click)="set_flag(true)" class="#0d47a1 red darken-4 btn">Cancelar</button>
-            </div>
             <ul class="collection" *ngFor="let i of archivos; let j = index">
               <li class="collection-item avatar">
                 <img [attr.src]="'assets/img/' + i.extension + '.png'" alt="" class="circle">
                 <span class="title" [attr.id]="'t'+ j" (click)="mostar_editar_nombre(j)">{{i.nombre_archivo}}</span>
 
                 <span class="title" style="display: none" [attr.id]="'i'+ j">
-                  <input type="text" class="validate title" [attr.id]="'input'+j" [attr.value]="i.nombre_archivo" (blur)="editar_nombre(j, i)">
+                  <input type="text" class="validate title" [attr.id]="'input'+j" [attr.value]="i.nombre" (blur)="editar_nombre(j, i)">
                 </span>
 
                 <div *ngIf="flag">
